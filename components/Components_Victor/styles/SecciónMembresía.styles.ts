@@ -5,6 +5,7 @@ interface Styles {
   rowContainer: ViewStyle;
   columnLeft: ViewStyle;
   columnRight: ViewStyle;
+  divider: ViewStyle;
   membershipTitle: TextStyle;
   offerText: TextStyle;
   membershipPrice: TextStyle;
@@ -13,6 +14,9 @@ interface Styles {
   ctaText: TextStyle;
   scheduleTitle: TextStyle;
   scheduleItem: TextStyle;
+  scheduleGroup: ViewStyle;
+  scheduleDay: TextStyle;
+  scheduleTime: TextStyle;
 }
 
 const styles = StyleSheet.create<Styles>({
@@ -20,12 +24,16 @@ const styles = StyleSheet.create<Styles>({
     backgroundColor: '#121212',
     padding: 25,
     borderRadius: 10,
-    margin: 15,
+    marginHorizontal: 20,
+    marginVertical: 40,
+    alignSelf: 'center',
+    maxWidth: 800,
+    width: '100%',
   },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 20,
+    alignItems: 'stretch',
   },
   columnLeft: {
     flex: 1,
@@ -36,54 +44,77 @@ const styles = StyleSheet.create<Styles>({
     paddingLeft: 10,
     justifyContent: 'center',
   },
+  divider: {
+    width: 1,
+    backgroundColor: '#2a2a2a', // línea gris más oscura
+    marginHorizontal: 10,
+  },
   membershipTitle: {
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 15,
+    left: 10,
   },
   offerText: {
-    color: '#FFFFFF',
+    color: '#d4d9d0',
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 5,
   },
   membershipPrice: {
-    color: '#ff5722',
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
     marginBottom: 10,
   },
   membershipDescription: {
-    color: '#AAAAAA',
+    color: '#4a4e4f',
     fontSize: 14,
     lineHeight: 20,
     marginBottom: 15,
   },
   membershipCta: {
-    backgroundColor: '#ff5722',
-    paddingVertical: 12,
+    backgroundColor: '#f23a11',
+    paddingVertical: 14,
     borderRadius: 5,
     alignItems: 'center',
+    alignSelf: 'center',
+    paddingHorizontal: 30,
+    width: '100%',
     marginTop: 10,
-    alignSelf: 'flex-start',
-    paddingHorizontal: 20,
   },
   ctaText: {
     color: '#FFFFFF',
-    fontWeight: 'bold',
     fontSize: 14,
   },
   scheduleTitle: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 25,
+    textAlign: 'center',
   },
   scheduleItem: {
-    color: '#AAAAAE',
+    color: '#4a4e4f',
     fontSize: 14,
     marginBottom: 6,
+    textAlign: 'center',
+  },
+  scheduleGroup: {
+    marginBottom: 15,
+    alignItems: 'center',
+  },
+  scheduleDay: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  scheduleTime: {
+    color: '#4a4e4f',
+    fontSize: 14,
+    marginTop: 4,
+    textAlign: 'center',
   },
 });
 

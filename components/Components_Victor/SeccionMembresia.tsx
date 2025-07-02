@@ -13,13 +13,12 @@ const SeccionMembresia: React.FC = () => {
           <Text style={styles.membershipTitle}>¿Nuevo en Gym-PowerZone?</Text>
 
           <Text style={styles.offerText}>
-            Tu membresía es hasta 2 meses GRATIS
+            Tu membresía incluye hasta 3 meses GRATIS
           </Text>
-          <Text style={styles.membershipPrice}>($52.50 por mes)</Text>
+          <Text style={styles.membershipPrice}>($400 por mes)</Text>
 
           <Text style={styles.membershipDescription}>
-            Gymso es una plantilla HTML gratuita creada por TemplateMo para tu sitio web comercial.
-            Bootstrap v4.3.1 Layout. ¡Siéntete libre de usarla!
+            ¡Entrena con los mejores! Acceso a pesas, cardio, HIIT, zona funcional y más.
           </Text>
 
           <Pressable
@@ -33,12 +32,27 @@ const SeccionMembresia: React.FC = () => {
           </Pressable>
         </View>
 
+        {/* Línea divisoria */}
+        <View style={styles.divider} />
+
         {/* Derecha: Horarios */}
         <View style={styles.columnRight}>
           <Text style={styles.scheduleTitle}>Horario de atención</Text>
-          <Text style={styles.scheduleItem}>Domingo: Cerrado</Text>
-          <Text style={styles.scheduleItem}>Lunes - Viernes: 7:00 AM - 11:00 PM</Text>
-          <Text style={styles.scheduleItem}>Sábado: 9:00 AM - 4:00 PM</Text>
+
+          <View style={styles.scheduleGroup}>
+            <Text style={styles.scheduleDay}>Domingo: Cerrado</Text>
+            <Text style={styles.scheduleTime}></Text>
+          </View>
+
+          <View style={styles.scheduleGroup}>
+            <Text style={styles.scheduleDay}>Lunes - Viernes</Text>
+            <Text style={styles.scheduleTime}>6:00 AM - 10:00 PM</Text>
+          </View>
+
+          <View style={styles.scheduleGroup}>
+            <Text style={styles.scheduleDay}>Sábado</Text>
+            <Text style={styles.scheduleTime}>8:00 AM - 4:00 PM</Text>
+          </View>
         </View>
       </View>
     </View>
