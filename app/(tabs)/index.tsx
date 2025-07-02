@@ -3,8 +3,8 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 import SeccionMembresia from '@/components/Components_Victor/SeccionMembresia';
 import { Navbar } from '@/components/Navbar';
-import HeroVideo from '@/components/ui/HeroVideo';
-import WeAreGymso from '@/components/ui/WeAreGymso'; // ✅ Asegúrate que esté bien la ruta
+import WeAreGymso from '@/components/ui/PresentacionGymso';
+import HeroVideo from '@/components/ui/PresentacionVideo';
 
 export default function HomeScreen() {
   return (
@@ -19,7 +19,7 @@ export default function HomeScreen() {
           <SeccionMembresia />
         </View>
 
-        {/* ✅ Sección 'We Are Gymso' sin contenedor con padding */}
+        {/* ✅ Sección 'prentacion Gymso' sin contenedor con padding */}
         <WeAreGymso />
       </ScrollView>
     </View>
