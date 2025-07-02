@@ -40,3 +40,10 @@ app-example
 
 # Ignorar videos
 assets/videos/*.mp4
+
+# Ignorar archivos pesados
+*.mp4
+*.mov
+*.avi
+*.zip
+*.rar
