@@ -1,15 +1,18 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { Navbar } from '@/components/Navbar';
 import SeccionMembresia from '@/components/Components_Victor/SeccionMembresia';
+import SeccionHorario from '@/components/Components_Victor/SeccionHorario'; // 👈 Importa tu componente
 
 export default function HomeScreen() {
   return (
     <View style={styles.mainContainer}>
       <Navbar />
-      <View style={styles.content}>
+      <ScrollView contentContainerStyle={styles.content}>
         <SeccionMembresia />
-      </View>
+        <View style={styles.separator} />
+        <SeccionHorario />
+      </ScrollView>
     </View>
   );
 }
@@ -21,7 +24,9 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
-    flex: 1,
-    justifyContent: 'center',
+    paddingBottom: 40,
+  },
+  separator: {
+    height: 30,
   },
 });
