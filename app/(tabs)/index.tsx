@@ -5,6 +5,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Navbar } from '@/components/Navbar';
+import SeccionMembresia from '@/components/Components_Victor/SeccionMembresia';
 
 export default function HomeScreen() {
   return (
@@ -18,8 +19,11 @@ export default function HomeScreen() {
             style={styles.reactLogo}
           />
         }
-        //contentContainerStyle={styles.scrollContent}
       >
+        <ThemedView style={{ marginVertical: 20 }}>
+          <SeccionMembresia />
+        </ThemedView>
+
         <ThemedView style={styles.titleContainer}>
           <ThemedText type="title">Welcome to Gymso Fitness!</ThemedText>
           <HelloWave />
