@@ -2,8 +2,10 @@ import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
 
 interface Styles {
   membershipSection: ViewStyle;
+  rowContainer: ViewStyle;
+  columnLeft: ViewStyle;
+  columnRight: ViewStyle;
   membershipTitle: TextStyle;
-  offerContainer: ViewStyle;
   offerText: TextStyle;
   membershipPrice: TextStyle;
   membershipDescription: TextStyle;
@@ -20,65 +22,68 @@ const styles = StyleSheet.create<Styles>({
     borderRadius: 10,
     margin: 15,
   },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 20,
+  },
+  columnLeft: {
+    flex: 1,
+    paddingRight: 10,
+  },
+  columnRight: {
+    flex: 1,
+    paddingLeft: 10,
+    justifyContent: 'center',
+  },
   membershipTitle: {
     color: '#FFFFFF',
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 15,
-    textAlign: 'center',
-    textTransform: 'uppercase',
-  },
-  offerContainer: {
-    marginBottom: 10,
   },
   offerText: {
     color: '#FFFFFF',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
-    textAlign: 'center',
-    lineHeight: 24,
+    marginBottom: 5,
   },
   membershipPrice: {
     color: '#ff5722',
     fontSize: 16,
-    textAlign: 'center',
-    marginTop: 5,
     fontWeight: 'bold',
+    marginBottom: 10,
   },
   membershipDescription: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    lineHeight: 22,
-    textAlign: 'center',
-    marginBottom: 20,
-    marginTop: 10,
+    color: '#AAAAAA',
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 15,
   },
   membershipCta: {
     backgroundColor: '#ff5722',
-    padding: 15,
+    paddingVertical: 12,
     borderRadius: 5,
     alignItems: 'center',
-    marginVertical: 15,
-    marginHorizontal: 40,
+    marginTop: 10,
+    alignSelf: 'flex-start',
+    paddingHorizontal: 20,
   },
   ctaText: {
     color: '#FFFFFF',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 14,
   },
   scheduleTitle: {
-    color: '#ff5722',
-    fontSize: 18,
+    color: '#FFFFFF',
+    fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginTop: 15,
     marginBottom: 10,
   },
   scheduleItem: {
-    color: '#818181',
+    color: '#AAAAAA',
     fontSize: 14,
-    textAlign: 'center',
-    marginVertical: 3,
+    marginBottom: 6,
   },
 });
 
