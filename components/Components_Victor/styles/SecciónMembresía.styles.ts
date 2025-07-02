@@ -81,7 +81,7 @@ const styles = StyleSheet.create<Styles>({
     marginBottom: 10,
   },
   scheduleItem: {
-    color: '#AAAAAA',
+    color: '#AAAAAE',
     fontSize: 14,
     marginBottom: 6,
   },
