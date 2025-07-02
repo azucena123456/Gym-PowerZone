@@ -1,85 +1,90 @@
-import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
-interface Styles {
-  container: ViewStyle;
-  headerRow: ViewStyle;
-  headerCell: ViewStyle;
-  headerCellTime: ViewStyle;
-  headerText: TextStyle;
-  row: ViewStyle;
-  timeCell: ViewStyle;
-  timeText: TextStyle;
-  cell: ViewStyle;
-  activityText: TextStyle;
-  timeRangeText: TextStyle;
-}
+const createStyles = (screenWidth: number) => {
+  const horaWidth = screenWidth * (0.6 / 6.6);
+  const diaWidth = screenWidth * (1 / 6.6);
 
-const styles = StyleSheet.create<Styles>({
-  container: {
-    backgroundColor: '#111111',
-    padding: 10,
-  },
-  headerRow: {
-    flexDirection: 'row',
-  },
-  headerCell: {
-    backgroundColor: '#ff3c00',
-    padding: 12,
-    width: 100,
-    alignItems: 'center',
-    borderColor: '#111',
-    borderWidth: 1,
-  },
-  headerCellTime: {
-    backgroundColor: '#ff3c00',
-    padding: 12,
-    width: 80,
-    alignItems: 'center',
-    borderColor: '#111',
-    borderWidth: 1,
-  },
-  headerText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  row: {
-    flexDirection: 'row',
-  },
-  timeCell: {
-    width: 80,
-    backgroundColor: '#1a1a1a',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: '#222',
-    borderWidth: 1,
-    padding: 8,
-  },
-  timeText: {
-    color: '#ff3c00',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-  cell: {
-    width: 100,
-    height: 80,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#1a1a1a',
-    borderColor: '#222',
-    borderWidth: 1,
-    padding: 5,
-  },
-  activityText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 13,
-    textAlign: 'center',
-  },
-  timeRangeText: {
-    color: '#aaa',
-    fontSize: 11,
-    textAlign: 'center',
-  },
-});
+  return {
+    horaWidth,
+    diaWidth,
+    ...StyleSheet.create({
+      container: {
+        backgroundColor: '#111111',
+        flex: 1,
+        padding: 10,
+      },
+      table: {
+        width: screenWidth,
+      },
+      headerRow: {
+        flexDirection: 'row',
+      },
+      headerCellTime: {
+        backgroundColor: '#ff3c00',
+        width: horaWidth,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderColor: '#222',
+        borderWidth: 1,
+        height: 50,
+      },
+      headerCell: {
+        backgroundColor: '#ff3c00',
+        width: diaWidth,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderColor: '#222',
+        borderWidth: 1,
+        height: 50,
+      },
+      headerText: {
+        color: '#ffffff',
+        fontWeight: 'bold',
+        fontSize: 14,
+      },
+      row: {
+        flexDirection: 'row',
+      },
+      timeCell: {
+        width: horaWidth,
+        height: 80,
+        backgroundColor: '#ff3c00',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderColor: '#222',
+        borderWidth: 1,
+        padding: 5,
+      },
+      timeText: {
+        color: '#ffffff',
+        fontWeight: 'bold',
+        fontSize: 13,
+        textAlign: 'center',
+      },
+      cell: {
+        width: diaWidth,
+        height: 80,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#1a1a1a',
+        borderColor: '#222',
+        borderWidth: 1,
+        padding: 5,
+      },
+      activityText: {
+        color: '#ffffff',
+        fontWeight: 'bold',
+        fontSize: 14,
+        textAlign: 'center',
+        marginBottom: 2,
+      },
+      timeRangeText: {
+        color: '#bbbbbb',
+        fontSize: 11,
+        textAlign: 'center',
+      },
+    }),
+  };
+};
 
-export default styles;
+export default createStyles;

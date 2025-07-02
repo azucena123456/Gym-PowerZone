@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
-import styles from './styles/SecciónHorario.styles';
+import { View, Text, ScrollView, useWindowDimensions } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
+import createStyles from './styles/SecciónHorario.styles';
 
 type DiaClave = 'lunes' | 'martes' | 'miercoles' | 'jueves' | 'viernes' | 'sabado';
 
@@ -33,13 +34,21 @@ const horario: HorarioFila[] = [
 ];
 
 const SeccionHorario: React.FC = () => {
+  const { width } = useWindowDimensions();
+  const styles = createStyles(width);
+
+  const horaWidth = styles.horaWidth;
+  const diaWidth = styles.diaWidth;
+
   return (
-    <ScrollView horizontal style={styles.container}>
-      <View>
-        {/* Encabezado */}
+    <ScrollView style={styles.container}>
+      <View style={styles.table}>
         <View style={styles.headerRow}>
-          <View style={styles.headerCellTime}>
-            <Text style={styles.headerText}>🗓</Text>
+          <View style={[styles.headerCellTime]}>
+            <Svg width={20} height={20} viewBox="0 0 16 16" fill="white">
+              <Path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M2 2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z"/>
+              <Path d="M2.5 4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5zM11 7.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+            </Svg>
           </View>
           {dias.map((dia) => (
             <View key={dia.clave} style={styles.headerCell}>
@@ -48,7 +57,6 @@ const SeccionHorario: React.FC = () => {
           ))}
         </View>
 
-        {/* Cuerpo */}
         {horario.map((fila, index) => (
           <View key={index} style={styles.row}>
             <View style={styles.timeCell}>
