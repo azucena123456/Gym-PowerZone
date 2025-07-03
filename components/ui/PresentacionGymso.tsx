@@ -19,41 +19,48 @@ export default function WeAreGymso(): JSX.Element {
       <View style={styles.innerContainer}>
         {/* Texto descriptivo */}
         <View style={styles.textContainer}>
-          <Text style={styles.title}>Hello, we are Gymso</Text>
+          <Text style={styles.title}>Hola, somos Gym-PowerZone</Text>
           <Text style={styles.paragraph}>
-            You are NOT allowed to redistribute this HTML template downloadable ZIP file on any template collection site.
+            Tu centro de transformación física y mental.
           </Text>
           <Text style={styles.paragraph}>
-            You are allowed to use this template for your personal or business websites. If you have any question, you can contact Tooplate immediately.
+            Ofrecemos entrenadores certificados, programas especializados y atención personalizada.
+          </Text>
+          <Text style={styles.paragraph}>
+            Estamos listos para ayudarte a alcanzar tus objetivos.
           </Text>
         </View>
 
         {/* Tarjetas */}
         <View style={styles.cardsContainer}>
-          {/* Tarjeta Mary */}
+          {/* Tarjeta Emma */}
           <View style={styles.card}>
-            <Image source={maryImage} style={styles.image} />
+            <View style={styles.imageContainer}>
+              <Image source={maryImage} style={styles.image} />
+            </View>
             <View style={styles.rowBetween}>
-              <Text style={styles.name}>Mary Yan</Text>
+              <Text style={styles.name}>Emma Torres</Text>
               <View style={styles.iconColumn}>
                 <Icon name="twitter" size={14} color="#333" style={styles.icon} />
                 <Icon name="instagram" size={14} color="#333" style={styles.icon} />
               </View>
             </View>
-            <Text style={styles.role}>Yoga Instructor</Text>
+            <Text style={styles.role}>Instructora de Pilates</Text>
           </View>
 
-          {/* Tarjeta Catherine */}
+          {/* Tarjeta Carla */}
           <View style={styles.card}>
-            <Image source={catherineImage} style={styles.image} />
+            <View style={styles.imageContainer}>
+              <Image source={catherineImage} style={styles.image} />
+            </View>
             <View style={styles.rowBetween}>
-              <Text style={styles.name}>Catherine</Text>
+              <Text style={styles.name}>Carla Méndez</Text>
               <View style={styles.iconColumn}>
                 <Icon name="facebook" size={14} color="#333" style={styles.icon} />
                 <Icon name="linkedin" size={14} color="#333" style={styles.icon} />
               </View>
             </View>
-            <Text style={styles.role}>Body trainer</Text>
+            <Text style={styles.role}>Entrenador Personal</Text>
           </View>
         </View>
       </View>
@@ -98,39 +105,43 @@ const styles = StyleSheet.create({
     justifyContent: width > 768 ? 'flex-end' : 'center',
   },
   card: {
-  width: 160,
-  backgroundColor: '#fff',
-  borderRadius: 12,
-  padding: 15,
-  alignItems: 'flex-start', // <--- antes estaba 'center'
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 6,
-  elevation: 5,
-},
-rowBetween: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  width: '100%',
-  alignItems: 'flex-start', // <--- más natural
-  marginBottom: 6,
-},
-name: {
-  fontSize: 16, // ligeramente más grande
-  fontWeight: 'bold',
-  color: '#222', // más oscuro
-},
-role: {
-  fontSize: 13,
-  color: '#999', // más claro
-  marginTop: 4,
-},
+    width: 160,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 15,
+    alignItems: 'flex-start',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 5,
+  },
+  imageContainer: {
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
   image: {
     width: 80,
     height: 80,
     borderRadius: 10,
-    marginBottom: 12,
+  },
+  rowBetween: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    alignItems: 'flex-start',
+    marginBottom: 6,
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#222',
+  },
+  role: {
+    fontSize: 13,
+    color: '#999',
+    marginTop: 4,
   },
   iconColumn: {
     flexDirection: 'column',
@@ -139,5 +150,5 @@ role: {
   },
   icon: {
     marginVertical: 2,
-  }
+  },
 });

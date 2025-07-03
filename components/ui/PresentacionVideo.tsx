@@ -13,44 +13,41 @@ const { width, height } = Dimensions.get('window');
 
 export default function HeroVideo() {
   const handleGetStarted = () => {
-    // Aquí puedes navegar o hacer alguna acción
     Alert.alert('GET STARTED', 'Funcionalidad iniciada.');
   };
 
   const handleLearnMore = () => {
-    // Aquí puedes navegar o mostrar más información
     Alert.alert('LEARN MORE', 'Más información disponible.');
   };
 
   return (
     <View style={styles.container}>
-      {/* Hero Section con Video de fondo */}
       <View style={styles.heroSection}>
         <Video
           source={require('@/assets/videos/presentación.mp4')}
           rate={1.0}
           volume={1.0}
-          isMuted={true}
+          isMuted
           resizeMode="cover"
           shouldPlay
           isLooping
           style={styles.video}
         />
 
-        {/* Capa oscura sobre el video */}
         <View style={styles.overlayBackground} />
 
-        {/* Texto y botones sobre el video */}
         <View style={styles.overlay}>
-          <Text style={styles.title}>NEW WAY TO BUILD A HEALTHY LIFESTYLE!</Text>
-          <Text style={styles.subtitle}>UPGRADE YOUR BODY AT</Text>
+          <Text style={styles.title}>¡Nueva forma de construir un estilo de vida saludable!</Text>
+          <Text style={styles.subtitle}>MEJORA TU CUERPO EN</Text>
           <Text style={styles.subtitle2}>GYMSO FITNESS</Text>
+
           <View style={styles.buttons}>
             <TouchableOpacity onPress={handleGetStarted} style={styles.button}>
-              <Text style={styles.buttonText}>GET STARTED</Text>
+              <Text style={styles.buttonText}>COMENZAR</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleLearnMore} style={[styles.buttonOutline]}>
-              <Text style={styles.buttonTextOutline}>LEARN MORE</Text>
+
+            <TouchableOpacity onPress={handleLearnMore} style={styles.buttonOutline}>
+              <Text style={styles.buttonTextOutline}>MÁS INFORMACIÓN</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -103,16 +100,16 @@ const styles = StyleSheet.create({
     color: '#575759',
     fontSize: 16,
     letterSpacing: 1,
-    textTransform: 'uppercase',
+    textTransform: 'none', // en minúsculas
     textAlign: 'center',
     marginBottom: 5,
   },
   subtitle: {
     color: '#fff',
-    fontSize: 24,
+    fontSize: 34,
     fontWeight: 'bold',
     letterSpacing: 1,
-    textTransform: 'uppercase',
+    textTransform: 'uppercase', // en MAYÚSCULAS
     textAlign: 'center',
   },
   subtitle2: {
@@ -120,7 +117,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     letterSpacing: 2,
-    textTransform: 'uppercase',
+    textTransform: 'uppercase', // en MAYÚSCULAS
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -129,15 +126,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   button: {
-    backgroundColor: '#fff',
+    backgroundColor: '',
     paddingHorizontal: 20,
     paddingVertical: 10,
     marginHorizontal: 10,
-    borderRadius: 25,
+    borderRadius: 0, // cuadrado
   },
   buttonText: {
-    color: '#000',
-    fontWeight: 'bold',
+    color: '#fff',
+    fontWeight: '',
     fontSize: 14,
   },
   buttonOutline: {
@@ -147,7 +144,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     marginHorizontal: 10,
-    borderRadius: 25,
+    borderRadius: 0, // cuadrado
   },
   buttonTextOutline: {
     color: '#ff4500',
