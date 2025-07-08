@@ -5,11 +5,14 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Navbar } from '@/components/Navbar';
+import CustomCarousel from '@/components/carrusel';
 
 export default function HomeScreen() {
   return (
+    
     <View style={styles.mainContainer}>
       <Navbar />
+      
       <ParallaxScrollView
         headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
         headerImage={
@@ -18,13 +21,15 @@ export default function HomeScreen() {
             style={styles.reactLogo}
           />
         }
+
+        
         //contentContainerStyle={styles.scrollContent}
       >
         <ThemedView style={styles.titleContainer}>
           <ThemedText type="title">Welcome to Gymso Fitness!</ThemedText>
           <HelloWave />
         </ThemedView>
-
+        <CustomCarousel/>
         <ThemedView style={styles.stepContainer}>
           <ThemedText type="subtitle">Step 1: Try it</ThemedText>
           <ThemedText>
@@ -40,7 +45,7 @@ export default function HomeScreen() {
             to open developer tools.
           </ThemedText>
         </ThemedView>
-
+              
         <ThemedView style={styles.stepContainer}>
           <ThemedText type="subtitle">Step 2: Explore</ThemedText>
           <ThemedText>
@@ -67,7 +72,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   scrollContent: {
-    paddingTop: 70, // Ajuste para el Navbar fijo
+    paddingTop: 70, 
   },
   titleContainer: {
     flexDirection: 'row',
