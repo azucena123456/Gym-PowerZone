@@ -4,9 +4,15 @@ export const styles = StyleSheet.create({
   fullWidthContainer: {
     width: '100%',
     backgroundColor: 'white',
-    paddingVertical: 15,
-    paddingHorizontal:20,
+    paddingVertical: 10,
+    paddingHorizontal:30,
   },
+nombreEntrenador: {
+  color: '#333333',  
+  fontWeight: 'bold', 
+},
+
+
   headerTitle: {
     fontSize: Platform.select({ ios: 20, android: 20, default: 20 }),
     fontWeight: 'bold',
@@ -18,45 +24,46 @@ export const styles = StyleSheet.create({
     fontSize: Platform.select({ ios: 20, android: 20, default: 28 }),
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 60,
+    marginBottom: 30,
     marginTop:-15,
     color: '#121212',
   },
 
   carouselContent: {
-    paddingLeft: Platform.select({ ios: 15, android: 15, default: 20 }),
+    paddingLeft: Platform.select({ ios: 15, android: 15, default: 300 }),
     paddingRight: Platform.select({ ios: 5, android: 5, default: 10 }),
   },
   slide: {
-    marginRight: Platform.select({ ios: 15, android: 15, default: 20 }),
-    backgroundColor: 'white',
-    borderRadius: 10,
+    marginRight: Platform.select({ ios: 15, android: 15, default: 25 }),
+    backgroundColor: '#F9F9F9',
+    borderRadius: 0,
     overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 16,
+    elevation: 12,
+
   },
   image: {
     width: '100%',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
   },
   textContainer: {
     padding: Platform.select({ ios: 12, android: 12, default: 15 }),
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     borderWidth: 1,
-    borderColor: '#f0f0f0',
-    borderTopWidth: 0,
+    borderColor: '#0000',
+    borderTopWidth: 10,
   },
   mobileTextContainer: {
     padding: 10,
   },
   titleContainer: {
     width: '100%',
-    // alignItems: 'center',
+    
     marginBottom: 8,
   },
   contentWrapper: {
@@ -70,10 +77,10 @@ export const styles = StyleSheet.create({
   },
   slideTitle: {
     fontSize: Platform.select({ ios: 16, android: 16, default: 25 }),
-    //fontWeight: '600',
+    
     fontWeight: 'bold',
     color: '#333',
-    //textAlign: 'center',
+    
   },
   mobileSlideTitle: {
     fontSize: 14,
@@ -107,10 +114,31 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 15,
   },
-  ctaText: {
-    color: 'white',
-    fontWeight: '600',
-    fontSize: Platform.select({ ios: 12, android: 12, default: 14 }),
-  },
+ 
+
+  
+ctaCircle: {
+  backgroundColor: '#F13a11', 
+  width: 50,                  
+  height: 50,                 
+  borderRadius: 30,           
+  justifyContent: 'center',
+  alignItems: 'center',
+  alignSelf: 'center',   
+  marginTop: -100     
+},
+
+mobileCtaCircle: {
+  width: 50,
+  height: 50,
+  borderRadius: 25,
+},
+
+
+ctaText: {
+  color: 'white',
+  fontWeight: '600',
+  fontSize: Platform.select({ ios: 12, android: 12, default: 14 }),
+},
   
 });

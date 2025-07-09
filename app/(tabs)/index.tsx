@@ -23,7 +23,7 @@ export default function HomeScreen() {
         }
 
         
-        //contentContainerStyle={styles.scrollContent}
+        
       >
         <ThemedView style={styles.titleContainer}>
           <ThemedText type="title">Welcome to Gymso Fitness!</ThemedText>

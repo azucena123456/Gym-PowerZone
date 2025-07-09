@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { ScrollView, View, Text, Image,  TouchableOpacity, Dimensions,  } from 'react-native';
+import { ScrollView, View, Text, Image,   Dimensions,  } from 'react-native';
 import { styles } from './carrusel.styles';
 
 interface CarouselItem {
@@ -14,15 +14,18 @@ interface CarouselItem {
 const CustomCarousel: React.FC = () => {
   const { width: screenWidth } = Dimensions.get('window');
   const isMobile = screenWidth < 768; 
-  const itemWidth = isMobile ? screenWidth * 0.9 : screenWidth * 0.3;
-  const imageHeight = isMobile ? 180 : 200;
+  const itemWidth = isMobile ? screenWidth * 0.75 : screenWidth * 0.27;
+  const imageHeight = isMobile ? 120 : 245;
+  
+
+  
   const scrollViewRef = useRef<ScrollView>(null);
   const [data] = useState<CarouselItem[]>([
     {
       id: 1,
       title: 'Aerobic',
       image: require('../assets/images/Aerobic.png'),
-      entrenadora: 'Entrenador: Luis',
+      entrenadora: 'Entrenador ~ Luis',
       description: 'Sesiones dinámicas que combinan música y movimiento para fortalecer el sistema cardiovascular y aumentar la energía.',
       ctaText: '$90'
     },
@@ -30,7 +33,7 @@ const CustomCarousel: React.FC = () => {
       id: 2,
       title: 'Cardio',
       image: require('../assets/images/cardio.jpg'),
-      entrenadora: 'Entrenadora: Sofia',
+      entrenadora: 'Entrenadora ~ Sofia',
       description: 'Entrenamientos intensos por intervalos diseñados para quemar calorías rápidamente y mejorar la resistencia física..',
       ctaText: '$90'
     },
@@ -38,7 +41,7 @@ const CustomCarousel: React.FC = () => {
       id: 3,
       title: 'Crossfit',
       image: require('../assets/images/Crossfit.png'),
-      entrenadora: 'Entrenador: Javier',
+      entrenadora: 'Entrenador ~ Javier',
       description:'Programa de alta intensidad que trabaja fuerza, velocidad y técnica. Ideal para quienes buscan un reto físico completo.',
       ctaText: '$90'
     },
@@ -46,7 +49,7 @@ const CustomCarousel: React.FC = () => {
       id: 4,
       title: 'Yoga',
       image: require('../assets/images/yoga.jpg'),
-      entrenadora: 'Entrenadora: Emma',
+      entrenadora: 'Entrenadora ~ Emma',
       description:'Relajación profunda, mejora de la flexibilidad y control de la respiración. Ideal para equilibrar cuerpo y mente',
       ctaText: '$ 90'
     },
@@ -54,7 +57,7 @@ const CustomCarousel: React.FC = () => {
       id: 5,
       title: 'Pilates',
       image: require('../assets/images/pilates.jpg'),
-      entrenadora: 'Entrenadora: Emma',
+      entrenadora: 'Entrenadora ~ Emma',
       description:'Fortalece el core, mejora la postura y aumenta el tono muscular mediante ejercicios suaves y controlados.',
       ctaText: '$ 90'
     },
@@ -62,7 +65,7 @@ const CustomCarousel: React.FC = () => {
       id: 6,
       title: 'Zumba',
       image: require('../assets/images/Zumba.jpg'),
-      entrenadora: 'Entrenador: Diego',
+      entrenadora: 'Entrenador ~ Diego',
       description:'Clases llenas de ritmo y energía con movimientos de baile que ayudan a tonificar el cuerpo y eliminar el estrés.',
       ctaText: '$ 90'
     },
@@ -99,19 +102,21 @@ const CustomCarousel: React.FC = () => {
       <Text style={styles.headerTitle}>Get A Perfec Body</Text>
       <Text style={styles.headerTitle1}>Our Traning Classes</Text>
       
-      <ScrollView
-        ref={scrollViewRef}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.carouselContent}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        pagingEnabled={false}
-        snapToInterval={itemWidth}
-        decelerationRate="fast"
-        getItemLayout={getItemLayout}
-        initialScrollIndex={dataLength} 
-      >
+<ScrollView
+  ref={scrollViewRef}
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  contentContainerStyle={styles.carouselContent}
+  onScroll={handleScroll}
+  scrollEventThrottle={16}
+  pagingEnabled={false}
+  snapToInterval={itemWidth + (isMobile ? 15 : 25)} 
+  snapToAlignment="start" 
+  decelerationRate="fast"
+  disableIntervalMomentum={true} 
+  getItemLayout={getItemLayout}
+  initialScrollIndex={dataLength}
+>
         {infiniteData.map((item, index) => (
           <View key={`${item.id}-${index}`} style={[styles.slide, { width: itemWidth }]}>
             <Image 
@@ -124,6 +129,7 @@ const CustomCarousel: React.FC = () => {
               <View style={styles.titleContainer}>
                 <Text style={[styles.slideTitle, isMobile && styles.mobileSlideTitle]}>
                   {item.title}
+                  
                 </Text>
               </View>
               
@@ -131,22 +137,27 @@ const CustomCarousel: React.FC = () => {
                 <View style={styles.textContent}>
                   {item.entrenadora && (
                     <Text style={[styles.entrenadoraText, isMobile && styles.mobileEntrenadoraText]}>
-                      {item.entrenadora}
+                      {item.entrenadora.split('~')[0]}~{' '}
+                      <Text style={styles.nombreEntrenador}>
+                        {item.entrenadora.split('~')[1].trim()}
+                      </Text>
                     </Text>
                   )}
                   
                   {item.description && (
                     <Text style={[styles.slideDescription, isMobile && styles.mobileSlideDescription]}>
                       {item.description}
+                      
                     </Text>
                   )}
                 </View>
                 
                 {item.ctaText && (
-                  <TouchableOpacity style={[styles.ctaButton, isMobile && styles.mobileCtaButton]}>
-                    <Text style={styles.ctaText}>{item.ctaText}</Text>
-                  </TouchableOpacity>
-                )}
+                <View style={[styles.ctaCircle, isMobile && styles.mobileCtaCircle]} selectable={false}>
+                <Text style={styles.ctaText}>{item.ctaText}</Text>
+                
+                </View>
+                  )}
               </View>
             </View>
           </View>

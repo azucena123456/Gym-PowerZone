@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 40,//80
+    paddingHorizontal: 40,
     paddingVertical: 15,
     backgroundColor: '#1a1a1a',
     zIndex: 1000,
