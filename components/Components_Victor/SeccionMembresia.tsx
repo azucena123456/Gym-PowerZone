@@ -8,6 +8,10 @@ const SeccionMembresia: React.FC = () => {
   return (
     <View style={styles.membershipSection}>
       <View style={styles.rowContainer}>
+<<<<<<< HEAD
+=======
+        {/* Izquierda: Membresía */}
+>>>>>>> patricia
         <View style={styles.columnLeft}>
           <Text style={styles.membershipTitle}>¿Nuevo en Gym-PowerZone?</Text>
 
@@ -31,8 +35,15 @@ const SeccionMembresia: React.FC = () => {
           </Pressable>
         </View>
 
+<<<<<<< HEAD
         <View style={styles.divider} />
 
+=======
+        {/* Línea divisoria */}
+        <View style={styles.divider} />
+
+        {/* Derecha: Horarios */}
+>>>>>>> patricia
         <View style={styles.columnRight}>
           <Text style={styles.scheduleTitle}>Horario de atención</Text>
 

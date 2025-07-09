@@ -46,7 +46,11 @@ const styles = StyleSheet.create<Styles>({
   },
   divider: {
     width: 1,
+<<<<<<< HEAD
     backgroundColor: '#2a2a2a', 
+=======
+    backgroundColor: '#2a2a2a', // línea gris más oscura
+>>>>>>> patricia
     marginHorizontal: 10,
   },
   membershipTitle: {
