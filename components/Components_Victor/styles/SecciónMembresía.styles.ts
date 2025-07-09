@@ -46,7 +46,7 @@ const styles = StyleSheet.create<Styles>({
   },
   divider: {
     width: 1,
-    backgroundColor: '#2a2a2a', // línea gris más oscura
+    backgroundColor: '#2a2a2a', 
     marginHorizontal: 10,
   },
   membershipTitle: {

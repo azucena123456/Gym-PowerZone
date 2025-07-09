@@ -99,7 +99,7 @@ const createStyles = (screenWidth: number) => {
         fontSize: 8,
         textAlign: 'center',
         lineHeight: 10,
-        marginTop: 6, // Espacio agregado para todas las actividades
+        marginTop: 6, 
       },
     }),
   };

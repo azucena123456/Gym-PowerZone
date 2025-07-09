@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Navbar } from '@/components/Navbar';
 import SeccionMembresia from '@/components/Components_Victor/SeccionMembresia';
-import SeccionHorario from '@/components/Components_Victor/SeccionHorario'; // 👈 Importa tu componente
+import SeccionHorario from '@/components/Components_Victor/SeccionHorario';
 
 export default function HomeScreen() {
   return (
@@ -12,6 +12,7 @@ export default function HomeScreen() {
         <SeccionMembresia />
         <View style={styles.separator} />
         <SeccionHorario />
+        <View style={styles.separator} />
       </ScrollView>
     </View>
   );
@@ -28,5 +29,6 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 30,
+    backgroundColor: 'transparent',
   },
 });
