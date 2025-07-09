@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: 'rgba(0, 0, 0, 0.76)',
     zIndex: -1,
   },
   overlay: {
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   },
   buttonOutline: {
     borderWidth: 2,
-    borderColor: '#ff4500',
+    borderColor: '#f13a11',
     backgroundColor: 'transparent',
     paddingHorizontal: 20,
     paddingVertical: 10,
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     borderRadius: 0, // cuadrado
   },
   buttonTextOutline: {
-    color: '#ff4500',
+    color: '#f13a11',
     fontWeight: 'bold',
     fontSize: 14,
   },

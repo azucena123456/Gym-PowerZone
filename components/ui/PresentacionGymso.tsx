@@ -16,51 +16,49 @@ const catherineImage = require('../../assets/images/tarjeta2.jpg');
 export default function WeAreGymso(): JSX.Element {
   return (
     <View style={styles.outerContainer}>
-      <View style={styles.innerContainer}>
-        {/* Texto descriptivo */}
-        <View style={styles.textContainer}>
+      <View style={styles.contentBox}>
+        {/* Texto a la izquierda */}
+        <View style={styles.textSection}>
           <Text style={styles.title}>Hola, somos Gym-PowerZone</Text>
           <Text style={styles.paragraph}>
             Tu centro de transformación física y mental.
-          </Text>
-          <Text style={styles.paragraph}>
             Ofrecemos entrenadores certificados, programas especializados y atención personalizada.
           </Text>
           <Text style={styles.paragraph}>
-            Estamos listos para ayudarte a alcanzar tus objetivos.
+           Estamos listos para ayudarte a alcanzar tus objetivos.
           </Text>
         </View>
 
-        {/* Tarjetas */}
-        <View style={styles.cardsContainer}>
-          {/* Tarjeta Emma */}
+        {/* Tarjetas a la derecha */}
+        <View style={styles.cardsSection}>
           <View style={styles.card}>
-            <View style={styles.imageContainer}>
-              <Image source={maryImage} style={styles.image} />
-            </View>
-            <View style={styles.rowBetween}>
-              <Text style={styles.name}>Emma Torres</Text>
-              <View style={styles.iconColumn}>
-                <Icon name="twitter" size={14} color="#333" style={styles.icon} />
-                <Icon name="instagram" size={14} color="#333" style={styles.icon} />
+            <Image source={maryImage} style={styles.cardImage} />
+            <View style={styles.cardBody}>
+              <View style={styles.textIconRow}>
+                <Text style={styles.cardName}>Emma Torres</Text>
+                <Icon name="twitter" size={14} color="#666" style={styles.iconRightOfText} />
+              </View>
+
+              <View style={styles.textIconRow}>
+                <Text style={styles.cardRole}>Instructora de Pilates</Text>
+                <Icon name="instagram" size={12} color="#999" style={styles.iconRightOfText} />
               </View>
             </View>
-            <Text style={styles.role}>Instructora de Pilates</Text>
           </View>
 
-          {/* Tarjeta Carla */}
           <View style={styles.card}>
-            <View style={styles.imageContainer}>
-              <Image source={catherineImage} style={styles.image} />
-            </View>
-            <View style={styles.rowBetween}>
-              <Text style={styles.name}>Carla Méndez</Text>
-              <View style={styles.iconColumn}>
-                <Icon name="facebook" size={14} color="#333" style={styles.icon} />
-                <Icon name="linkedin" size={14} color="#333" style={styles.icon} />
+            <Image source={catherineImage} style={styles.cardImage} />
+            <View style={styles.cardBody}>
+              <View style={styles.textIconRow}>
+                <Text style={styles.cardName}>Carla Méndez</Text>
+                <Icon name="instagram" size={14} color="#666" style={styles.iconRightOfText} />
+              </View>
+
+              <View style={styles.textIconRow}>
+                <Text style={styles.cardRole}>Entrenador Personal</Text>
+                <Icon name="facebook" size={12} color="#999" style={styles.iconRightOfText} />
               </View>
             </View>
-            <Text style={styles.role}>Entrenador Personal</Text>
           </View>
         </View>
       </View>
@@ -70,21 +68,29 @@ export default function WeAreGymso(): JSX.Element {
 
 const styles = StyleSheet.create({
   outerContainer: {
-    backgroundColor: '#111',
-    paddingVertical: 40,
+    backgroundColor: '#f8f8f8',
+    paddingVertical: 50,
+    alignItems: 'center',
   },
-  innerContainer: {
-    backgroundColor: '#fff',
+  contentBox: {
+    backgroundColor: 'rgba(242, 241, 241, 0.01)',
     width: '100%',
+    maxWidth: 1200,
+    borderRadius: 12,
     flexDirection: width > 768 ? 'row' : 'column',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    padding: 20,
+    padding: 30,
     gap: 20,
+    shadowColor: 'rgba(17, 16, 16, 0.02)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 6,
   },
-  textContainer: {
+  textSection: {
     flex: 1,
-    paddingRight: 20,
+    paddingRight: width > 768 ? 30 : 0,
+    marginBottom: width > 768 ? 0 : 20,
+    paddingLeft: 150, 
   },
   title: {
     fontSize: 22,
@@ -94,61 +100,58 @@ const styles = StyleSheet.create({
   },
   paragraph: {
     fontSize: 14,
-    color: '#444',
-    marginBottom: 10,
+    color: '#666',
     lineHeight: 20,
+    marginBottom: 10,
+    textAlign: 'justify',
   },
-  cardsContainer: {
+  cardsSection: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 20,
-    justifyContent: width > 768 ? 'flex-end' : 'center',
+    justifyContent: width > 768 ? 'flex-start' : 'center',
   },
   card: {
-    width: 160,
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 15,
-    alignItems: 'flex-start',
+    width: 210, // ← Más ancho
+    borderRadius: 0,
+    overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 20,
   },
-  imageContainer: {
-    width: '100%',
+  cardImage: {
+    width: '100%', // ← Se adapta automáticamente al nuevo ancho
+    height: 250,
+    resizeMode: 'cover',
+  },
+  cardBody: {
+    padding: 18,
     alignItems: 'center',
-    marginBottom: 12,
   },
-  image: {
-    width: 80,
-    height: 80,
-    borderRadius: 10,
-  },
-  rowBetween: {
+  textIconRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     marginBottom: 6,
   },
-  name: {
-    fontSize: 16,
+  iconRightOfText: {
+    marginLeft: 80, // ← Más separación del texto
+  },
+  cardName: {
+    fontSize: 14,
     fontWeight: 'bold',
-    color: '#222',
+    color: '#111',
   },
-  role: {
-    fontSize: 13,
-    color: '#999',
-    marginTop: 4,
+  cardRole: {
+    fontSize: 12,
+    color: '#777',
   },
-  iconColumn: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 6,
-  },
-  icon: {
-    marginVertical: 2,
+  iconRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 12,
+    marginTop: 10,
   },
 });

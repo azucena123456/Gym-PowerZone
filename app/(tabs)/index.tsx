@@ -35,6 +35,6 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   content: {
-    padding: 20, // Esto se aplica solo a secciones como SeccionMembresia, no a la caja blanca
+    padding: 20, 
   },
 });
