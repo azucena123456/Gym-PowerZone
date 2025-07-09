@@ -31,7 +31,6 @@ const horario: HorarioFila[] = [
   { hora: '11:30 AM', miercoles: 'Aerobic\n11:30 AM - 3:30 PM' },
   { hora: '5:00 PM', sabado: 'Crossfit\n5:00 PM - 7:00 PM' },
   { hora: '6:00 PM', jueves: 'Cardio\n6:00 PM - 9:00 PM' },
- 
 ];
 
 const SeccionHorario: React.FC = () => {
@@ -46,7 +45,6 @@ const SeccionHorario: React.FC = () => {
     >
       <View style={styles.tableContainer}>
         <View style={styles.table}>
-          {/* Fila de encabezado */}
           <View style={styles.headerRow}>
             <View style={styles.headerCellTime}>
               <Svg width={20} height={20} viewBox="0 0 16 16" fill="white">
@@ -61,7 +59,6 @@ const SeccionHorario: React.FC = () => {
             ))}
           </View>
 
-          {/* Filas de horario */}
           {horario.map((fila, index) => (
             <View key={index} style={styles.row}>
               <View style={styles.timeCell}>
@@ -73,8 +70,12 @@ const SeccionHorario: React.FC = () => {
                   <View key={dia.clave} style={styles.cell}>
                     {actividad && (
                       <>
-                        <Text style={styles.activityText}>{actividad.split('\n')[0]}</Text>
-                        <Text style={styles.timeRangeText}>{actividad.split('\n')[1]}</Text>
+                        <Text style={styles.activityText}>
+                          {actividad.split('\n')[0]}
+                        </Text>
+                        <Text style={styles.timeRangeText}>
+                          {actividad.split('\n')[1]}
+                        </Text>
                       </>
                     )}
                   </View>

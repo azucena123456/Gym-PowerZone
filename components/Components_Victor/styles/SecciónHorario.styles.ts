@@ -4,13 +4,11 @@ const createStyles = (screenWidth: number) => {
   const totalDias = 6;
   const marginVertical = 6;
   
-  // Reducimos el porcentaje de ancho utilizable a 85%
-  const usableWidth = screenWidth * 0.85; // Reducido de 0.90 a 0.85
-  const horaWidth = usableWidth * 0.08;   // Reducido de 0.09 a 0.08
+  const usableWidth = screenWidth * 0.85;
+  const horaWidth = usableWidth * 0.08;
   const diaWidth = ((usableWidth - horaWidth) / totalDias) - 4;
   const totalWidth = horaWidth + (diaWidth * totalDias) + (3 * totalDias);
 
-  // Calculamos el margen horizontal automático para centrar
   const horizontalPadding = (screenWidth - totalWidth) / 2;
 
   return {
@@ -101,6 +99,7 @@ const createStyles = (screenWidth: number) => {
         fontSize: 8,
         textAlign: 'center',
         lineHeight: 10,
+        marginTop: 6, // Espacio agregado para todas las actividades
       },
     }),
   };
