@@ -99,8 +99,8 @@ const CustomCarousel: React.FC = () => {
 
   return (
     <View style={styles.fullWidthContainer}>
-      <Text style={styles.headerTitle}>Get A Perfec Body</Text>
-      <Text style={styles.headerTitle1}>Our Traning Classes</Text>
+      <Text style={styles.headerTitle}>Consigue el cuerpo ideal</Text>
+      <Text style={styles.headerTitle1}>Nuestras Clases de Entrenamiento</Text>
       
 <ScrollView
   ref={scrollViewRef}

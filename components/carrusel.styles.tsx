@@ -2,6 +2,8 @@ import { StyleSheet,Platform } from 'react-native';
 
 export const styles = StyleSheet.create({
   fullWidthContainer: {
+
+    
     width: '100%',
     backgroundColor: 'white',
     paddingVertical: 10,
@@ -39,10 +41,11 @@ nombreEntrenador: {
     borderRadius: 0,
     overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
-    elevation: 12,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.31,
+    shadowRadius: 8,
+    elevation: 6,
+    
 
   },
   image: {
