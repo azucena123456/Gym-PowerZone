@@ -37,8 +37,8 @@ const styles = StyleSheet.create<Styles>({
   },
   columnLeft: {
     flex: 1,
-    paddingRight: 10,
-    marginLeft: -10,
+    paddingRight: 90,
+    marginLeft: -90,
   },
   columnRight: {
     flex: 1,
@@ -55,7 +55,7 @@ const styles = StyleSheet.create<Styles>({
     color: '#FFFFFF',
     fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 15,
+    marginBottom: 25,
     textAlign: 'left',
   },
   offerText: {
@@ -95,7 +95,7 @@ const styles = StyleSheet.create<Styles>({
     color: '#FFFFFF',
     fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 25,
+    marginBottom: 35,
     textAlign: 'left', 
   },
   scheduleItem: {
