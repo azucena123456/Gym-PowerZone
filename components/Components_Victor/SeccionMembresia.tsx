@@ -10,16 +10,13 @@ const SeccionMembresia: React.FC = () => {
       <View style={styles.rowContainer}>
         <View style={styles.columnLeft}>
           <Text style={styles.membershipTitle}>¿Nuevo en Gym-PowerZone?</Text>
-
           <Text style={styles.offerText}>
             Tu membresía incluye hasta 3 meses GRATIS
           </Text>
           <Text style={styles.membershipPrice}>($400 por mes)</Text>
-
           <Text style={styles.membershipDescription}>
             ¡Entrena con los mejores! Acceso a pesas, cardio, HIIT, zona funcional y más.
           </Text>
-
           <Pressable
             style={({ pressed }) => [
               styles.membershipCta,
@@ -35,17 +32,13 @@ const SeccionMembresia: React.FC = () => {
 
         <View style={styles.columnRight}>
           <Text style={styles.scheduleTitle}>Horario de atención</Text>
-
           <View style={styles.scheduleGroup}>
             <Text style={styles.scheduleDay}>Domingo: Cerrado</Text>
-            <Text style={styles.scheduleTime}></Text>
           </View>
-
           <View style={styles.scheduleGroup}>
             <Text style={styles.scheduleDay}>Lunes - Viernes</Text>
             <Text style={styles.scheduleTime}>6:00 AM - 10:00 PM</Text>
           </View>
-
           <View style={styles.scheduleGroup}>
             <Text style={styles.scheduleDay}>Sábado</Text>
             <Text style={styles.scheduleTime}>8:00 AM - 4:00 PM</Text>
