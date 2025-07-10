@@ -17,7 +17,6 @@ const createStyles = (screenWidth: number) => {
     totalWidth,
     ...StyleSheet.create({
       container: {
-        backgroundColor: '#1a1a1a',
         flex: 1,
       },
       tableContainer: {
@@ -26,7 +25,6 @@ const createStyles = (screenWidth: number) => {
       },
       table: {
         width: totalWidth,
-        backgroundColor: '#1a1a1a',
       },
       headerRow: {
         flexDirection: 'row',
@@ -81,7 +79,6 @@ const createStyles = (screenWidth: number) => {
         height: 55,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#1a1a1a',
         borderColor: '#222',
         borderWidth: 1,
         padding: 2,
