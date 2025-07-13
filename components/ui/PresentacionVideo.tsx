@@ -1,4 +1,3 @@
-import { Video } from 'expo-av';
 import React from 'react';
 import {
   Alert,
@@ -9,7 +8,9 @@ import {
   View,
 } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
+
+const SMALL_SCREEN_WIDTH = 768;
 
 export default function HeroVideo() {
   const handleGetStarted = () => {
@@ -20,26 +21,33 @@ export default function HeroVideo() {
     Alert.alert('LEARN MORE', 'Más información disponible.');
   };
 
+  const videoSourceUrl = 'https://files.catbox.moe/a0p1ns.mp4';
+
+
+  const isSmallScreen = width < SMALL_SCREEN_WIDTH;
+  const subtitleFontSize = isSmallScreen ? 28 : 34;
+  const subtitle2FontSize = isSmallScreen ? 26 : 32;
+
   return (
     <View style={styles.container}>
       <View style={styles.heroSection}>
-        <Video
-          source={require('@/assets/videos/presentación.mp4')}
-          rate={1.0}
-          volume={1.0}
-          isMuted
-          resizeMode="cover"
-          shouldPlay
-          isLooping
-          style={styles.video}
-        />
+        <View style={styles.videoContainer}>
+          <video
+            src={videoSourceUrl}
+            autoPlay 
+            loop     
+            muted    
+            playsInline
+            style={styles.responsiveVideo} 
+          />
+        </View>
 
         <View style={styles.overlayBackground} />
 
         <View style={styles.overlay}>
           <Text style={styles.title}>¡Nueva forma de construir un estilo de vida saludable!</Text>
-          <Text style={styles.subtitle}>MEJORA TU CUERPO EN</Text>
-          <Text style={styles.subtitle2}>GYMSO FITNESS</Text>
+          <Text style={[styles.subtitle, { fontSize: subtitleFontSize }]}>MEJORA TU CUERPO EN</Text>
+          <Text style={[styles.subtitle2, { fontSize: subtitle2FontSize }]}>GYMSO FITNESS</Text>
 
           <View style={styles.buttons}>
             <TouchableOpacity onPress={handleGetStarted} style={styles.button}>
@@ -62,19 +70,27 @@ const styles = StyleSheet.create({
   },
   heroSection: {
     width: '100%',
-    height: height,
+    height: '100vh',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
     overflow: 'hidden',
   },
-  video: {
+  videoContainer: {
     position: 'absolute',
     top: 0,
     left: 0,
-    width,
-    height,
+    width: '100%',
+    height: '100%',
     zIndex: -2,
+    overflow: 'hidden',
+  },
+ 
+  responsiveVideo: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover', 
+    
   },
   overlayBackground: {
     position: 'absolute',
@@ -100,24 +116,21 @@ const styles = StyleSheet.create({
     color: '#575759',
     fontSize: 16,
     letterSpacing: 1,
-    textTransform: 'none', // en minúsculas
     textAlign: 'center',
     marginBottom: 5,
   },
   subtitle: {
     color: '#fff',
-    fontSize: 34,
     fontWeight: 'bold',
     letterSpacing: 1,
-    textTransform: 'uppercase', // en MAYÚSCULAS
+    textTransform: 'uppercase',
     textAlign: 'center',
   },
   subtitle2: {
     color: '#fff',
-    fontSize: 32,
     fontWeight: 'bold',
     letterSpacing: 2,
-    textTransform: 'uppercase', // en MAYÚSCULAS
+    textTransform: 'uppercase',
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -126,15 +139,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   button: {
-    backgroundColor: '',
+    backgroundColor: '#f13a11',
     paddingHorizontal: 20,
     paddingVertical: 10,
     marginHorizontal: 10,
-    borderRadius: 0, // cuadrado
+    borderRadius: 0,
   },
   buttonText: {
     color: '#fff',
-    fontWeight: '',
+    fontWeight: 'bold',
     fontSize: 14,
   },
   buttonOutline: {
@@ -144,7 +157,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     marginHorizontal: 10,
-    borderRadius: 0, // cuadrado
+    borderRadius: 0,
   },
   buttonTextOutline: {
     color: '#f13a11',

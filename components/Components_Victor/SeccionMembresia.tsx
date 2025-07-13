@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import styles from './styles/SecciónMembresía.styles';
 
 const SeccionMembresia: React.FC = () => {
