@@ -17,19 +17,17 @@ export default function WeAreGymso(): JSX.Element {
   return (
     <View style={styles.outerContainer}>
       <View style={styles.contentBox}>
-        {/* Texto a la izquierda */}
         <View style={styles.textSection}>
           <Text style={styles.title}>Hola, somos Gym-PowerZone</Text>
           <Text style={styles.paragraph}>
-            Tu centro de transformación física y mental.
+            Tu centro de transformación física y mental.{"\n"}
             Ofrecemos entrenadores certificados, programas especializados y atención personalizada.
           </Text>
           <Text style={styles.paragraph}>
-           Estamos listos para ayudarte a alcanzar tus objetivos.
+            Estamos listos para ayudarte a alcanzar tus objetivos.
           </Text>
         </View>
 
-        {/* Tarjetas a la derecha */}
         <View style={styles.cardsSection}>
           <View style={styles.card}>
             <Image source={maryImage} style={styles.cardImage} />
@@ -38,10 +36,9 @@ export default function WeAreGymso(): JSX.Element {
                 <Text style={styles.cardName}>Emma Torres</Text>
                 <Icon name="twitter" size={14} color="#666" style={styles.iconRightOfText} />
               </View>
-
               <View style={styles.textIconRow}>
                 <Text style={styles.cardRole}>Instructora de Pilates</Text>
-                <Icon name="instagram" size={12} color="#999" style={styles.iconRightOfText} />
+                <Icon name="instagram" size={14} color="#666" style={styles.iconRightOfText} />
               </View>
             </View>
           </View>
@@ -53,10 +50,9 @@ export default function WeAreGymso(): JSX.Element {
                 <Text style={styles.cardName}>Carla Méndez</Text>
                 <Icon name="instagram" size={14} color="#666" style={styles.iconRightOfText} />
               </View>
-
               <View style={styles.textIconRow}>
                 <Text style={styles.cardRole}>Entrenador Personal</Text>
-                <Icon name="facebook" size={12} color="#999" style={styles.iconRightOfText} />
+                <Icon name="facebook" size={14} color="#666" style={styles.iconRightOfText} />
               </View>
             </View>
           </View>
@@ -68,42 +64,40 @@ export default function WeAreGymso(): JSX.Element {
 
 const styles = StyleSheet.create({
   outerContainer: {
-    backgroundColor: '#f8f8f8',
+    backgroundColor: 'rgba(250, 250, 250, 0)',
     paddingVertical: 50,
     alignItems: 'center',
+    flex: 1,
   },
   contentBox: {
-    backgroundColor: 'rgba(242, 241, 241, 0.01)',
     width: '100%',
-    maxWidth: 1200,
-    borderRadius: 12,
+    maxWidth: 1000,
     flexDirection: width > 768 ? 'row' : 'column',
-    padding: 30,
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    paddingHorizontal: 30,
     gap: 20,
-    shadowColor: 'rgba(17, 16, 16, 0.02)',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 6,
   },
   textSection: {
     flex: 1,
     paddingRight: width > 768 ? 30 : 0,
     marginBottom: width > 768 ? 0 : 20,
-    paddingLeft: 150, 
+    maxWidth: 500,
   },
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    fontSize: 28,
     color: '#111',
-    marginBottom: 12,
+    fontWeight: '800',
+    fontFamily: 'Poppins-ExtraBold',
+    marginBottom: 16,
+    letterSpacing: -0.5,
   },
   paragraph: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#666',
-    lineHeight: 20,
-    marginBottom: 10,
-    textAlign: 'justify',
+    lineHeight: 24,
+    marginBottom: 12,
+    fontFamily: 'Poppins-Regular',
   },
   cardsSection: {
     flexDirection: 'row',
@@ -113,45 +107,46 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#fff',
-    width: 210, // ← Más ancho
-    borderRadius: 0,
+    width: 210,
+    borderRadius: 8,
     overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 20,
-    elevation: 20,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 6,
+    marginHorizontal: 10,
+    alignItems: 'center',
   },
   cardImage: {
-    width: '100%', // ← Se adapta automáticamente al nuevo ancho
-    height: 250,
+    width: '100%',
+    height: 220,
     resizeMode: 'cover',
   },
   cardBody: {
-    padding: 18,
-    alignItems: 'center',
+    padding: 16,
+    width: '100%',
+    alignItems: 'flex-start',
   },
   textIconRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  width: '100%',
+  marginBottom: 7,
+},
   iconRightOfText: {
-    marginLeft: 80, // ← Más separación del texto
+    marginLeft: 35,
   },
   cardName: {
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontSize: 16,
     color: '#111',
+    fontWeight: '700',
+    fontFamily: 'Montserrat-ExtraBold',
   },
   cardRole: {
-    fontSize: 12,
-    color: '#777',
-  },
-  iconRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 12,
-    marginTop: 10,
+    fontSize: 14,
+    color: '#888',
+    fontFamily: 'Montserrat-Regular',
   },
 });
