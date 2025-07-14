@@ -1,23 +1,12 @@
 import { useFonts } from 'expo-font';
 import React from 'react';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { Navbar } from '@/components/Navbar';
-import SeccionMembresia from '@/components/Components_Victor/SeccionMembresia';
-import SeccionHorario from '@/components/Components_Victor/SeccionHorario';
-=======
-import { ScrollView, StyleSheet, View } from 'react-native';
-=======
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
->>>>>>> patricia
 
 // Componentes personalizados
 import SeccionMembresia from '@/components/Components_Victor/SeccionMembresia';
 import { Navbar } from '@/components/Navbar';
 import WeAreGymso from '@/components/ui/PresentacionGymso';
 import HeroVideo from '@/components/ui/PresentacionVideo';
->>>>>>> patricia
 
 export default function HomeScreen() {
   // Carga de fuentes personalizadas
@@ -40,17 +29,6 @@ export default function HomeScreen() {
   return (
     <View style={styles.mainContainer}>
       <Navbar />
-<<<<<<< HEAD
-<<<<<<< HEAD
-      <ScrollView contentContainerStyle={styles.content}>
-        <SeccionMembresia />
-        <View style={styles.separator} />
-        <SeccionHorario />
-        <View style={styles.separator} />
-=======
-=======
-
->>>>>>> patricia
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Sección de video de bienvenida */}
         <HeroVideo />
@@ -60,16 +38,10 @@ export default function HomeScreen() {
           <SeccionMembresia />
         </View>
 
-<<<<<<< HEAD
-        {/* ✅ Sección 'prentacion Gymso' sin contenedor con padding */}
-        <WeAreGymso />
->>>>>>> patricia
-=======
         {/* Sección "We Are Gymso" */}
         <View style={styles.weAreContainer}>
           <WeAreGymso />
         </View>
->>>>>>> patricia
       </ScrollView>
     </View>
   );
@@ -80,17 +52,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#121212', // Fondo oscuro
   },
-<<<<<<< HEAD
-  content: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  separator: {
-    height: 30,
-    backgroundColor: 'transparent',
-  },
-});
-=======
   scrollContent: {
     paddingBottom: 40,
   },
@@ -111,4 +72,3 @@ const styles = StyleSheet.create({
     backgroundColor: '#121212',
   },
 });
->>>>>>> patricia
