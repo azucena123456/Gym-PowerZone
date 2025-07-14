@@ -5,9 +5,11 @@ export const styles = StyleSheet.create({
 
     
     width: '100%',
-    backgroundColor: 'white',
+    backgroundColor: '#EEEEEE',
     paddingVertical: 10,
-    paddingHorizontal:30,
+    paddingHorizontal:65,
+    
+    
   },
 nombreEntrenador: {
   color: '#333333',  

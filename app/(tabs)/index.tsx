@@ -43,8 +43,9 @@ export default function HomeScreen() {
         <View style={styles.weAreContainer}>
           <WeAreGymso />
 
-          <Carusel/>
+          
         </View>
+        <Carusel/>
       </ScrollView>
     </View>
   );
