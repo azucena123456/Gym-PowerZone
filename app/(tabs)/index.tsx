@@ -6,6 +6,7 @@ import SeccionMembresia from '@/components/Components_Victor/SeccionMembresia';
 import { Navbar } from '@/components/Navbar';
 import WeAreGymso from '@/components/ui/PresentacionGymso';
 import HeroVideo from '@/components/ui/PresentacionVideo';
+import Carusel from '@/components/carrusel';
 
 export default function HomeScreen() {
 
@@ -16,6 +17,7 @@ export default function HomeScreen() {
     'Montserrat-ExtraBold': require('@/assets/fonts/Montserrat-ExtraBold.ttf'),
   });
 
+ 
   if (!fontsLoaded) {
     return (
       <View style={styles.loaderContainer}>
@@ -27,45 +29,52 @@ export default function HomeScreen() {
   return (
     <View style={styles.mainContainer}>
       <Navbar />
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        
+        <HeroVideo />
+
+        
+
+
       <ScrollView contentContainerStyle={styles.content}>
         <SeccionMembresia />
         <View style={styles.separator} />
         <SeccionHorario />
         <View style={styles.separator} />
-=======
-=======
 
->>>>>>> patricia
-=======
->>>>>>> patricia
->>>>>>> 0ad32b6f5cae0c95b7bc52da1ec860ffb91f9574
+
+
+
+
+
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <HeroVideo />
+
 
         <View style={styles.content}>
           <SeccionMembresia />
         </View>
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
+
+        
+
+
         {/* ✅ Sección 'prentacion Gymso' sin contenedor con padding */}
         <WeAreGymso />
->>>>>>> patricia
-=======
->>>>>>> 0ad32b6f5cae0c95b7bc52da1ec860ffb91f9574
+
+
+
         {/* Sección "We Are Gymso" */}
-=======
->>>>>>> patricia
+
+
         <View style={styles.weAreContainer}>
           <WeAreGymso />
+
+          
         </View>
+
+        <Carusel/>
+
       </ScrollView>
     </View>
   );
@@ -74,6 +83,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
+
+    backgroundColor: '#121212', 
     backgroundColor: '#121212',
   },
   scrollContent: {
@@ -95,8 +106,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#121212',
   },
-<<<<<<< HEAD
+
 });
->>>>>>> patricia
-=======
-});
+
