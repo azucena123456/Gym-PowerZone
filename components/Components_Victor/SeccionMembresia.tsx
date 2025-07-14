@@ -1,15 +1,13 @@
 import React from 'react';
-import { Pressable, Text, View } from 'react-native';
-import styles from './styles/SecciónMembresía.styles'; // Asegúrate de que la ruta sea correcta
+import { View, Text, Pressable } from 'react-native';
+import styles from './styles/SecciónMembresía.styles';
 
 const SeccionMembresia: React.FC = () => {
-
   const handleRegister = () => console.log('Registro iniciado');
 
   return (
     <View style={styles.membershipSection}>
       <View style={styles.rowContainer}>
-        {/* Izquierda: Membresía */}
         <View style={styles.columnLeft}>
           <Text style={styles.membershipTitle}>¿Nuevo en Gym-PowerZone?</Text>
           <Text style={styles.offerText}>
@@ -30,10 +28,8 @@ const SeccionMembresia: React.FC = () => {
           </Pressable>
         </View>
 
-        {/* Línea divisoria */}
         <View style={styles.divider} />
 
-        {/* Derecha: Horarios */}
         <View style={styles.columnRight}>
           <Text style={styles.scheduleTitle}>Horario de atención</Text>
           <View style={styles.scheduleGroup}>
