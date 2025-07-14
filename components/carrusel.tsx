@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { ScrollView, View, Text, Image,   Dimensions,  } from 'react-native';
 import { styles } from './carrusel.styles';
 
-interface CarouselItem {
+interface CaruselItem {
   id: number;
   title: string;
   image: any;
@@ -11,7 +11,7 @@ interface CarouselItem {
   ctaText?: string;
 }
 
-const CustomCarousel: React.FC = () => {
+const Carusel: React.FC = () => {
   const { width: screenWidth } = Dimensions.get('window');
   const isMobile = screenWidth < 768; 
   const itemWidth = isMobile ? screenWidth * 0.75 : screenWidth * 0.27;
@@ -20,7 +20,7 @@ const CustomCarousel: React.FC = () => {
 
   
   const scrollViewRef = useRef<ScrollView>(null);
-  const [data] = useState<CarouselItem[]>([
+  const [data] = useState<CaruselItem[]>([
     {
       id: 1,
       title: 'Aerobic',
@@ -168,4 +168,4 @@ const CustomCarousel: React.FC = () => {
 };
 
 
-export default CustomCarousel;
+export default Carusel;

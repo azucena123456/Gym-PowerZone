@@ -5,7 +5,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Navbar } from '@/components/Navbar';
-import CustomCarousel from '@/components/carrusel';
+import Carusel from '@/components/carrusel';
 
 export default function HomeScreen() {
   return (
@@ -29,7 +29,8 @@ export default function HomeScreen() {
           <ThemedText type="title">Welcome to Gymso Fitness!</ThemedText>
           <HelloWave />
         </ThemedView>
-        <CustomCarousel/>
+        <Carusel/>
+        
         <ThemedView style={styles.stepContainer}>
           <ThemedText type="subtitle">Step 1: Try it</ThemedText>
           <ThemedText>
