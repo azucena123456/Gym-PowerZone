@@ -2,7 +2,7 @@ import { useFonts } from 'expo-font';
 import React from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 
-// Componentes personalizados
+
 import SeccionMembresia from '@/components/Components_Victor/SeccionMembresia';
 import { Navbar } from '@/components/Navbar';
 import WeAreGymso from '@/components/ui/PresentacionGymso';
@@ -10,7 +10,7 @@ import HeroVideo from '@/components/ui/PresentacionVideo';
 import Carusel from '@/components/carrusel';
 
 export default function HomeScreen() {
-  // Carga de fuentes personalizadas
+  
   const [fontsLoaded] = useFonts({
     'Poppins-Regular': require('@/assets/fonts/Poppins-Regular.ttf'),
     'Poppins-ExtraBold': require('@/assets/fonts/Poppins-ExtraBold.ttf'),
@@ -18,7 +18,7 @@ export default function HomeScreen() {
     'Montserrat-ExtraBold': require('@/assets/fonts/Montserrat-ExtraBold.ttf'),
   });
 
-  // Mientras se cargan las fuentes, mostrar indicador de carga
+  
   if (!fontsLoaded) {
     return (
       <View style={styles.loaderContainer}>
@@ -31,15 +31,15 @@ export default function HomeScreen() {
     <View style={styles.mainContainer}>
       <Navbar />
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Sección de video de bienvenida */}
+        
         <HeroVideo />
 
-        {/* Sección de membresía */}
+        
         <View style={styles.content}>
           <SeccionMembresia />
         </View>
 
-        {/* Sección "We Are Gymso" */}
+        
         <View style={styles.weAreContainer}>
           <WeAreGymso />
 
@@ -54,7 +54,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#121212', // Fondo oscuro
+    backgroundColor: '#121212', 
   },
   scrollContent: {
     paddingBottom: 40,
