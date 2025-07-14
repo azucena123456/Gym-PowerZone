@@ -38,12 +38,14 @@ const styles = StyleSheet.create<Styles>({
   },
   columnLeft: {
     flex: 1,
-    paddingRight: 10,
+    paddingRight: 90,
+    marginLeft: -90,
   },
   columnRight: {
     flex: 1,
     paddingLeft: 10,
     justifyContent: 'center',
+    alignItems: 'flex-start',
   },
   divider: {
     width: 1,
@@ -54,32 +56,34 @@ const styles = StyleSheet.create<Styles>({
     color: '#FFFFFF',
     fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 15,
-    left: 10,
+    marginBottom: 25,
+    textAlign: 'left',
   },
   offerText: {
     color: '#d4d9d0',
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 5,
+    textAlign: 'left',
   },
   membershipPrice: {
     color: '#FFFFFF',
     fontSize: 16,
     marginBottom: 10,
+    textAlign: 'left',
   },
   membershipDescription: {
     color: '#4a4e4f',
     fontSize: 14,
     lineHeight: 20,
     marginBottom: 15,
+    textAlign: 'left', 
   },
   membershipCta: {
     backgroundColor: '#f23a11',
     paddingVertical: 14,
     borderRadius: 5,
     alignItems: 'center',
-    alignSelf: 'center',
     paddingHorizontal: 30,
     width: '100%',
     marginTop: 10,
@@ -92,33 +96,34 @@ const styles = StyleSheet.create<Styles>({
     color: '#FFFFFF',
     fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 25,
-    textAlign: 'center',
+    marginBottom: 35,
+    textAlign: 'left', 
   },
   scheduleItem: {
     color: '#4a4e4f',
     fontSize: 14,
     marginBottom: 6,
-    textAlign: 'center',
+    textAlign: 'left', 
   },
   scheduleGroup: {
     marginBottom: 15,
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   scheduleDay: {
     color: '#FFFFFF',
     fontSize: 15,
     fontWeight: 'bold',
-    textAlign: 'center',
+    textAlign: 'left', 
   },
   scheduleTime: {
     color: '#4a4e4f',
     fontSize: 14,
     marginTop: 4,
-    textAlign: 'center',
+    textAlign: 'left', 
   },
 });
 
+<<<<<<< HEAD
 export default styles;
 
   membershipSection: {
@@ -222,3 +227,6 @@ export default styles;
 export default styles;
 
 
+=======
+export default styles;
+>>>>>>> victor
