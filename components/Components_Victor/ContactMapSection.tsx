@@ -1,6 +1,4 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Linking } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
 import { styles } from './styles/SectionContactMap.styles';
 
 const ContactMapSection = () => {
@@ -8,82 +6,79 @@ const ContactMapSection = () => {
     console.log('Mensaje enviado');
   };
 
-  const openMap = () => {
+  const openMap = (e: React.MouseEvent) => {
+    e.preventDefault();
     const url = 'https://maps.app.goo.gl/examplelink';
-    Linking.openURL(url).catch(err => console.error("Error al abrir mapa:", err));
+    window.open(url, '_blank');
   };
 
   return (
-    <View style={styles.container}>
+    <div style={styles.container}>
       {/* Sección de Contacto */}
-      <View style={styles.contactSection}>
-        <Text style={styles.sectionTitle}>Feel free to ask anything</Text>
+      <div style={styles.contactSection}>
+        <h2 style={styles.sectionTitle}>Feel free to ask anything</h2>
         
-        <TextInput
+        <input
           style={styles.input}
           placeholder="Name"
-          placeholderTextColor="#999"
+          type="text"
         />
         
-        <TextInput
+        <input
           style={styles.input}
           placeholder="Email"
-          placeholderTextColor="#999"
-          keyboardType="email-address"
+          type="email"
         />
         
-        <TextInput
-          style={[styles.input, styles.messageInput]}
+        <textarea
+          style={{
+            ...styles.input,
+            height: 100,
+            verticalAlign: 'top' // Reemplazo para textAlignVertical
+          }}
           placeholder="Message"
-          placeholderTextColor="#999"
-          multiline
+          rows={4}
         />
         
-        <TouchableOpacity style={styles.button} onPress={handleSendMessage}>
-          <Text style={styles.buttonText}>Send Message</Text>
-        </TouchableOpacity>
-      </View>
+        <button style={styles.button} onClick={handleSendMessage}>
+          <span style={styles.buttonText}>Send Message</span>
+        </button>
+      </div>
 
       {/* Sección de Mapa */}
-      <View style={styles.locationSection}>
-        <Text style={styles.sectionTitle}>Where you can find us</Text>
-        <Text style={styles.address}>120-240 Rio de Janeiro - State of Rio de Janeiro, Brazil</Text>
+      <div style={styles.locationSection}>
+        <h2 style={styles.sectionTitle}>Where you can find us</h2>
+        <p style={styles.address}>120-240 Rio de Janeiro - State of Rio de Janeiro, Brazil</p>
         
-        <View style={styles.mapContainer}>
-          <MapView
-            style={styles.map}
-            initialRegion={{
-              latitude: -22.9068,
-              longitude: -43.1729,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
-          >
-            <Marker
-              coordinate={{ latitude: -22.9068, longitude: -43.1729 }}
-              title="Nuestra Ubicación"
-              description="Barra da Tijuca"
+        <div style={styles.mapContainer}>
+          <div style={{ height: '400px', width: '100%' }}>
+            <iframe
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBebAB3_uDkkz9C1NhkDNmas5_jM-CbcqA&q=-22.9068,-43.1729&zoom=14`}
+              allowFullScreen
             />
-          </MapView>
-        </View>
+          </div>
+        </div>
         
-        <TouchableOpacity onPress={openMap}>
-          <Text style={styles.mapLink}>Av. Licio Costa - View larger map</Text>
-        </TouchableOpacity>
+        <a href="#" onClick={openMap} style={styles.mapLink}>
+          Av. Licio Costa - View larger map
+        </a>
         
-        <Text style={styles.areaTitle}>BARRA DA TIJUCA</Text>
+        <h3 style={styles.areaTitle}>BARRA DA TIJUCA</h3>
         
-        <View style={styles.infoBox}>
-          <Text style={styles.infoTitle}>Casa da Reserva</Text>
-          <Text style={styles.infoText}>Manipendi logico</Text>
-          <Text style={styles.infoText}>A.uuecon</Text>
-        </View>
+        <div style={styles.infoBox}>
+          <h4 style={styles.infoTitle}>Casa da Reserva</h4>
+          <p style={styles.infoText}>Manipendi logico</p>
+          <p style={styles.infoText}>A.uuecon</p>
+        </div>
         
-        <Text style={styles.mapFooter}>
+        <p style={styles.mapFooter}>
           Map data ©2023 Google | Terms of Use | Report a map error
-        </Text>
-      </View>
-    </View>
+        </p>
+      </div>
+    </div>
   );
 };
 

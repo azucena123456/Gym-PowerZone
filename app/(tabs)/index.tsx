@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { Navbar } from '@/components/Navbar';
 import SeccionMembresia from '@/components/Components_Victor/SeccionMembresia';
 import SeccionHorario from '@/components/Components_Victor/SeccionHorario';
+import ContactMapSection from '@/components/Components_Victor/ContactMapSection';
 
 export default function HomeScreen() {
   return (
@@ -12,6 +13,8 @@ export default function HomeScreen() {
         <SeccionMembresia />
         <View style={styles.separator} />
         <SeccionHorario />
+        <View style={styles.separator} />
+        <ContactMapSection />
         <View style={styles.separator} />
       </ScrollView>
     </View>
