@@ -1,125 +1,115 @@
-import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-interface Styles {
-  membershipSection: ViewStyle;
-  rowContainer: ViewStyle;
-  columnLeft: ViewStyle;
-  columnRight: ViewStyle;
-  divider: ViewStyle;
-  membershipTitle: TextStyle;
-  offerText: TextStyle;
-  membershipPrice: TextStyle;
-  membershipDescription: TextStyle;
-  membershipCta: ViewStyle;
-  ctaText: TextStyle;
-  scheduleTitle: TextStyle;
-  scheduleItem: TextStyle;
-  scheduleGroup: ViewStyle;
-  scheduleDay: TextStyle;
-  scheduleTime: TextStyle;
-}
-
-const styles = StyleSheet.create<Styles>({
+const styles = StyleSheet.create({
   membershipSection: {
-    backgroundColor: '#121212',
-    padding: 25,
+    backgroundColor: 'transparent',
+    paddingVertical: 50,
+    paddingHorizontal: 30,
     borderRadius: 10,
     marginHorizontal: 20,
     marginVertical: 40,
     alignSelf: 'center',
-    maxWidth: 800,
+    maxWidth: 1000,
     width: '100%',
   },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'stretch',
+    alignItems: 'flex-start',
   },
   columnLeft: {
     flex: 1,
+    paddingLeft: 120,
     paddingRight: 90,
     marginLeft: -90,
+    marginBottom: 0,
   },
   columnRight: {
     flex: 1,
-    paddingLeft: 10,
-    justifyContent: 'center',
+    paddingLeft: 70,
     alignItems: 'flex-start',
+    marginTop: 0,
   },
   divider: {
     width: 1,
-    backgroundColor: '#2a2a2a', 
+    backgroundColor: '#2a2a2a',
     marginHorizontal: 10,
+    height: '50%',
+    alignSelf: 'center',
+    marginVertical: 0,
   },
   membershipTitle: {
     color: '#FFFFFF',
-    fontSize: 30,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 25,
+    marginBottom: 30,
     textAlign: 'left',
+    lineHeight: 38,
   },
   offerText: {
     color: '#d4d9d0',
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: '600',
-    marginBottom: 5,
+    marginBottom: 8,
     textAlign: 'left',
   },
   membershipPrice: {
     color: '#FFFFFF',
-    fontSize: 16,
-    marginBottom: 10,
+    fontSize: 20,
+    marginBottom: 12,
     textAlign: 'left',
   },
   membershipDescription: {
     color: '#4a4e4f',
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 15,
-    textAlign: 'left', 
+    fontSize: 18,
+    lineHeight: 25,
+    marginBottom: 20,
+    textAlign: 'left',
   },
   membershipCta: {
     backgroundColor: '#f23a11',
-    paddingVertical: 14,
-    borderRadius: 5,
+    paddingVertical: 16,
+    borderRadius: 3,
     alignItems: 'center',
     paddingHorizontal: 30,
     width: '100%',
-    marginTop: 10,
+    marginTop: 15,
   },
   ctaText: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   scheduleTitle: {
     color: '#FFFFFF',
-    fontSize: 30,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 35,
-    textAlign: 'left', 
+    marginBottom: 20,
+    marginTop: -5,
+    textAlign: 'left',
   },
   scheduleItem: {
     color: '#4a4e4f',
-    fontSize: 14,
-    marginBottom: 6,
-    textAlign: 'left', 
+    fontSize: 18,
+    marginBottom: 8,
+    textAlign: 'left',
   },
   scheduleGroup: {
-    marginBottom: 15,
+    marginBottom: 20,
     alignItems: 'flex-start',
   },
   scheduleDay: {
     color: '#FFFFFF',
-    fontSize: 15,
+    fontSize: 20,
     fontWeight: 'bold',
-    textAlign: 'left', 
+    textAlign: 'left',
   },
   scheduleTime: {
     color: '#4a4e4f',
-    fontSize: 14,
-    marginTop: 4,
-    textAlign: 'left', 
+    fontSize: 18,
+    marginTop: 6,
+    textAlign: 'left',
   },
 });
 
-export default styles;
+export default styles;

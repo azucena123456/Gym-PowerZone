@@ -1,90 +1,74 @@
+// components/Components_Victor/MapComponent.web.tsx
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Linking } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
-import { styles } from './styles/SectionContactMap.styles';
+import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const ContactMapSection = () => {
-  const handleSendMessage = () => {
-    console.log('Mensaje enviado');
-  };
+interface MapComponentProps {
+  latitude: number;
+  longitude: number;
+  name: string;
+  address: string;
+  height?: number;
+}
 
-  const openMap = () => {
-    const url = 'https://maps.app.goo.gl/examplelink';
-    Linking.openURL(url).catch(err => console.error("Error al abrir mapa:", err));
-  };
+const MapComponent: React.FC<MapComponentProps> = ({ address, name, height = 280 }) => {
+  // URL para el iframe de Google Maps. Usamos embed directamente aquí.
+  // Puedes obtener un iframe de Google Maps haciendo clic en "Compartir" -> "Insertar un mapa" en Google Maps.
+  // Reemplaza con una dirección más precisa si la tienes.
+  const googleMapsEmbedUrl = `https://www.google.com/maps/embed/v1/place?key=YOUR_Maps_EMBED_API_KEY&q=${encodeURIComponent(address)}&output=embed&z=15`;
 
   return (
-    <View style={styles.container}>
-      {/* Sección de Contacto */}
-      <View style={styles.contactSection}>
-        <Text style={styles.sectionTitle}>Feel free to ask anything</Text>
-        
-        <TextInput
-          style={styles.input}
-          placeholder="Name"
-          placeholderTextColor="#999"
-        />
-        
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="#999"
-          keyboardType="email-address"
-        />
-        
-        <TextInput
-          style={[styles.input, styles.messageInput]}
-          placeholder="Message"
-          placeholderTextColor="#999"
-          multiline
-        />
-        
-        <TouchableOpacity style={styles.button} onPress={handleSendMessage}>
-          <Text style={styles.buttonText}>Send Message</Text>
+    <View style={[styles.mapLiveContainer, { height }]}>
+      {/* Renderizar un iframe directamente para la web */}
+      <iframe
+        src={googleMapsEmbedUrl}
+        style={{ border: 0, width: '100%', height: '100%' }}
+        allowFullScreen={true}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        title="Google Map"
+      />
+      <View style={styles.mapOverlayText}>
+        <Text style={styles.mapOverlayAddress}>{name}</Text>
+        <TouchableOpacity onPress={() => Linking.openURL(`http://googleusercontent.com/maps.google.com/5{encodeURIComponent(address)}`)}>
+          <Text style={styles.mapOverlayLink}>Ver en Google Maps</Text>
         </TouchableOpacity>
-      </View>
-
-      {/* Sección de Mapa */}
-      <View style={styles.locationSection}>
-        <Text style={styles.sectionTitle}>Where you can find us</Text>
-        <Text style={styles.address}>120-240 Rio de Janeiro - State of Rio de Janeiro, Brazil</Text>
-        
-        <View style={styles.mapContainer}>
-          <MapView
-            style={styles.map}
-            initialRegion={{
-              latitude: -22.9068,
-              longitude: -43.1729,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
-          >
-            <Marker
-              coordinate={{ latitude: -22.9068, longitude: -43.1729 }}
-              title="Nuestra Ubicación"
-              description="Barra da Tijuca"
-            />
-          </MapView>
-        </View>
-        
-        <TouchableOpacity onPress={openMap}>
-          <Text style={styles.mapLink}>Av. Licio Costa - View larger map</Text>
-        </TouchableOpacity>
-        
-        <Text style={styles.areaTitle}>BARRA DA TIJUCA</Text>
-        
-        <View style={styles.infoBox}>
-          <Text style={styles.infoTitle}>Casa da Reserva</Text>
-          <Text style={styles.infoText}>Manipendi logico</Text>
-          <Text style={styles.infoText}>A.uuecon</Text>
-        </View>
-        
-        <Text style={styles.mapFooter}>
-          Map data ©2023 Google | Terms of Use | Report a map error
-        </Text>
       </View>
     </View>
   );
 };
 
-export default ContactMapSection;
+const styles = StyleSheet.create({
+  mapLiveContainer: {
+    width: '100%',
+    overflow: 'hidden',
+    backgroundColor: '#e0e0e0',
+    position: 'relative',
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  // Los estilos para el iframe se aplican directamente en la prop 'style' del iframe.
+  // mapLive: { // Este estilo ya no se aplicaría directamente a un View o WebView
+  //   width: '100%',
+  //   height: '100%',
+  // },
+  mapOverlayText: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    padding: 10,
+    borderRadius: 5,
+  },
+  mapOverlayAddress: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  mapOverlayLink: {
+    fontSize: 12,
+    color: '#007bff',
+    textDecorationLine: 'underline',
+  },
+});
+
+export default MapComponent;

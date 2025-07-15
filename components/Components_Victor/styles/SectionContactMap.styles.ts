@@ -1,91 +1,48 @@
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
+export const formStyles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
     padding: 20,
+    backgroundColor: '#f8f8f8', // Color de fondo del formulario
+    borderRadius: 8,
+    marginHorizontal: 20, // Pequeño margen para que no toque los bordes de la pantalla
+    shadowColor: '#000', // Sombra para darle un poco de profundidad
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  contactSection: {
-    marginBottom: 30,
-  },
-  locationSection: {
-    marginTop: 20,
-  },
-  sectionTitle: {
-    fontSize: 22,
+  title: {
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
     color: '#333',
+    marginBottom: 25,
+    textAlign: 'center',
   },
   input: {
+    backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 5,
-    padding: 15,
+    padding: 12,
     marginBottom: 15,
     fontSize: 16,
+    color: '#333',
   },
   messageInput: {
-    height: 100,
-    textAlignVertical: 'top',
+    height: 120, // Altura para el área de mensaje
+    textAlignVertical: 'top', // El texto comienza desde la parte superior
   },
-  button: {
-    backgroundColor: '#ff3c00',
+  sendButton: {
+    backgroundColor: '#007bff', // Un color azul para el botón
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
+    marginTop: 10,
   },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  address: {
-    fontSize: 16,
-    marginBottom: 20,
-    color: '#555',
-  },
-  mapContainer: {
-    height: 200,
-    borderRadius: 10,
-    overflow: 'hidden',
-    marginBottom: 10,
-  },
-  map: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  mapLink: {
-    color: '#0066cc',
-    textDecorationLine: 'underline',
-    marginBottom: 15,
-  },
-  areaTitle: {
+  sendButtonText: {
+    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
-    marginVertical: 15,
-    color: '#333',
-  },
-  infoBox: {
-    backgroundColor: '#f9f9f9',
-    padding: 15,
-    borderRadius: 5,
-    marginBottom: 20,
-  },
-  infoTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#333',
-  },
-  infoText: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 3,
-  },
-  mapFooter: {
-    fontSize: 12,
-    color: '#999',
-    textAlign: 'center',
   },
 });

@@ -129,12 +129,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   textIconRow: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  width: '100%',
-  marginBottom: 7,
-},
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 7,
+  },
   iconRightOfText: {
     marginLeft: 35,
   },
