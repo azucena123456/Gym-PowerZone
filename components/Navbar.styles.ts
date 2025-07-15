@@ -1,4 +1,3 @@
-// Navbar.styles.ts
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -9,21 +8,18 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 80, // Este es el padding que crea el espacio en los bordes
+    paddingHorizontal: 80,
     position: 'absolute',
     top: 0,
     left: 0,
     zIndex: 1000,
   },
-  logoContainer: {
-    // Estilos para el contenedor del logo si es necesario
-  },
+  logoContainer: {},
   logoText: {
     color: '#fff',
     fontSize: 24,
     fontWeight: 'bold',
   },
-
   desktopMenu: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -42,16 +38,14 @@ export const styles = StyleSheet.create({
     color: '#F13a11',
   },
   menuTextHover: {
-    color: '#FF0000', // Rojo fuerte para el hover
+    color: '#FF0000',
   },
   socialIcons: {
     flexDirection: 'row',
     marginLeft: 30,
-    gap: 20, // Espacio entre iconos sociales
+    gap: 20,
   },
-  socialIcon: {
-    //
-  },
+  socialIcon: {},
   xIcon: {
     width: 20,
     height: 20,
@@ -63,7 +57,6 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-
   menuButton: {
     padding: 10,
   },

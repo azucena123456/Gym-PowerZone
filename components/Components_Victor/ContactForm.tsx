@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Alert,
   Dimensions,
-  Image // Importa el componente Image
+  Image 
   ,
   ScrollView,
   Text,

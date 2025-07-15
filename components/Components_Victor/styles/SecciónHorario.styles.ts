@@ -22,7 +22,7 @@ const createStyles = (screenWidth: number) => {
       container: {
         flex: 1,
         backgroundColor: '#121212',
-        paddingVertical: 30,
+        paddingVertical: 100,
       },
       tableContainer: {
         marginHorizontal: horizontalPadding,
@@ -113,7 +113,7 @@ const createStyles = (screenWidth: number) => {
         backgroundColor: '#121212',
       },
       subtitle: {
-        color: '#ffffff',
+        color: '#cccccc',
         fontSize: 15,
         marginBottom: 10,
         textTransform: 'uppercase',

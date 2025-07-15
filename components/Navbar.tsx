@@ -1,22 +1,29 @@
 import { FontAwesome } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
-import { Animated, Linking, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import { Alert, Animated, Linking, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { styles } from './Navbar.styles';
 
 interface NavbarProps {
   onPressMenu?: () => void;
+  scrollToSection: (section: string) => void;
+  activeSection: string | null;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onPressMenu }) => {
-  const [pressedItem, setPressedItem] = useState<string | null>(null);
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null); // Nuevo estado para el hover
+export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, activeSection }) => {
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const slideAnim = useState(new Animated.Value(0))[0];
 
   const { width } = useWindowDimensions();
   const isMobileOrTablet = width < 1024;
 
-  const menuItems = ['INICIO','SOBRE NOSTRO', 'CLASES','HORARIOS','CONTACTO' ];
+  const menuItems = [
+    { name: 'INICIO', section: 'inicio' },
+    { name: 'SOBRE NOSOTROS', section: 'sobreNosotros' },
+    { name: 'CLASES', section: 'clases' },
+    { name: 'HORARIOS', section: 'horarios' },
+    { name: 'CONTACTO', section: 'contacto' },
+  ];
 
   useEffect(() => {
     Animated.timing(slideAnim, {
@@ -30,12 +37,25 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu }) => {
     setMenuOpen(!menuOpen);
   };
 
-  const handleMenuItemPress = (item: string) => {
-    setPressedItem(item);
+  const handleMenuItemPress = (itemSection: string) => {
+    scrollToSection(itemSection);
     setTimeout(() => {
-      setPressedItem(null);
       setMenuOpen(false);
     }, 200);
+  };
+
+  const handleWhatsappPress = async () => {
+    const phoneNumber = '5217711429286';
+    const message = 'Hola, quiero saber más sobre ustedes.';
+
+    const whatsappWebUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+    try {
+      await Linking.openURL(whatsappWebUrl);
+    } catch (error) {
+      console.error('Error al abrir WhatsApp Web:', error);
+      Alert.alert('Error', 'No se pudo abrir WhatsApp. Intenta de nuevo más tarde.');
+    }
   };
 
   const menuHeight = slideAnim.interpolate({
@@ -77,16 +97,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu }) => {
             <View style={styles.menuContent}>
               {menuItems.map((item) => (
                 <TouchableOpacity
-                  key={item}
+                  key={item.name}
                   style={styles.mobileMenuItem}
-                  onPress={() => handleMenuItemPress(item)}
+                  onPress={() => handleMenuItemPress(item.section)}
                   activeOpacity={0.7}
                 >
                   <Text style={[
                     styles.mobileMenuText,
-                    pressedItem === item && styles.mobileMenuTextPressed,
+                    activeSection === item.section && styles.mobileMenuTextPressed,
                   ]}>
-                    {item}
+                    {item.name}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -102,7 +122,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu }) => {
                   </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => Linking.openURL('whatsapp://send?phone=527711429286&text=chat%20bot')}>
+                <TouchableOpacity onPress={handleWhatsappPress}>
                   <FontAwesome name="whatsapp" size={20} color="white" />
                 </TouchableOpacity>
 
@@ -117,22 +137,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu }) => {
         <View style={styles.desktopMenu}>
           {menuItems.map((item) => (
             <TouchableOpacity
-              key={item}
+              key={item.name}
               style={styles.menuItem}
-              onPressIn={() => setPressedItem(item)}
-              onPressOut={() => setPressedItem(null)}
-              // Lógica de hover para web
-              onMouseEnter={() => setHoveredItem(item)}
+              onMouseEnter={() => setHoveredItem(item.section)}
               onMouseLeave={() => setHoveredItem(null)}
+              onPress={() => handleMenuItemPress(item.section)}
             >
               <Text style={[
                 styles.menuText,
-                pressedItem === item && styles.menuTextPressed,
-                hoveredItem === item && styles.menuTextHover, // Aplica el estilo de hover aquí
-                // Para que 'INICIO' esté marcado por defecto si no hay otro item presionado o en hover
-                (item === 'INICIO' && !pressedItem && !hoveredItem) && styles.menuTextPressed,
+                activeSection === item.section && styles.menuTextPressed,
+                activeSection !== item.section && hoveredItem === item.section && styles.menuTextHover,
               ]}>
-                {item}
+                {item.name}
               </Text>
             </TouchableOpacity>
           ))}
@@ -140,44 +156,36 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu }) => {
           <View style={styles.socialIcons}>
             <TouchableOpacity
               onPress={() => Linking.openURL('https://www.facebook.com')}
-              onMouseEnter={() => setHoveredItem('facebook')} // Puedes usar un identificador único para los iconos
+              onMouseEnter={() => setHoveredItem('facebook')}
               onMouseLeave={() => setHoveredItem(null)}
             >
               <FontAwesome
                 name="facebook"
                 size={20}
-                // Si quieres que los iconos también cambien de color al hover, aplica lógica similar
-                // color={hoveredItem === 'facebook' ? styles.menuTextHover.color : 'white'}
                 color={'white'}
               />
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => Linking.openURL('https://x.com')}
-              onMouseEnter={() => setHoveredItem('twitter')} // 'X' solía ser Twitter
+              onMouseEnter={() => setHoveredItem('twitter')}
               onMouseLeave={() => setHoveredItem(null)}
             >
               <View style={styles.xIcon}>
-                <Text
-                  style={[
-                    styles.xText,
-                    // hoveredItem === 'twitter' && styles.menuTextHover, // Si quieres que la X cambie de color
-                  ]}
-                >
+                <Text style={styles.xText}>
                   X
                 </Text>
               </View>
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => Linking.openURL('whatsapp://send?phone=527711429286&text=chat%20bot')}
+              onPress={handleWhatsappPress}
               onMouseEnter={() => setHoveredItem('whatsapp')}
               onMouseLeave={() => setHoveredItem(null)}
             >
               <FontAwesome
                 name="whatsapp"
                 size={20}
-                // color={hoveredItem === 'whatsapp' ? styles.menuTextHover.color : 'white'}
                 color={'white'}
               />
             </TouchableOpacity>
@@ -190,7 +198,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu }) => {
               <FontAwesome
                 name="instagram"
                 size={20}
-                // color={hoveredItem === 'instagram' ? styles.menuTextHover.color : 'white'}
                 color={'white'}
               />
             </TouchableOpacity>
