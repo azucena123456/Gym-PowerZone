@@ -1,13 +1,14 @@
 import { useFonts } from 'expo-font';
 import React from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
+
 import { Navbar } from '@/components/Navbar';
+import HeroVideo from '@/components/ui/PresentacionVideo';
 import SeccionMembresia from '@/components/Components_Victor/SeccionMembresia';
+import WeAreGymso from '@/components/ui/PresentacionGymso';
+import Carusel from '@/components/carrusel';
 import SeccionHorario from '@/components/Components_Victor/SeccionHorario';
 import ContactMapSection from '@/components/Components_Victor/ContactMapSection';
-import WeAreGymso from '@/components/ui/PresentacionGymso';
-import HeroVideo from '@/components/ui/PresentacionVideo';
-import Carusel from '@/components/carrusel';
 
 export default function HomeScreen() {
   const [fontsLoaded] = useFonts({
@@ -35,17 +36,19 @@ export default function HomeScreen() {
         <View style={styles.content}>
           <SeccionMembresia />
           <View style={styles.separator} />
-          
+
+          <WeAreGymso />
+          <View style={styles.separator} />
+
+          <Carusel />
+          <View style={styles.separator} />
+
           <SeccionHorario />
           <View style={styles.separator} />
-          
+
           <ContactMapSection />
           <View style={styles.separator} />
         </View>
-
-        <WeAreGymso />
-        
-        <Carusel />
       </ScrollView>
     </View>
   );
