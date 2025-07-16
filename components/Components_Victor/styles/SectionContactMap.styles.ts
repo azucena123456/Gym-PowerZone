@@ -1,85 +1,49 @@
 // SectionContactMap.styles.ts
 import { CSSProperties } from 'react';
 
-export const styles: { [key: string]: CSSProperties } = {
+export const formStyles = StyleSheet.create({
   container: {
-    display: 'flex',
-    justifyContent: 'center',
-    padding: '40px',
-    maxWidth: '1200px',
-    margin: '0 auto',
-    backgroundColor: '#fff',
+    padding: 20,
+    backgroundColor: '#f8f8f8', // Color de fondo del formulario
+    borderRadius: 8,
+    marginHorizontal: 20, // Pequeño margen para que no toque los bordes de la pantalla
+    shadowColor: '#000', // Sombra para darle un poco de profundidad
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  row: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: '40px',
-    width: '100%',
-  },
-  contactSection: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  locationSection: {
-    flex: 1,
-  },
-  sectionTitle: {
-    fontSize: '26px',
+  title: {
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: '30px',
-    color: '#111',
+    color: '#333',
+    marginBottom: 25,
+    textAlign: 'center',
   },
   input: {
-    border: '1px solid #ccc',
-    borderRadius: '3px',
-    padding: '14px',
-    marginBottom: '20px',
-    fontSize: '15px',
-    width: '100%',
-    boxSizing: 'border-box',
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    padding: 12,
+    marginBottom: 15,
+    fontSize: 16,
+    color: '#333',
   },
-  textarea: {
-    border: '1px solid #ccc',
-    borderRadius: '3px',
-    padding: '14px',
-    marginBottom: '20px',
-    fontSize: '15px',
-    height: '120px',
-    resize: 'none',
-    width: '100%',
-    boxSizing: 'border-box',
+  messageInput: {
+    height: 120, // Altura para el área de mensaje
+    textAlignVertical: 'top', // El texto comienza desde la parte superior
   },
-  button: {
-    backgroundColor: '#000',
-    padding: '16px',
-    borderRadius: '3px',
-    textAlign: 'center',
-    cursor: 'pointer',
-    border: 'none',
+  sendButton: {
+    backgroundColor: '#007bff', // Un color azul para el botón
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
   },
-  buttonText: {
+  sendButtonText: {
     color: '#fff',
-    fontSize: '16px',
-    fontWeight: '600',
-  },
-  address: {
-    fontSize: '15px',
-    color: '#444',
-    marginBottom: '25px',
-  },
-  mapContainer: {
-    width: '100%',
-    height: '250px',
-    border: '1px solid #eee',
-    borderRadius: '3px',
-    overflow: 'hidden',
-  },
-  mapLink: {
-    color: '#0066cc',
-    textDecoration: 'underline',
-    cursor: 'pointer',
-    marginTop: '10px',
-    display: 'inline-block',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 };

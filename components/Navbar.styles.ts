@@ -1,43 +1,24 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#1a1a1a',
-    position: 'relative',
-    
-    
-  },
   navbar: {
-    height: 80,
+    width: '100%',
+    height: 70,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 40,
-    paddingVertical: 15,
-    backgroundColor: '#1a1a1a',
+    justifyContent: 'space-between',
+    paddingHorizontal: 80,
+    position: 'absolute',
+    top: 0,
+    left: 0,
     zIndex: 1000,
-    borderBottomWidth: 0,
-    elevation: 85, 
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    
   },
-  logoContainer: {
-    flex: 1,
-    
-  },
+  logoContainer: {},
   logoText: {
-    color: 'white',
-    fontSize: 25,
+    color: '#fff',
+    fontSize: 24,
     fontWeight: 'bold',
-    fontFamily: ' sans-serif',
-    
-    
-  },
-  menuButton: {
-    padding: 8,
-    zIndex: 1001,
   },
   desktopMenu: {
     flexDirection: 'row',
@@ -45,61 +26,26 @@ export const styles = StyleSheet.create({
   },
   menuItem: {
     paddingHorizontal: 15,
-     paddingVertical: 5,
-     
+    paddingVertical: 10,
   },
   menuText: {
-       color: 'white',
-    fontSize: 15,
+    color: '#fff',
+    fontSize: 16,
     fontWeight: '500',
-      marginLeft: 3, 
-      paddingRight: 1,
-      fontFamily: ' sans-serif'
-    
+    textTransform: 'uppercase',
   },
   menuTextPressed: {
     color: '#F13a11',
   },
   menuTextHover: {
-    color: '#F13a11',
+    color: '#FF0000',
   },
   socialIcons: {
     flexDirection: 'row',
-    marginLeft: 20,
-    gap: 15,
+    marginLeft: 30,
+    gap: 20,
   },
-  mobileMenu: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    backgroundColor: '#2a2a2a',
-    overflow: 'hidden',
-    zIndex: 999,
-  },
-  menuContent: {
-    padding: 20,
-  },
-  mobileMenuItem: {
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
-  },
-  mobileMenuText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  mobileMenuTextPressed: {
-    color: '#F13a11',
-  },
-  mobileSocialIcons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
-    paddingTop: 15,
-    borderTopWidth: 1,
-    borderTopColor: '#333',
-   
-  },
+  socialIcon: {},
   xIcon: {
     width: 20,
     height: 20,
@@ -111,7 +57,41 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+  menuButton: {
+    padding: 10,
+  },
+  mobileMenu: {
+    position: 'absolute',
+    top: 60,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    overflow: 'hidden',
+    zIndex: 999,
+  },
+  menuContent: {
+    padding: 20,
+    width: '100%',
+    alignItems: 'flex-start',
+  },
+  mobileMenuItem: {
+    paddingVertical: 12,
+    width: '100%',
+  },
+  mobileMenuText: {
+    color: 'white',
+    fontSize: 16,
+    textTransform: 'uppercase',
+  },
+  mobileMenuTextPressed: {
+    color: '#F13a11',
+  },
+  mobileSocialIcons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 20,
+    paddingTop: 15,
+    width: '100%',
+    paddingHorizontal: 20,
+  },
 });
-
-
-
