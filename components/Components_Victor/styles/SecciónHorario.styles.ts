@@ -113,7 +113,7 @@ const createStyles = (screenWidth: number) => {
         backgroundColor: '#121212',
       },
       subtitle: {
-        color: '#cccccc',
+        color: '#b4b3b3ff',
         fontSize: 15,
         marginBottom: 10,
         textTransform: 'uppercase',
