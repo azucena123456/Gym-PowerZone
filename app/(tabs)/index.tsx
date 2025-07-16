@@ -1,11 +1,13 @@
 import { useFonts } from 'expo-font';
+import { StatusBar } from 'expo-status-bar';
 import React, { useRef, useState } from 'react';
 import { ActivityIndicator, Dimensions, NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View } from 'react-native';
 
 import Carusel from '@/components/carrusel';
-import ContactForm from '@/components/Components_Victor/ContactForm';
+import ContactForm from '@/components/Components_Victor/ContactForm'; 
 import SeccionHorario from '@/components/Components_Victor/SeccionHorario';
 import SeccionMembresia from '@/components/Components_Victor/SeccionMembresia';
+import { Footer } from '@/components/Footer';
 import { Navbar } from '@/components/Navbar';
 import WeAreGymso from '@/components/ui/PresentacionGymso';
 import HeroVideo from '@/components/ui/PresentacionVideo';
@@ -30,16 +32,13 @@ export default function HomeScreen() {
   const horarioRef = useRef<View>(null);
   const contactFormRef = useRef<View>(null);
 
- 
   const sectionLayouts = useRef<{ [key: string]: { y: number; height: number } }>({});
 
-  
   const measureSection = (sectionName: string, ref: React.RefObject<View>) => {
     ref.current?.measureLayout(
       scrollViewRef.current as any,
       (x, y, width, height) => {
         sectionLayouts.current[sectionName] = { y, height };
-       
       },
       () => { }
     );
@@ -51,14 +50,13 @@ export default function HomeScreen() {
       scrollViewRef.current?.scrollTo({ y: layout.y, animated: true });
       setActiveSection(section);
     } else if (section === 'inicio') {
-        scrollViewRef.current?.scrollTo({ y: 0, animated: true });
-        setActiveSection('inicio');
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+      setActiveSection('inicio');
     }
   };
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const scrollY = event.nativeEvent.contentOffset.y;
-   
 
     let currentActiveSection: string | null = null;
 
@@ -70,10 +68,8 @@ export default function HomeScreen() {
       { name: 'contacto', ref: contactFormRef },
     ];
 
-   
-    const activationOffset = windowHeight * 0.3; 
+    const activationOffset = windowHeight * 0.3;
 
-  
     for (let i = sections.length - 1; i >= 0; i--) {
       const { name } = sections[i];
       const layout = sectionLayouts.current[name];
@@ -82,22 +78,19 @@ export default function HomeScreen() {
         const sectionTop = layout.y;
         const sectionBottom = layout.y + layout.height;
 
-      
         if (scrollY + activationOffset >= sectionTop && scrollY < sectionBottom) {
           currentActiveSection = name;
-          break; 
+          break;
         }
       }
     }
-    
-   
+
     if (scrollY < (sectionLayouts.current['sobreNosotros']?.y || 200) - activationOffset) {
       currentActiveSection = 'inicio';
     }
 
     if (currentActiveSection !== activeSection) {
       setActiveSection(currentActiveSection);
-      
     }
   };
 
@@ -111,14 +104,15 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.mainContainer}>
-      <Navbar scrollToSection={scrollToSection} activeSection={activeSection} /> 
+      <StatusBar hidden={true} />
+      <Navbar scrollToSection={scrollToSection} activeSection={activeSection} />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         ref={scrollViewRef}
         onScroll={handleScroll}
-        scrollEventThrottle={16} 
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
       >
-       
         <View ref={heroVideoRef} onLayout={() => measureSection('inicio', heroVideoRef)}>
           <HeroVideo />
         </View>
@@ -132,7 +126,7 @@ export default function HomeScreen() {
         </View>
 
         <View ref={caruselRef} onLayout={() => measureSection('clases', caruselRef)}>
-          <Carusel/>
+          <Carusel />
         </View>
 
         <View style={styles.horarioContainer} ref={horarioRef} onLayout={() => measureSection('horarios', horarioRef)}>
@@ -143,6 +137,7 @@ export default function HomeScreen() {
           <ContactForm />
         </View>
 
+        <Footer />
       </ScrollView>
     </View>
   );
@@ -151,10 +146,10 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#ffffff', 
   },
   scrollContent: {
-    paddingBottom: 40,
+   
     flexGrow: 1,
   },
   content: {
@@ -179,6 +174,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#121212',
+    backgroundColor: '#ffffffff',
   },
 });
