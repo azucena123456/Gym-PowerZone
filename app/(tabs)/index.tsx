@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   },
   weAreContainer: {
     paddingTop: 40,
-    backgroundColor: '#ffffffff',
+    backgroundColor: '#F8F8F8',
     paddingHorizontal: 20,
     paddingBottom: 60,
   },
