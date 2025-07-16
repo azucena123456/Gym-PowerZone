@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import {
     Dimensions,
@@ -7,9 +8,20 @@ import {
     Text,
     View,
     findNodeHandle
+=======
+import React, { useEffect, useState } from 'react';
+import {
+  Dimensions,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+>>>>>>> Stashed changes
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
+<<<<<<< Updated upstream
 const { width, height } = Dimensions.get('window');
 
 const maryImage = require('../../assets/images/tarjeta1.png');
@@ -111,6 +123,64 @@ const WeAreGymso = forwardRef((props, ref) => {
                 </View>
               </View>
             </View>
+=======
+const maryImage = require('../../assets/images/tarjeta1.png');
+const catherineImage = require('../../assets/images/tarjeta2.jpg');
+
+export default function WeAreGymso(): JSX.Element {
+  const [isLargeScreen, setIsLargeScreen] = useState(Dimensions.get('window').width > 768);
+
+  useEffect(() => {
+    const updateLayout = () => {
+      setIsLargeScreen(Dimensions.get('window').width > 768);
+    };
+
+    const subscription = Dimensions.addEventListener('change', updateLayout);
+    return () => subscription.remove();
+  }, []);
+
+  return (
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.outerContainer}>
+        <View style={[styles.contentBox, { flexDirection: isLargeScreen ? 'row' : 'column' }]}>
+          <View style={[styles.textSection, { marginBottom: isLargeScreen ? 0 : 20 }]}>
+            <Text style={styles.title}>Hola, somos Gym-PowerZone</Text>
+            <Text style={styles.paragraph}>
+              Tu centro de transformación física y mental.{"\n"}
+              Ofrecemos entrenadores certificados, programas especializados y atención personalizada.
+            </Text>
+            <Text style={styles.paragraph}>
+              Estamos listos para ayudarte a alcanzar tus objetivos.
+            </Text>
+          </View>
+
+          <View style={[styles.cardsSection, { justifyContent: isLargeScreen ? 'flex-start' : 'center' }]}>
+            {[{
+              img: maryImage,
+              name: "Emma Torres",
+              role: "Instructora de Pilates",
+              icons: ["twitter", "instagram"]
+            }, {
+              img: catherineImage,
+              name: "Carla Méndez",
+              role: "Entrenador Personal",
+              icons: ["instagram", "facebook"]
+            }].map((card, i) => (
+              <View key={i} style={styles.card}>
+                <Image source={card.img} style={styles.cardImage} />
+                <View style={styles.cardBody}>
+                  <View style={styles.textIconRow}>
+                    <Text style={styles.cardName}>{card.name}</Text>
+                    <Icon name={card.icons[0]} size={14} color="#666" style={styles.iconRightOfText} />
+                  </View>
+                  <View style={styles.textIconRow}>
+                    <Text style={styles.cardRole}>{card.role}</Text>
+                    <Icon name={card.icons[1]} size={14} color="#666" style={styles.iconRightOfText} />
+                  </View>
+                </View>
+              </View>
+            ))}
+>>>>>>> Stashed changes
           </View>
         </View>
       </View>
@@ -121,7 +191,17 @@ const WeAreGymso = forwardRef((props, ref) => {
 export default WeAreGymso;
 
 const styles = StyleSheet.create({
+<<<<<<< Updated upstream
   fullScreenScroll: {
+=======
+  scrollContainer: {
+    paddingBottom: 50,
+  },
+  outerContainer: {
+    backgroundColor: 'rgba(250, 250, 250, 0)',
+    paddingVertical: 50,
+    alignItems: 'center',
+>>>>>>> Stashed changes
     flex: 1,
     width: '100%',
   },
@@ -133,9 +213,14 @@ const styles = StyleSheet.create({
   },
   contentBox: {
     width: '100%',
+<<<<<<< Updated upstream
     maxWidth: 1200,
     flexDirection: width > 768 ? 'row' : 'column',
     justifyContent: width > 768 ? 'flex-end' : 'center',
+=======
+    maxWidth: 1000,
+    justifyContent: 'space-between',
+>>>>>>> Stashed changes
     alignItems: 'flex-start',
     paddingHorizontal: 30,
     gap: 30,
@@ -143,10 +228,15 @@ const styles = StyleSheet.create({
   },
   textSection: {
     flex: 1,
+<<<<<<< Updated upstream
     paddingRight: width > 768 ? 40 : 0,
     marginBottom: width > 768 ? 0 : 30,
     maxWidth: 550,
     justifyContent: 'center',
+=======
+    paddingRight: 30,
+    maxWidth: 500,
+>>>>>>> Stashed changes
   },
   title: {
     fontSize: 32,
@@ -166,8 +256,12 @@ const styles = StyleSheet.create({
   cardsSection: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+<<<<<<< Updated upstream
     gap: 25,
     justifyContent: 'flex-end',
+=======
+    gap: 20,
+>>>>>>> Stashed changes
   },
   card: {
     backgroundColor: '#fff',
