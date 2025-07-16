@@ -46,7 +46,7 @@ const ContactForm = () => {
   };
 
   const gymAddress = "C. de Olivo, Centro, 43200 Zacualtipán, Hgo.";
-  const gymName = "Gimnasio \"Power Up\"";
+  const gymName = "Gym \"PowerZone\"";
 
   const isLargeScreen = Dimensions.get('window').width > 768;
 
