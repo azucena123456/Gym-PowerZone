@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { ScrollView, View, Text, Image, Dimensions } from 'react-native';
-import { styles } from './carrusel.styles';
+import { ScrollView, View, Text, Image, Dimensions, StyleSheet, Platform } from 'react-native';
 
 interface CaruselItem {
   id: number;
@@ -11,26 +10,124 @@ interface CaruselItem {
   ctaText?: string;
 }
 
+const { width: screenWidth } = Dimensions.get('window');
+const isMobile = screenWidth < 768;
+const CARD_WIDTH = screenWidth * (isMobile ? 0.8 : 0.25);
+const CARD_HEIGHT = 440 ;
+const ITEM_MARGIN = 12;
+const ITEM_WIDTH = CARD_WIDTH + (ITEM_MARGIN * 2);
+
+const styles = StyleSheet.create({
+  fullWidthContainer: {
+    width: '100%',
+    backgroundColor: '#EEEEEE',
+    paddingVertical: 100,
+    paddingHorizontal: isMobile ? 30: 90,
+    
+  },
+  nombreEntrenador: {
+    color: '#333333',
+    fontWeight: 'bold',
+  },
+  headerTitle: {
+    fontSize: Platform.select({ ios: 20, android: 20, default: 20 }),
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 15,
+    color: '#818181',
+  },
+  headerTitle1: {
+    fontSize: Platform.select({ ios: 20, android: 20, default: 28 }),
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 30,
+    marginTop: -15,
+    color: '#121212',
+  },
+  carouselContent: {
+    alignItems: 'center',
+    paddingHorizontal: isMobile ? 10 : 40,
+    paddingBottom: 20,
+  },
+  slide: {
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    marginHorizontal: ITEM_MARGIN,
+    backgroundColor: '#F9F9F9',
+    borderRadius: 0,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  image: {
+    width: '100%',
+    height: '60%',
+    resizeMode: 'cover',
+  },
+  textContainer: {
+    padding: 15,
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  titleContainer: {
+    marginBottom: -8,
+  },
+  contentWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  textContent: {
+    flex: 1,
+    marginRight: 0,
+  },
+  slideTitle: {
+    fontSize: Platform.select({ ios: 16, android: 16, default: 20 }),
+    fontWeight: 'bold',
+    color: '#333',
+     marginBottom: 15,
+  
+  },
+  entrenadoraText: {
+    fontSize: 14,
+    color: '#555',
+    fontWeight: '500',
+    marginBottom: 15,
+  },
+  slideDescription: {
+    fontSize: 13,
+    color: '#666',
+    lineHeight: 18,
+     marginBottom: 65,
+  },
+  ctaCircle: {
+    backgroundColor: '#F13a11',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  ctaText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+});
+
 const Carusel: React.FC = () => {
-  const { width: screenWidth } = Dimensions.get('window');
-  const isMobile = screenWidth < 768;
-
-  const CARD_WIDTH = screenWidth * 0.25;
-  const itemWidth = CARD_WIDTH;
-  const itemMargin = 10;
-
-  const snapOffset = itemWidth + (itemMargin * 2);
-
-  const imageHeight = isMobile ? 120 : CARD_WIDTH * 0.7;
-
   const scrollViewRef = useRef<ScrollView>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [data] = useState<CaruselItem[]>([
     {
       id: 1,
       title: 'Aerobic',
       image: require('../assets/images/Aerobic.png'),
       entrenadora: 'Entrenador ~ Luis',
-      description: 'Sesiones dinámicas que combinan música y movimiento para fortalecer el sistema cardiovascular y aumentar la energía.',
+      description: 'Sesiones dinámicas que combinan música y movimiento para fortalecer el sistema cardiovascular.',
       ctaText: '$90'
     },
     {
@@ -38,7 +135,7 @@ const Carusel: React.FC = () => {
       title: 'Cardio',
       image: require('../assets/images/cardio.jpg'),
       entrenadora: 'Entrenadora ~ Sofia',
-      description: 'Entrenamientos intensos por intervalos diseñados para quemar calorías rápidamente y mejorar la resistencia física..',
+      description: 'Entrenamientos intensos por intervalos para quemar calorías rápidamente.',
       ctaText: '$90'
     },
     {
@@ -46,7 +143,7 @@ const Carusel: React.FC = () => {
       title: 'Crossfit',
       image: require('../assets/images/Crossfit.png'),
       entrenadora: 'Entrenador ~ Javier',
-      description: 'Programa de alta intensidad que trabaja fuerza, velocidad y técnica. Ideal para quienes buscan un reto físico completo.',
+      description: 'Programa de alta intensidad que trabaja fuerza, velocidad y técnica.',
       ctaText: '$90'
     },
     {
@@ -54,24 +151,24 @@ const Carusel: React.FC = () => {
       title: 'Yoga',
       image: require('../assets/images/yoga.jpg'),
       entrenadora: 'Entrenadora ~ Emma',
-      description: 'Relajación profunda, mejora de la flexibilidad y control de la respiración. Ideal para equilibrar cuerpo y mente',
-      ctaText: '$ 90'
+      description: 'Relajación profunda y mejora de la flexibilidad para equilibrar cuerpo y mente.',
+      ctaText: '$90'
     },
     {
       id: 5,
       title: 'Pilates',
       image: require('../assets/images/pilates.jpg'),
       entrenadora: 'Entrenadora ~ Emma',
-      description: 'Fortalece el core, mejora la postura y aumenta el tono muscular mediante ejercicios suaves y controlados.',
-      ctaText: '$ 90'
+      description: 'Fortalece el core y mejora la postura mediante ejercicios controlados.',
+      ctaText: '$90'
     },
     {
       id: 6,
       title: 'Zumba',
       image: require('../assets/images/Zumba.jpg'),
       entrenadora: 'Entrenador ~ Diego',
-      description: 'Clases llenas de ritmo y energía con movimientos de baile que ayudan a tonificar el cuerpo y eliminar el estrés.',
-      ctaText: '$ 90'
+      description: 'Clases llenas de ritmo y energía con movimientos de baile.',
+      ctaText: '$90'
     },
   ]);
 
@@ -79,18 +176,43 @@ const Carusel: React.FC = () => {
   const dataLength = data.length;
 
   useEffect(() => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({ x: dataLength * snapOffset, animated: false });
-    }
+    
+    scrollViewRef.current?.scrollTo({
+      x: dataLength * ITEM_WIDTH,
+      animated: false
+    });
   }, []);
 
   const handleScroll = (event: any) => {
     const contentOffset = event.nativeEvent.contentOffset.x;
+    const newIndex = Math.floor((contentOffset + ITEM_WIDTH / 2) / ITEM_WIDTH);
 
-    if (contentOffset >= (dataLength * 2 * snapOffset)) {
-      scrollViewRef.current?.scrollTo({ x: dataLength * snapOffset, animated: false });
-    } else if (contentOffset <= 0) {
-      scrollViewRef.current?.scrollTo({ x: dataLength * snapOffset, animated: false });
+    
+    if (newIndex < currentIndex) {
+      scrollViewRef.current?.scrollTo({
+        x: currentIndex * ITEM_WIDTH,
+        animated: true
+      });
+      return;
+    }
+
+    
+    if (newIndex !== currentIndex) {
+      scrollViewRef.current?.scrollTo({
+        x: newIndex * ITEM_WIDTH,
+        animated: true
+      });
+      setCurrentIndex(newIndex);
+    }
+
+  
+    if (newIndex >= dataLength * 2) {
+      const resetIndex = newIndex % dataLength;
+      scrollViewRef.current?.scrollTo({
+        x: (dataLength + resetIndex) * ITEM_WIDTH,
+        animated: false
+      });
+      setCurrentIndex(dataLength + resetIndex);
     }
   };
 
@@ -106,8 +228,7 @@ const Carusel: React.FC = () => {
         contentContainerStyle={styles.carouselContent}
         onScroll={handleScroll}
         scrollEventThrottle={16}
-        pagingEnabled={false}
-        snapToInterval={snapOffset}
+        snapToInterval={ITEM_WIDTH}
         snapToAlignment="start"
         decelerationRate="fast"
         disableIntervalMomentum={true}
@@ -116,21 +237,19 @@ const Carusel: React.FC = () => {
           <View key={`${item.id}-${index}`} style={styles.slide}>
             <Image
               source={item.image}
-              style={[styles.image, { height: imageHeight }]}
+              style={styles.image}
               resizeMode="cover"
             />
 
-            <View style={[styles.textContainer, isMobile && styles.mobileTextContainer]}>
+            <View style={styles.textContainer}>
               <View style={styles.titleContainer}>
-                <Text style={[styles.slideTitle, isMobile && styles.mobileSlideTitle]}>
-                  {item.title}
-                </Text>
+                <Text style={styles.slideTitle}>{item.title}</Text>
               </View>
 
               <View style={styles.contentWrapper}>
                 <View style={styles.textContent}>
                   {item.entrenadora && (
-                    <Text style={[styles.entrenadoraText, isMobile && styles.mobileEntrenadoraText]}>
+                    <Text style={styles.entrenadoraText}>
                       {item.entrenadora.split('~')[0]}~{' '}
                       <Text style={styles.nombreEntrenador}>
                         {item.entrenadora.split('~')[1].trim()}
@@ -138,18 +257,14 @@ const Carusel: React.FC = () => {
                     </Text>
                   )}
 
-                  {item.description && (
-                    <Text style={[styles.slideDescription, isMobile && styles.mobileSlideDescription]}>
-                      {item.description}
-                    </Text>
-                  )}
+                  <Text style={styles.slideDescription}>
+                    {item.description}
+                  </Text>
                 </View>
 
-                {item.ctaText && (
-                  <View style={[styles.ctaCircle, isMobile && styles.mobileCtaCircle]} selectable={false}>
-                    <Text style={styles.ctaText}>{item.ctaText}</Text>
-                  </View>
-                )}
+                <View style={styles.ctaCircle}>
+                  <Text style={styles.ctaText}>{item.ctaText}</Text>
+                </View>
               </View>
             </View>
           </View>
