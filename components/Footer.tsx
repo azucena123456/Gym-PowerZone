@@ -1,18 +1,15 @@
 import { FontAwesome } from '@expo/vector-icons';
 import React from 'react';
 import { Linking, Text, TouchableOpacity, View } from 'react-native';
-import { styles } from './Footer.styles';
+import { useResponsiveFooterStyles } from './Footer.styles';
 
-interface FooterProps {
+interface FooterProps {}
 
-}
+export const Footer: React.FC<FooterProps> = () => {
+  const styles = useResponsiveFooterStyles();
 
-export const Footer: React.FC<FooterProps> = ({
-
-}) => {
-
-  const email = 'Gym-PowerZone@gmail.com'; 
-  const phoneNumber = '771-142-9286'; 
+  const email = 'Gym-PowerZone@gmail.com';
+  const phoneNumber = '771-142-9286';
 
   const handleEmailPress = () => {
     Linking.openURL(`mailto:${email}`);
@@ -24,12 +21,10 @@ export const Footer: React.FC<FooterProps> = ({
 
   return (
     <View style={styles.footerContainer}>
-    
       <Text style={styles.copyrightText}>
         Derechos de autor © 2025 Gym PowerZone
       </Text>
 
-  
       <View style={styles.contactInfo}>
         <TouchableOpacity onPress={handleEmailPress} style={styles.contactItem}>
           <FontAwesome name="envelope" size={16} color={styles.icon.color} style={styles.icon} />

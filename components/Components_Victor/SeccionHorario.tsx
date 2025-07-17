@@ -1,12 +1,12 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
-import { Dimensions, Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 import createStyles from './styles/SecciónHorario.styles';
 
-const { width: screenWidth } = Dimensions.get('window');
-const dynamicStyles = createStyles(screenWidth); 
-
 const WorkoutTimetable: React.FC = () => {
+  const { width: screenWidth } = useWindowDimensions();
+  const styles = createStyles(screenWidth);
+
   const dias = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'];
   const schedule = {
     '7:00 AM': {
@@ -44,37 +44,37 @@ const WorkoutTimetable: React.FC = () => {
   };
 
   return (
-    <View style={dynamicStyles.container}>
-      <View style={dynamicStyles.titleContainer}>
-        <Text style={dynamicStyles.subtitle}>nuestro horario semanal de gimnasio</Text>
-        <Text style={dynamicStyles.title}>Horario de Entrenamiento</Text>
+    <View style={styles.container}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.subtitle}>nuestro horario semanal de gimnasio</Text>
+        <Text style={styles.title}>Horario de Entrenamiento</Text>
       </View>
 
-      <View style={dynamicStyles.tableContainer}>
-        <View style={dynamicStyles.headerRow}>
-          <View style={dynamicStyles.headerCellTime}>
-            <MaterialCommunityIcons name="calendar" style={dynamicStyles.calendarIcon} />
-          </View> 
+      <View style={styles.tableContainer}>
+        <View style={styles.headerRow}>
+          <View style={styles.headerCellTime}>
+            <MaterialCommunityIcons name="calendar" style={styles.calendarIcon} />
+          </View>
           {dias.map((dia) => (
-            <View key={dia} style={dynamicStyles.headerCell}>
-              <Text style={dynamicStyles.headerText}>{dia}</Text>
+            <View key={dia} style={styles.headerCell}>
+              <Text style={styles.headerText}>{dia}</Text>
             </View>
           ))}
         </View>
 
         {Object.keys(schedule).map((timeSlot) => (
-          <View key={timeSlot} style={dynamicStyles.row}>
-            <View style={dynamicStyles.timeCell}>
-              <Text style={dynamicStyles.timeText}>{timeSlot}</Text>
+          <View key={timeSlot} style={styles.row}>
+            <View style={styles.timeCell}>
+              <Text style={styles.timeText}>{timeSlot}</Text>
             </View>
             {dias.map((dia) => {
               const activity = schedule[timeSlot][dia];
               return (
-                <View key={dia} style={dynamicStyles.cell}>
+                <View key={dia} style={styles.cell}>
                   {activity && (
                     <>
-                      <Text style={dynamicStyles.activityText}>{activity.activity}</Text>
-                      <Text style={dynamicStyles.timeRangeText}>{activity.time}</Text>
+                      <Text style={styles.activityText}>{activity.activity}</Text>
+                      <Text style={styles.timeRangeText}>{activity.time}</Text>
                     </>
                   )}
                 </View>

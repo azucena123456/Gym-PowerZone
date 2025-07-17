@@ -1,48 +1,69 @@
-import { StyleSheet } from 'react-native';
+import React from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions,
+} from 'react-native';
 
-export const formStyles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: '#f8f8f8', // Color de fondo del formulario
-    borderRadius: 8,
-    marginHorizontal: 20, // Pequeño margen para que no toque los bordes de la pantalla
-    shadowColor: '#000', // Sombra para darle un poco de profundidad
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 25,
-    textAlign: 'center',
-  },
-  input: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    padding: 12,
-    marginBottom: 15,
-    fontSize: 16,
-    color: '#333',
-  },
-  messageInput: {
-    height: 120, // Altura para el área de mensaje
-    textAlignVertical: 'top', // El texto comienza desde la parte superior
-  },
-  sendButton: {
-    backgroundColor: '#007bff', // Un color azul para el botón
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  sendButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});
+const ResponsiveForm = () => {
+  const { width } = useWindowDimensions();
+
+  // Define los breakpoints
+  const isDesktop = width >= 1024;
+  const isTablet = width >= 768 && width < 1024;
+  const isMobile = width < 768;
+
+  // Función para escalar tamaño de fuente y paddings
+  const scaleSize = (desktopSize, tabletSize, mobileSize) => {
+    if (isDesktop) return desktopSize;
+    if (isTablet) return tabletSize;
+    return mobileSize;
+  };
+
+  // Genera los estilos según el ancho actual
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#f8f8f8',
+      padding: scaleSize(40, 30, 20),
+      marginHorizontal: scaleSize(100, 50, 20),
+    },
+    title: {
+      fontSize: scaleSize(32, 28, 24),
+      fontWeight: 'bold',
+      color: '#333',
+      marginBottom: scaleSize(35, 25, 20),
+      textAlign: 'center',
+    },
+    input: {
+      backgroundColor: '#fff',
+      borderWidth: 1,
+      borderColor: '#ddd',
+      borderRadius: 5,
+      padding: scaleSize(18, 14, 12),
+      marginBottom: 15,
+      fontSize: scaleSize(18, 16, 14),
+      color: '#333',
+    },
+    messageInput: {
+      height: 120,
+      textAlignVertical: 'top',
+    },
+    sendButton: {
+      backgroundColor: '#007bff',
+      padding: scaleSize(20, 18, 15),
+      borderRadius: 5,
+      alignItems: 'center',
+      marginTop: 10,
+    },
+    sendButtonText: {
+      color: '#fff',
+      fontSize: scaleSize(20, 18, 16),
+      fontWeight: 'bold',
+    },
+  });
+export default ResponsiveForm;
