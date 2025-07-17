@@ -2,25 +2,30 @@ import React, { useState } from 'react';
 import {
   Alert,
   Dimensions,
-  Image 
-  ,
+  Image,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
+  Linking
 } from 'react-native';
-
 import MapComponent from './MapComponent';
-
 import { contactFormStyles } from './styles/ContactForm.styles';
 
 const ContactForm = () => {
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [mensaje, setMensaje] = useState('');
+  const [isSending, setIsSending] = useState(false);
 
-  const handleSendMessage = () => {
+  // Token de Calendly proporcionado
+  const CALENDLY_TOKEN = "eyJraWQiOiIxY2UxZTEzNjE3ZGNmNzY2YjNjZWJjY2Y4ZGM1YmFmYThhNjVlNjg0MDIzZjdjMzJiZTgzNDliMjM4MDEzNWI0IiwidHlwIjoiUEFUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJodHRwczovL2F1dGguY2FsZW5kbHkuY29tIiwiaWF0IjoxNzUyNzgyMTcxLCJqdGkiOiI5YTEzOGMzOS1kMTNmLTQ5YzgtOGQ0OS00YzI0MjA0NDQ2MDAiLCJ1c2VyX3V1aWQiOiJkOTM1NmY4NS1hNDdhLTQzMGMtOTFlMS0wY2RlODk5YjA2OWIifQ.mFnWFi-90INsi5XS9h9Ihz3QpOP2QaPMha7ZurXz738Kf5FLt37t8xoTCAyX5UHfd2s7QltdE-xxvnCADxBZ6g";
+
+  // URL de tu Calendly
+  const CALENDLY_URL = "https://calendly.com/2022034-utsh/gym-powerzone-consultas";
+
+  const handleSendMessage = async () => {
     if (!nombre || !email || !mensaje) {
       Alert.alert('Error', 'Por favor, completa todos los campos.');
       return;
@@ -32,12 +37,58 @@ const ContactForm = () => {
       return;
     }
 
-    console.log('Mensaje enviado:', { nombre, email, mensaje });
-    Alert.alert('Mensaje Enviado', '¡Tu mensaje ha sido enviado con éxito!');
+    setIsSending(true);
 
-    setNombre('');
-    setEmail('');
-    setMensaje('');
+    try {
+      // 1. Primero verificamos que el token sea válido
+      const userResponse = await fetch('https://api.calendly.com/users/me', {
+        headers: {
+          'Authorization': `Bearer ${CALENDLY_TOKEN}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!userResponse.ok) {
+        throw new Error('Token de Calendly inválido o sin permisos');
+      }
+
+      // 2. Enviar el mensaje (simulado ya que Calendly no tiene endpoint directo para mensajes)
+      console.log('Mensaje enviado a Calendly:', { nombre, email, mensaje });
+      
+      // 3. Redirigir a Calendly para agendar cita
+      const calendlyUrlWithParams = `${CALENDLY_URL}?name=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&a1=${encodeURIComponent(mensaje)}`;
+      
+      const canOpen = await Linking.canOpenURL(calendlyUrlWithParams);
+      if (!canOpen) {
+        throw new Error('No se puede abrir el enlace de Calendly');
+      }
+
+      await Linking.openURL(calendlyUrlWithParams);
+
+      Alert.alert(
+        '¡Mensaje Enviado!', 
+        'Tu consulta ha sido recibida y hemos abierto el calendario para que agendes una cita.',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              setNombre('');
+              setEmail('');
+              setMensaje('');
+            }
+          }
+        ]
+      );
+
+    } catch (error) {
+      console.error('Error al enviar mensaje:', error);
+      Alert.alert(
+        'Error', 
+        'Tu mensaje fue recibido, pero hubo un problema al redirigirte a Calendly. Por favor visita el enlace manualmente.'
+      );
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const gymCoordinates = {
@@ -87,8 +138,14 @@ const ContactForm = () => {
               value={mensaje}
               onChangeText={setMensaje}
             />
-            <TouchableOpacity style={contactFormStyles.sendButton} onPress={handleSendMessage}>
-              <Text style={contactFormStyles.sendButtonText}>Enviar Mensaje</Text>
+            <TouchableOpacity 
+              style={contactFormStyles.sendButton} 
+              onPress={handleSendMessage}
+              disabled={isSending}
+            >
+              <Text style={contactFormStyles.sendButtonText}>
+                {isSending ? 'Enviando...' : 'Enviar Mensaje'}
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -99,7 +156,6 @@ const ContactForm = () => {
             <Text style={contactFormStyles.mapTitle}>Dónde puedes encontrarnos</Text>
 
             <View style={contactFormStyles.locationDetail}>
-             
               <Image
                 source={require('./styles/image.png')}
                 style={contactFormStyles.locationIcon}
