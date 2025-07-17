@@ -20,7 +20,6 @@ const WeAreGymso = forwardRef((props, ref) => {
   const aboutUsSectionRef = useRef(null);
   const [aboutUsHeight, setAboutUsHeight] = useState(0);
 
-  // Definir rangos para adaptar UI
   const isDesktop = width >= 1024;
   const isTablet = width >= 600 && width < 1024;
   const isPhone = width < 600;

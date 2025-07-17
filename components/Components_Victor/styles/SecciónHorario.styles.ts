@@ -1,11 +1,10 @@
-import { Dimensions, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const createStyles = (screenWidth: number) => {
-  const { width } = Dimensions.get('window');
-  const isPhone = width < 600;
-  const isSmallPhone = width < 375;
-  const isTablet = width >= 600 && width < 1024;
-  const isDesktop = width >= 1024;
+  const isPhone = screenWidth < 600;
+  const isSmallPhone = screenWidth < 375;
+  const isTablet = screenWidth >= 600 && screenWidth < 1024;
+  const isDesktop = screenWidth >= 1024;
 
   const totalDias = 6;
   const marginVertical = isPhone ? 2 : 4;

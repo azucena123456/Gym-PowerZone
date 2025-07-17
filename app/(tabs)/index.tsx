@@ -4,7 +4,7 @@ import React, { useRef, useState } from 'react';
 import { ActivityIndicator, Dimensions, NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View } from 'react-native';
 
 import Carusel from '@/components/carrusel';
-import ContactForm from '@/components/Components_Victor/ContactForm'; 
+import ContactForm from '@/components/Components_Victor/ContactForm';
 import SeccionHorario from '@/components/Components_Victor/SeccionHorario';
 import SeccionMembresia from '@/components/Components_Victor/SeccionMembresia';
 import { Footer } from '@/components/Footer';

@@ -1,55 +1,69 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import React from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions,
+} from 'react-native';
 
-const { width } = Dimensions.get('window');
+const ResponsiveForm = () => {
+  const { width } = useWindowDimensions();
 
-export const formStyles = StyleSheet.create({
-  container: {
-    padding: width * 0.05, // 5% del ancho de la pantalla
-    backgroundColor: '#f8f8f8',
-    borderRadius: 8,
-    marginHorizontal: width * 0.05, // 5% de margen lateral
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-    width: '90%', // hace que se mantenga proporcional
-    alignSelf: 'center', // centra el contenedor
-  },
-  title: {
-    fontSize: width < 380 ? 20 : 24, // más pequeño en pantallas pequeñas
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 25,
-    textAlign: 'center',
-  },
-  input: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    padding: width * 0.03,
-    marginBottom: 15,
-    fontSize: width < 380 ? 14 : 16,
-    color: '#333',
-    width: '100%',
-  },
-  messageInput: {
-    height: 120,
-    textAlignVertical: 'top',
-  },
-  sendButton: {
-    backgroundColor: '#007bff',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 10,
-    width: '100%',
-  },
-  sendButtonText: {
-    color: '#fff',
-    fontSize: width < 380 ? 16 : 18,
-    fontWeight: 'bold',
-  },
-});
+  // Define los breakpoints
+  const isDesktop = width >= 1024;
+  const isTablet = width >= 768 && width < 1024;
+  const isMobile = width < 768;
+
+  // Función para escalar tamaño de fuente y paddings
+  const scaleSize = (desktopSize, tabletSize, mobileSize) => {
+    if (isDesktop) return desktopSize;
+    if (isTablet) return tabletSize;
+    return mobileSize;
+  };
+
+  // Genera los estilos según el ancho actual
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#f8f8f8',
+      padding: scaleSize(40, 30, 20),
+      marginHorizontal: scaleSize(100, 50, 20),
+    },
+    title: {
+      fontSize: scaleSize(32, 28, 24),
+      fontWeight: 'bold',
+      color: '#333',
+      marginBottom: scaleSize(35, 25, 20),
+      textAlign: 'center',
+    },
+    input: {
+      backgroundColor: '#fff',
+      borderWidth: 1,
+      borderColor: '#ddd',
+      borderRadius: 5,
+      padding: scaleSize(18, 14, 12),
+      marginBottom: 15,
+      fontSize: scaleSize(18, 16, 14),
+      color: '#333',
+    },
+    messageInput: {
+      height: 120,
+      textAlignVertical: 'top',
+    },
+    sendButton: {
+      backgroundColor: '#007bff',
+      padding: scaleSize(20, 18, 15),
+      borderRadius: 5,
+      alignItems: 'center',
+      marginTop: 10,
+    },
+    sendButtonText: {
+      color: '#fff',
+      fontSize: scaleSize(20, 18, 16),
+      fontWeight: 'bold',
+    },
+  });
+export default ResponsiveForm;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Clipboard, Pressable, Text, View } from 'react-native';
-import styles from './styles/SecciónMembresía.styles'; 
+import styles from './styles/SecciónMembresía.styles';
 
 const SeccionMembresia: React.FC = () => {
   const handleRegister = () => console.log('Registro iniciado');
