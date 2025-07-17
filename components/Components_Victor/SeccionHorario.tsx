@@ -1,10 +1,10 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
 import { Dimensions, Text, View } from 'react-native';
 import createStyles from './styles/SecciónHorario.styles';
 
 const { width: screenWidth } = Dimensions.get('window');
-const dynamicStyles = createStyles(screenWidth); 
+const dynamicStyles = createStyles(screenWidth);
 
 const WorkoutTimetable: React.FC = () => {
   const dias = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'];
@@ -54,7 +54,7 @@ const WorkoutTimetable: React.FC = () => {
         <View style={dynamicStyles.headerRow}>
           <View style={dynamicStyles.headerCellTime}>
             <MaterialCommunityIcons name="calendar" style={dynamicStyles.calendarIcon} />
-          </View> 
+          </View>
           {dias.map((dia) => (
             <View key={dia} style={dynamicStyles.headerCell}>
               <Text style={dynamicStyles.headerText}>{dia}</Text>

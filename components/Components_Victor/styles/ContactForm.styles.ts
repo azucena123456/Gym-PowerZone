@@ -1,49 +1,44 @@
 import { Dimensions, StyleSheet } from 'react-native';
 
 const { width } = Dimensions.get('window');
-const IS_LARGE_SCREEN = width > 768;
+const IS_LARGE_SCREEN = width >= 768;
 
 export const contactFormStyles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
     backgroundColor: '#FFFFFF',
-    paddingVertical: 50,
+    paddingVertical: IS_LARGE_SCREEN ? 60 : 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   sectionContainer: {
     width: '100%',
     alignItems: 'center',
   },
   contentWrapper: {
-    flexDirection: 'column',
-    width: '90%',
+    flexDirection: IS_LARGE_SCREEN ? 'row' : 'column',
+    width: '100%',
     maxWidth: 1200,
     paddingHorizontal: 20,
-  },
-  contentWrapperLargeScreen: {
-    flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignSelf: 'center',
   },
 
   formColumn: {
     flex: 1,
-    padding: 20,
+    padding: IS_LARGE_SCREEN ? 30 : 20,
     backgroundColor: '#FFFFFF',
-    marginBottom: 40,
-  },
-  formColumnLargeScreen: {
-    marginRight: 40,
-    marginBottom: 0,
-    flexBasis: '45%',
-    maxWidth: 500,
+    marginBottom: IS_LARGE_SCREEN ? 0 : 40,
+    marginRight: IS_LARGE_SCREEN ? 40 : 0,
+    maxWidth: IS_LARGE_SCREEN ? 500 : '100%',
   },
   formTitle: {
-    fontSize: 32,
+    fontSize: IS_LARGE_SCREEN ? 32 : width < 380 ? 22 : 26,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 30,
+    marginBottom: 25,
     textAlign: 'left',
-    lineHeight: 40,
+    lineHeight: IS_LARGE_SCREEN ? 40 : 30,
   },
   input: {
     backgroundColor: '#FFFFFF',
@@ -52,24 +47,26 @@ export const contactFormStyles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 15,
     marginBottom: 20,
-    fontSize: 16,
+    fontSize: IS_LARGE_SCREEN ? 16 : 14,
     color: '#333',
+    borderRadius: 6,
   },
   messageInput: {
-    height: 150,
+    height: IS_LARGE_SCREEN ? 180 : 140,
     textAlignVertical: 'top',
   },
   sendButton: {
     backgroundColor: '#222',
-    paddingVertical: 18,
-    paddingHorizontal: 30,
+    paddingVertical: IS_LARGE_SCREEN ? 18 : 14,
+    paddingHorizontal: IS_LARGE_SCREEN ? 30 : 20,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
+    borderRadius: 6,
   },
   sendButtonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: IS_LARGE_SCREEN ? 18 : 16,
     fontWeight: 'bold',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
@@ -77,24 +74,21 @@ export const contactFormStyles = StyleSheet.create({
 
   mapColumn: {
     flex: 1,
-    padding: 20,
+    padding: IS_LARGE_SCREEN ? 30 : 20,
     backgroundColor: '#FFFFFF',
-  },
-  mapColumnLargeScreen: {
-    marginLeft: 0,
-    flexBasis: '55%',
+    maxWidth: IS_LARGE_SCREEN ? '55%' : '100%',
   },
   mapTitle: {
-    fontSize: 32,
+    fontSize: IS_LARGE_SCREEN ? 32 : width < 380 ? 22 : 26,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 30,
+    marginBottom: 25,
     textAlign: 'left',
-    lineHeight: 40,
+    lineHeight: IS_LARGE_SCREEN ? 40 : 30,
   },
   locationDetail: {
     flexDirection: 'row',
-    alignItems: 'center', 
+    alignItems: 'center',
     marginBottom: 20,
   },
   locationIcon: {
@@ -103,9 +97,9 @@ export const contactFormStyles = StyleSheet.create({
     marginRight: 8,
   },
   locationText: {
-    fontSize: 18,
+    fontSize: IS_LARGE_SCREEN ? 18 : 15,
     color: '#555',
-    lineHeight: 24,
+    lineHeight: 22,
     flexShrink: 1,
   },
   divider: {

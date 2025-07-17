@@ -1,19 +1,23 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('window');
 
 export const formStyles = StyleSheet.create({
   container: {
-    padding: 20,
-    backgroundColor: '#f8f8f8', // Color de fondo del formulario
+    padding: width * 0.05, // 5% del ancho de la pantalla
+    backgroundColor: '#f8f8f8',
     borderRadius: 8,
-    marginHorizontal: 20, // Pequeño margen para que no toque los bordes de la pantalla
-    shadowColor: '#000', // Sombra para darle un poco de profundidad
+    marginHorizontal: width * 0.05, // 5% de margen lateral
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
     elevation: 5,
+    width: '90%', // hace que se mantenga proporcional
+    alignSelf: 'center', // centra el contenedor
   },
   title: {
-    fontSize: 24,
+    fontSize: width < 380 ? 20 : 24, // más pequeño en pantallas pequeñas
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 25,
@@ -24,25 +28,28 @@ export const formStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 5,
-    padding: 12,
+    padding: width * 0.03,
     marginBottom: 15,
-    fontSize: 16,
+    fontSize: width < 380 ? 14 : 16,
     color: '#333',
+    width: '100%',
   },
   messageInput: {
-    height: 120, // Altura para el área de mensaje
-    textAlignVertical: 'top', // El texto comienza desde la parte superior
+    height: 120,
+    textAlignVertical: 'top',
   },
   sendButton: {
-    backgroundColor: '#007bff', // Un color azul para el botón
-    padding: 15,
+    backgroundColor: '#007bff',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
     borderRadius: 5,
     alignItems: 'center',
     marginTop: 10,
+    width: '100%',
   },
   sendButtonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: width < 380 ? 16 : 18,
     fontWeight: 'bold',
   },
 });
