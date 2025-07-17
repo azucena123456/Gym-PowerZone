@@ -7,7 +7,7 @@ const MapComponent: React.FC = () => {
     function handleResize() {
       const w = window.innerWidth;
       if (w <= 480) {
-        setMaxWidth('95vw'); // móvil pequeño
+        setMaxWidth('55vw'); // móvil pequeño
       } else if (w <= 768) {
         setMaxWidth('90vw'); // tablet
       } else {
