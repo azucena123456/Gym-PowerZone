@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginVertical: isSmall ? 20 : 0,
   },
-  // 👇 Título principal (más grande en tablet)
+
   membershipTitle: {
     color: '#fff',
     fontSize: isSmall ? 20 : 30,
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: isSmall ? 'center' : 'left',
   },
-  // 👇 Subtítulo (más pequeño en teléfono)
+
   offerText: {
     color: '#d4d9d0',
     fontSize: isSmall ? 14 : 18,
@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     textAlign: isSmall ? 'center' : 'left',
   },
-  // 👇 Descripción (más pequeña en teléfono)
   membershipDescription: {
     color: '#4a4e4f',
     fontSize: isSmall ? 13 : 16,
