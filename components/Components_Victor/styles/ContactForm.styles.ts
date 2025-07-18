@@ -108,4 +108,16 @@ export const contactFormStyles = StyleSheet.create({
     marginVertical: 30,
     width: '100%',
   },
+
+  // 🚨 NUEVOS ESTILOS PARA VALIDACIÓN 🚨
+  inputError: {
+    borderColor: 'red',
+    borderWidth: 1,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginBottom: 12,
+    marginLeft: 4,
+  },
 });
