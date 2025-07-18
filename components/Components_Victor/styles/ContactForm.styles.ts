@@ -6,10 +6,9 @@ const IS_LARGE_SCREEN = width >= 768;
 export const contactFormStyles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#fff',
     paddingVertical: IS_LARGE_SCREEN ? 60 : 40,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   sectionContainer: {
     width: '100%',
@@ -17,17 +16,15 @@ export const contactFormStyles = StyleSheet.create({
   },
   contentWrapper: {
     flexDirection: IS_LARGE_SCREEN ? 'row' : 'column',
-    width: '100%',
+    width: '90%',
     maxWidth: 1200,
     paddingHorizontal: 20,
     justifyContent: 'space-between',
-    alignSelf: 'center',
   },
-
   formColumn: {
     flex: 1,
     padding: IS_LARGE_SCREEN ? 30 : 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#fff',
     marginBottom: IS_LARGE_SCREEN ? 0 : 40,
     marginRight: IS_LARGE_SCREEN ? 40 : 0,
     maxWidth: IS_LARGE_SCREEN ? 500 : '100%',
@@ -37,11 +34,11 @@ export const contactFormStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 25,
-    textAlign: 'left',
     lineHeight: IS_LARGE_SCREEN ? 40 : 30,
+    textAlign: 'left',
   },
   input: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#ccc',
     paddingVertical: 12,
@@ -60,9 +57,8 @@ export const contactFormStyles = StyleSheet.create({
     paddingVertical: IS_LARGE_SCREEN ? 18 : 14,
     paddingHorizontal: IS_LARGE_SCREEN ? 30 : 20,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10,
     borderRadius: 6,
+    marginTop: 10,
   },
   sendButtonText: {
     color: '#fff',
@@ -71,11 +67,10 @@ export const contactFormStyles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
-
   mapColumn: {
     flex: 1,
     padding: IS_LARGE_SCREEN ? 30 : 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#fff',
     maxWidth: IS_LARGE_SCREEN ? '55%' : '100%',
   },
   mapTitle: {
@@ -83,8 +78,8 @@ export const contactFormStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 25,
-    textAlign: 'left',
     lineHeight: IS_LARGE_SCREEN ? 40 : 30,
+    textAlign: 'left',
   },
   locationDetail: {
     flexDirection: 'row',
@@ -99,13 +94,25 @@ export const contactFormStyles = StyleSheet.create({
   locationText: {
     fontSize: IS_LARGE_SCREEN ? 18 : 15,
     color: '#555',
-    lineHeight: 22,
     flexShrink: 1,
+    lineHeight: 22,
   },
   divider: {
     height: 1,
     backgroundColor: '#ccc',
     marginVertical: 30,
     width: '100%',
+  },
+
+  // 🚨 NUEVOS ESTILOS PARA VALIDACIÓN 🚨
+  inputError: {
+    borderColor: 'red',
+    borderWidth: 1,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginBottom: 12,
+    marginLeft: 4,
   },
 });

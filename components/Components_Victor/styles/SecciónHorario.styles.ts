@@ -1,32 +1,36 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
-const createStyles = (screenWidth: number) => {
-  const isPhone = screenWidth < 600;
-  const isSmallPhone = screenWidth < 375;
-  const isTablet = screenWidth >= 600 && screenWidth < 1024;
-  const isDesktop = screenWidth >= 1024;
+const { width: screenWidth } = Dimensions.get('window');
 
+const createStyles = (screenWidthParam = screenWidth) => {
   const totalDias = 6;
-  const marginVertical = isPhone ? 2 : 4;
+  const marginVertical = 6;
 
-  const usableWidth = isDesktop
-    ? screenWidth * 0.7
-    : isTablet
-    ? screenWidth * 0.85
-    : screenWidth * 0.95;
+  const usableWidth = Math.max(screenWidthParam * 0.9, 300);
+  const horaWidth = Math.max(usableWidth * 0.08, 40);
+  const diaWidth = Math.max(((usableWidth - horaWidth) / totalDias) - 4, 40);
+  const totalWidth = horaWidth + (diaWidth * totalDias) + (3 * totalDias);
 
-  const horaWidth = isDesktop
-    ? usableWidth * 0.08
-    : isTablet
-    ? usableWidth * 0.1
-    : usableWidth * 0.15;
+  const horizontalPadding = Math.max((screenWidthParam - totalWidth) / 2, 10);
 
-  const diaWidth = ((usableWidth - horaWidth) / totalDias) - (isPhone ? 2 : 4);
-  const totalWidth = horaWidth + (diaWidth * totalDias) + (isPhone ? 2 : 3) * totalDias;
-  const horizontalPadding = (screenWidth - totalWidth) / 2;
+  const isPhone = screenWidthParam < 400;
+  const isTablet = screenWidthParam >= 400 && screenWidthParam < 800;
 
-  const baseCellHeight = isDesktop ? 65 : isTablet ? 70 : isSmallPhone ? 60 : 65;
-  const headerHeight = isDesktop ? 40 : isTablet ? 45 : isSmallPhone ? 35 : 40;
+  const baseCellHeight = isPhone ? 55 : isTablet ? 70 : 85;
+  const headerHeight = isPhone ? 35 : isTablet ? 45 : 50;
+
+  const paddingVertical = isPhone ? 30 : isTablet ? 60 : 100;
+  const paddingHorizontal = isPhone ? 8 : isTablet ? 12 : 20;
+
+  const fontSizes = {
+    headerText: isPhone ? 10 : isTablet ? 12 : 14,
+    timeText: isPhone ? 9 : isTablet ? 11 : 13,
+    activityText: isPhone ? 9 : isTablet ? 11 : 13,
+    timeRangeText: isPhone ? 8 : isTablet ? 10 : 11,
+    title: isPhone ? 20 : isTablet ? 26 : 30,
+    subtitle: isPhone ? 12 : isTablet ? 14 : 15,
+    calendarIcon: isPhone ? 20 : isTablet ? 24 : 28,
+  };
 
   return {
     horaWidth,
@@ -36,16 +40,14 @@ const createStyles = (screenWidth: number) => {
       container: {
         flex: 1,
         backgroundColor: '#121212',
-        paddingVertical: isDesktop ? 80 : isTablet ? 50 : 30,
-        width: '100%',
+        paddingVertical,
+        paddingHorizontal,
       },
       tableContainer: {
-        marginHorizontal: Math.max(horizontalPadding, 0),
-        marginVertical: marginVertical,
+        marginHorizontal: horizontalPadding,
+        marginVertical,
         backgroundColor: '#121212',
-        minHeight: (baseCellHeight * 4) + headerHeight + (marginVertical * 2),
-        width: '100%',
-        maxWidth: isDesktop ? undefined : 700,
+        minHeight: baseCellHeight * 4 + headerHeight + marginVertical * 2,
       },
       table: {
         width: totalWidth,
@@ -72,13 +74,13 @@ const createStyles = (screenWidth: number) => {
         borderColor: '#181818',
         borderWidth: 1,
         height: headerHeight,
+        paddingHorizontal: 2,
       },
       headerText: {
         color: '#ffffff',
         fontWeight: 'bold',
-        fontSize: isDesktop ? 14 : isTablet ? 15 : isSmallPhone ? 11 : 12,
+        fontSize: fontSizes.headerText,
         textAlign: 'center',
-        paddingHorizontal: 2,
       },
       row: {
         flexDirection: 'row',
@@ -92,65 +94,64 @@ const createStyles = (screenWidth: number) => {
         alignItems: 'center',
         borderColor: '#181818',
         borderWidth: 1,
-        padding: isPhone ? 0 : 1,
+        padding: 2,
       },
       timeText: {
         color: '#ffffff',
         fontWeight: 'bold',
-        fontSize: isDesktop ? 13 : isTablet ? 14 : isSmallPhone ? 10 : 11,
+        fontSize: fontSizes.timeText,
         textAlign: 'center',
       },
       cell: {
         width: diaWidth,
-        minHeight: baseCellHeight,
+        height: baseCellHeight,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#121212',
         borderColor: '#181818',
         borderWidth: 1,
-        padding: isPhone ? 1 : 2,
-        flexWrap: 'wrap',
+        paddingVertical: 2,
+        paddingHorizontal: 4,
       },
       activityText: {
         color: '#ffffff',
         fontWeight: 'bold',
-        fontSize: isDesktop ? 13 : isTablet ? 14 : isSmallPhone ? 10 : 11,
+        fontSize: fontSizes.activityText,
         textAlign: 'center',
-        marginBottom: isPhone ? 1 : 2,
-        lineHeight: isDesktop ? 16 : isTablet ? 18 : isSmallPhone ? 12 : 14,
-        flexWrap: 'wrap',
-        flexShrink: 1,
+        textAlignVertical: 'center',
+        lineHeight: 16,
         maxWidth: '100%',
+        overflow: 'hidden',
       },
       timeRangeText: {
         color: '#aaaaaa',
-        fontSize: isDesktop ? 11 : isTablet ? 12 : isSmallPhone ? 8 : 9,
+        fontSize: fontSizes.timeRangeText,
         textAlign: 'center',
-        lineHeight: isDesktop ? 12 : isTablet ? 14 : isSmallPhone ? 9 : 10,
-        marginTop: isPhone ? 1 : 3,
+        textAlignVertical: 'center',
+        lineHeight: 14,
+        marginTop: 4,
+        maxWidth: '100%',
+        overflow: 'hidden',
       },
       titleContainer: {
         alignItems: 'center',
-        marginBottom: isDesktop ? 20 : isTablet ? 15 : 10,
+        marginBottom: 20,
         backgroundColor: '#121212',
-        width: '100%',
       },
       subtitle: {
         color: '#b4b3b3ff',
-        fontSize: isDesktop ? 15 : isTablet ? 16 : isSmallPhone ? 12 : 13,
-        marginBottom: isDesktop ? 10 : isTablet ? 8 : 5,
+        fontSize: fontSizes.subtitle,
+        marginBottom: 10,
         textTransform: 'uppercase',
-        textAlign: 'center',
       },
       title: {
         color: '#ffffff',
-        fontSize: isDesktop ? 30 : isTablet ? 28 : isSmallPhone ? 22 : 24,
+        fontSize: fontSizes.title,
         fontWeight: 'bold',
-        textAlign: 'center',
       },
       calendarIcon: {
         color: '#ffffff',
-        fontSize: isDesktop ? 28 : isTablet ? 26 : isSmallPhone ? 20 : 22,
+        fontSize: fontSizes.calendarIcon,
       },
     }),
   };
