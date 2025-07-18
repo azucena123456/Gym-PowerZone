@@ -23,9 +23,7 @@ const ContactForm = () => {
   const [emailError, setEmailError] = useState('');
   const [mensajeError, setMensajeError] = useState('');
 
-  const CALENDLY_TOKEN = "tu_token";
-  const CALENDLY_URL = "https://calendly.com/2022034-utsh/gym-powerzone-consultas";
-
+  const CALENDLY_BASE_URL = "https://calendly.com/2022034-utsh/gym-powerzone-consultas";
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const validateForm = () => {
@@ -64,23 +62,15 @@ const ContactForm = () => {
     setIsSending(true);
 
     try {
-      const userResponse = await fetch('https://api.calendly.com/users/me', {
-        headers: {
-          'Authorization': `Bearer ${CALENDLY_TOKEN}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      // Armar la URL con parámetros pre-rellenados
+      const url = `${CALENDLY_BASE_URL}?name=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&a1=${encodeURIComponent(mensaje)}`;
 
-      if (!userResponse.ok) {
-        throw new Error('Token de Calendly inválido o sin permisos');
-      }
-
-      const canOpen = await Linking.canOpenURL(CALENDLY_URL);
+      const canOpen = await Linking.canOpenURL(url);
       if (!canOpen) {
         throw new Error('No se puede abrir el enlace de Calendly');
       }
 
-      await Linking.openURL(CALENDLY_URL);
+      await Linking.openURL(url);
 
       Alert.alert(
         '¡Mensaje Enviado!',
