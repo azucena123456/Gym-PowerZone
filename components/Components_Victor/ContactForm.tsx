@@ -23,7 +23,7 @@ const ContactForm = () => {
   const [emailError, setEmailError] = useState('');
   const [mensajeError, setMensajeError] = useState('');
 
-  const CALENDLY_TOKEN = "eyJraWQiOiIxY2UxZTEzNjE3ZGNmNzY2YjNjZWJjY2Y4ZGM1YmFmYThhNjVlNjg0MDIzZjdjMzJiZTgzNDliMjM4MDEzNWI0IiwidHlwIjoiUEFUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJodHRwczovL2F1dGguY2FsZW5kbHkuY29tIiwiaWF0IjoxNzUyNzgyMTcxLCJqdGkiOiI5YTEzOGMzOS1kMTNmLTQ5YzgtOGQ0OS00YzI0MjA0NDQ2MDAiLCJ1c2VyX3V1aWQiOiJkOTM1NmY4NS1hNDdhLTQzMGMtOTFlMS0wY2RlODk5YjA2OWIifQ.mFnWFi-90INsi5XS9h9Ihz3QpOP2QaPMha7ZurXz738Kf5FLt37t8xoTCAyX5UHfd2s7QltdE-xxvnCADxBZ6g";
+  const CALENDLY_TOKEN = "tu_token";
   const CALENDLY_URL = "https://calendly.com/2022034-utsh/gym-powerzone-consultas";
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

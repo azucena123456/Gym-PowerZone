@@ -62,7 +62,14 @@ const WeAreGymso = forwardRef((props, ref) => {
       scrollEventThrottle={16}
     >
       <View
-        style={styles.outerContainer}
+        style={[
+          styles.outerContainer,
+          {
+            paddingVertical: isPhone ? 8 : isTablet ? 15 : 25, // menos espacio vertical
+            minHeight: 'auto', // no forzar altura completa
+            justifyContent: isDesktop ? 'flex-start' : 'center',
+          },
+        ]}
         ref={aboutUsSectionRef}
         onLayout={(e) => setAboutUsHeight(e.nativeEvent.layout.height)}
       >
@@ -71,8 +78,8 @@ const WeAreGymso = forwardRef((props, ref) => {
             styles.contentBox,
             {
               flexDirection: isDesktop ? 'row' : 'column',
-              justifyContent: isDesktop ? 'flex-end' : 'center',
-              paddingVertical: isDesktop ? 0 : 30,
+              alignItems: 'center',
+              paddingVertical: isPhone ? 0 : 15, // menos padding vertical
             },
           ]}
         >
@@ -82,16 +89,35 @@ const WeAreGymso = forwardRef((props, ref) => {
               {
                 paddingRight: isDesktop ? 40 : 0,
                 marginBottom: isDesktop ? 0 : 30,
+                alignItems: isDesktop ? 'flex-start' : 'center',
               },
             ]}
           >
-            <Text style={[styles.title, { fontSize: isPhone ? 24 : 32 }]}>
+            <Text style={[styles.title, { fontSize: isPhone ? 24 : 32, textAlign: 'center' }]}>
               Hola, somos Gym-PowerZone
             </Text>
-            <Text style={[styles.paragraph, { fontSize: isPhone ? 14 : 17, lineHeight: isPhone ? 20 : 26 }]}>
+            <Text
+              style={[
+                styles.paragraph,
+                {
+                  fontSize: isPhone ? 14 : 17,
+                  lineHeight: isPhone ? 20 : 26,
+                  textAlign: 'center',
+                },
+              ]}
+            >
               Tu centro de transformación física y mental integral. En Gym-PowerZone, no solo entrenamos tu cuerpo, sino que fortalecemos tu mente para enfrentar cualquier desafío.
             </Text>
-            <Text style={[styles.paragraph, { fontSize: isPhone ? 14 : 17, lineHeight: isPhone ? 20 : 26 }]}>
+            <Text
+              style={[
+                styles.paragraph,
+                {
+                  fontSize: isPhone ? 14 : 17,
+                  lineHeight: isPhone ? 20 : 26,
+                  textAlign: 'center',
+                },
+              ]}
+            >
               Contamos con un equipo de entrenadores certificados y altamente experimentados que diseñan programas personalizados para tus objetivos. Estamos listos para guiarte en cada paso de tu camino.
             </Text>
           </View>
@@ -101,8 +127,8 @@ const WeAreGymso = forwardRef((props, ref) => {
               styles.cardsSection,
               {
                 flexDirection: (isDesktop || isTablet) ? 'row' : 'column',
-                justifyContent: (isDesktop || isTablet) ? 'flex-end' : 'center',
-                alignItems: (isDesktop || isTablet) ? 'flex-start' : 'center',
+                justifyContent: 'center',
+                alignItems: 'center',
               },
             ]}
           >
@@ -112,7 +138,7 @@ const WeAreGymso = forwardRef((props, ref) => {
                 {
                   width: 280,
                   marginBottom: isPhone ? 20 : 0,
-                  marginRight: (isDesktop || isTablet) ? 15 : 0,
+                  marginRight: isDesktop ? 15 : 0,
                 },
               ]}
             >
@@ -135,7 +161,7 @@ const WeAreGymso = forwardRef((props, ref) => {
                 {
                   width: 280,
                   marginBottom: isPhone ? 20 : 0,
-                  marginLeft: (isDesktop || isTablet) ? 15 : 0,
+                  marginLeft: isDesktop ? 15 : 0,
                 },
               ]}
             >
@@ -167,7 +193,6 @@ const styles = StyleSheet.create({
   },
   outerContainer: {
     backgroundColor: '#F8F8F8',
-    paddingVertical: 65,
     alignItems: 'center',
     width: '100%',
   },
@@ -190,7 +215,7 @@ const styles = StyleSheet.create({
   },
   paragraph: {
     color: '#555',
-    marginBottom: 15,
+    marginBottom: 10, // reducido de 15 a 10
     fontFamily: 'sans-serif',
   },
   cardsSection: {

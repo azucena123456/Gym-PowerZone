@@ -1,6 +1,12 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
-import { Text, View, useWindowDimensions } from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  Text,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 import createStyles from './styles/SecciónHorario.styles';
 
 const WorkoutTimetable: React.FC = () => {
@@ -44,46 +50,48 @@ const WorkoutTimetable: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.titleContainer}>
         <Text style={styles.subtitle}>nuestro horario semanal de gimnasio</Text>
         <Text style={styles.title}>Horario de Entrenamiento</Text>
       </View>
 
-      <View style={styles.tableContainer}>
-        <View style={styles.headerRow}>
-          <View style={styles.headerCellTime}>
-            <MaterialCommunityIcons name="calendar" style={styles.calendarIcon} />
+      <ScrollView horizontal contentContainerStyle={styles.tableContainer}>
+        <View style={styles.table}>
+          <View style={styles.headerRow}>
+            <View style={styles.headerCellTime}>
+              <MaterialCommunityIcons name="calendar" style={styles.calendarIcon} />
+            </View>
+            {dias.map((dia) => (
+              <View key={dia} style={styles.headerCell}>
+                <Text style={styles.headerText}>{dia}</Text>
+              </View>
+            ))}
           </View>
-          {dias.map((dia) => (
-            <View key={dia} style={styles.headerCell}>
-              <Text style={styles.headerText}>{dia}</Text>
+
+          {Object.keys(schedule).map((timeSlot) => (
+            <View key={timeSlot} style={styles.row}>
+              <View style={styles.timeCell}>
+                <Text style={styles.timeText}>{timeSlot}</Text>
+              </View>
+              {dias.map((dia) => {
+                const activity = schedule[timeSlot][dia];
+                return (
+                  <View key={dia} style={styles.cell}>
+                    {activity && (
+                      <>
+                        <Text style={styles.activityText}>{activity.activity}</Text>
+                        <Text style={styles.timeRangeText}>{activity.time}</Text>
+                      </>
+                    )}
+                  </View>
+                );
+              })}
             </View>
           ))}
         </View>
-
-        {Object.keys(schedule).map((timeSlot) => (
-          <View key={timeSlot} style={styles.row}>
-            <View style={styles.timeCell}>
-              <Text style={styles.timeText}>{timeSlot}</Text>
-            </View>
-            {dias.map((dia) => {
-              const activity = schedule[timeSlot][dia];
-              return (
-                <View key={dia} style={styles.cell}>
-                  {activity && (
-                    <>
-                      <Text style={styles.activityText}>{activity.activity}</Text>
-                      <Text style={styles.timeRangeText}>{activity.time}</Text>
-                    </>
-                  )}
-                </View>
-              );
-            })}
-          </View>
-        ))}
-      </View>
-    </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
