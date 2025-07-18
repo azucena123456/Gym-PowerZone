@@ -12,19 +12,16 @@ import {
 const ResponsiveForm = () => {
   const { width } = useWindowDimensions();
 
-  // Define los breakpoints
   const isDesktop = width >= 1024;
   const isTablet = width >= 768 && width < 1024;
   const isMobile = width < 768;
 
-  // Función para escalar tamaño de fuente y paddings
-  const scaleSize = (desktopSize, tabletSize, mobileSize) => {
+  const scaleSize = (desktopSize: number, tabletSize: number, mobileSize: number) => {
     if (isDesktop) return desktopSize;
     if (isTablet) return tabletSize;
     return mobileSize;
   };
 
-  // Genera los estilos según el ancho actual
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -43,20 +40,20 @@ const ResponsiveForm = () => {
       backgroundColor: '#fff',
       borderWidth: 1,
       borderColor: '#ddd',
-      borderRadius: 5,
+      borderRadius: 8,
       padding: scaleSize(18, 14, 12),
       marginBottom: 15,
       fontSize: scaleSize(18, 16, 14),
       color: '#333',
     },
     messageInput: {
-      height: 120,
+      height: scaleSize(150, 120, 100),
       textAlignVertical: 'top',
     },
     sendButton: {
       backgroundColor: '#007bff',
       padding: scaleSize(20, 18, 15),
-      borderRadius: 5,
+      borderRadius: 8,
       alignItems: 'center',
       marginTop: 10,
     },
@@ -66,4 +63,5 @@ const ResponsiveForm = () => {
       fontWeight: 'bold',
     },
   });
+
 export default ResponsiveForm;

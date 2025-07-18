@@ -7,15 +7,15 @@ const MapComponent: React.FC = () => {
     function handleResize() {
       const w = window.innerWidth;
       if (w <= 480) {
-        setMaxWidth('55vw'); // móvil pequeño
+        setMaxWidth('95vw');
       } else if (w <= 768) {
-        setMaxWidth('90vw'); // tablet
+        setMaxWidth('90vw');
       } else {
-        setMaxWidth(700); // desktop
+        setMaxWidth(700); 
       }
     }
 
-    handleResize(); // set initial on mount
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);

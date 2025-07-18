@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { ScrollView, View, Text, Image, Dimensions, StyleSheet, Platform } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Dimensions, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 interface CaruselItem {
   id: number;
@@ -13,41 +13,40 @@ interface CaruselItem {
 const { width: screenWidth } = Dimensions.get('window');
 const isMobile = screenWidth < 768;
 const CARD_WIDTH = screenWidth * (isMobile ? 0.8 : 0.25);
-const CARD_HEIGHT = 440 ;
+const CARD_HEIGHT = 440;
 const ITEM_MARGIN = 12;
-const ITEM_WIDTH = CARD_WIDTH + (ITEM_MARGIN * 2);
+const ITEM_WIDTH = CARD_WIDTH + ITEM_MARGIN * 2;
 
 const styles = StyleSheet.create({
   fullWidthContainer: {
     width: '100%',
     backgroundColor: '#EEEEEE',
-    paddingVertical: 100,
-    paddingHorizontal: isMobile ? 30: 90,
-    
+    paddingVertical: isMobile ? 40 : 60, // REDUCIDO
+    paddingHorizontal: isMobile ? 20 : 90,
   },
   nombreEntrenador: {
     color: '#333333',
     fontWeight: 'bold',
   },
   headerTitle: {
-    fontSize: Platform.select({ ios: 20, android: 20, default: 20 }),
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 15,
+    marginBottom: 8, // REDUCIDO
     color: '#818181',
   },
   headerTitle1: {
-    fontSize: Platform.select({ ios: 20, android: 20, default: 28 }),
+    fontSize: isMobile ? 20 : 28,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 30,
-    marginTop: -15,
+    marginBottom: 20,
+    marginTop: 0, // REMOVIDO ESPACIO EXTRA
     color: '#121212',
   },
   carouselContent: {
     alignItems: 'center',
     paddingHorizontal: isMobile ? 10 : 40,
-    paddingBottom: 20,
+    paddingBottom: 10, // REDUCIDO
   },
   slide: {
     width: CARD_WIDTH,
@@ -61,6 +60,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    flexShrink: 0,
   },
   image: {
     width: '100%',
@@ -85,11 +85,10 @@ const styles = StyleSheet.create({
     marginRight: 0,
   },
   slideTitle: {
-    fontSize: Platform.select({ ios: 16, android: 16, default: 20 }),
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
-     marginBottom: 15,
-  
+    marginBottom: 15,
   },
   entrenadoraText: {
     fontSize: 14,
@@ -101,7 +100,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#666',
     lineHeight: 18,
-     marginBottom: 65,
+    marginBottom: 65, // NO CAMBIADO como pediste
   },
   ctaCircle: {
     backgroundColor: '#F13a11',
@@ -121,6 +120,7 @@ const styles = StyleSheet.create({
 const Carusel: React.FC = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+
   const [data] = useState<CaruselItem[]>([
     {
       id: 1,
@@ -128,7 +128,7 @@ const Carusel: React.FC = () => {
       image: require('../assets/images/Aerobic.png'),
       entrenadora: 'Entrenador ~ Luis',
       description: 'Sesiones dinámicas que combinan música y movimiento para fortalecer el sistema cardiovascular.',
-      ctaText: '$90'
+      ctaText: '$90',
     },
     {
       id: 2,
@@ -136,7 +136,7 @@ const Carusel: React.FC = () => {
       image: require('../assets/images/cardio.jpg'),
       entrenadora: 'Entrenadora ~ Sofia',
       description: 'Entrenamientos intensos por intervalos para quemar calorías rápidamente.',
-      ctaText: '$90'
+      ctaText: '$90',
     },
     {
       id: 3,
@@ -144,7 +144,7 @@ const Carusel: React.FC = () => {
       image: require('../assets/images/Crossfit.png'),
       entrenadora: 'Entrenador ~ Javier',
       description: 'Programa de alta intensidad que trabaja fuerza, velocidad y técnica.',
-      ctaText: '$90'
+      ctaText: '$90',
     },
     {
       id: 4,
@@ -152,7 +152,7 @@ const Carusel: React.FC = () => {
       image: require('../assets/images/yoga.jpg'),
       entrenadora: 'Entrenadora ~ Emma',
       description: 'Relajación profunda y mejora de la flexibilidad para equilibrar cuerpo y mente.',
-      ctaText: '$90'
+      ctaText: '$90',
     },
     {
       id: 5,
@@ -160,7 +160,7 @@ const Carusel: React.FC = () => {
       image: require('../assets/images/pilates.jpg'),
       entrenadora: 'Entrenadora ~ Emma',
       description: 'Fortalece el core y mejora la postura mediante ejercicios controlados.',
-      ctaText: '$90'
+      ctaText: '$90',
     },
     {
       id: 6,
@@ -168,7 +168,7 @@ const Carusel: React.FC = () => {
       image: require('../assets/images/Zumba.jpg'),
       entrenadora: 'Entrenador ~ Diego',
       description: 'Clases llenas de ritmo y energía con movimientos de baile.',
-      ctaText: '$90'
+      ctaText: '$90',
     },
   ]);
 
@@ -176,10 +176,9 @@ const Carusel: React.FC = () => {
   const dataLength = data.length;
 
   useEffect(() => {
-    
     scrollViewRef.current?.scrollTo({
       x: dataLength * ITEM_WIDTH,
-      animated: false
+      animated: false,
     });
   }, []);
 
@@ -187,30 +186,27 @@ const Carusel: React.FC = () => {
     const contentOffset = event.nativeEvent.contentOffset.x;
     const newIndex = Math.floor((contentOffset + ITEM_WIDTH / 2) / ITEM_WIDTH);
 
-    
     if (newIndex < currentIndex) {
       scrollViewRef.current?.scrollTo({
         x: currentIndex * ITEM_WIDTH,
-        animated: true
+        animated: true,
       });
       return;
     }
 
-    
     if (newIndex !== currentIndex) {
       scrollViewRef.current?.scrollTo({
         x: newIndex * ITEM_WIDTH,
-        animated: true
+        animated: true,
       });
       setCurrentIndex(newIndex);
     }
 
-  
     if (newIndex >= dataLength * 2) {
       const resetIndex = newIndex % dataLength;
       scrollViewRef.current?.scrollTo({
         x: (dataLength + resetIndex) * ITEM_WIDTH,
-        animated: false
+        animated: false,
       });
       setCurrentIndex(dataLength + resetIndex);
     }
@@ -231,15 +227,11 @@ const Carusel: React.FC = () => {
         snapToInterval={ITEM_WIDTH}
         snapToAlignment="start"
         decelerationRate="fast"
-        disableIntervalMomentum={true}
+        disableIntervalMomentum
       >
         {infiniteData.map((item, index) => (
           <View key={`${item.id}-${index}`} style={styles.slide}>
-            <Image
-              source={item.image}
-              style={styles.image}
-              resizeMode="cover"
-            />
+            <Image source={item.image} style={styles.image} resizeMode="cover" />
 
             <View style={styles.textContainer}>
               <View style={styles.titleContainer}>
@@ -256,10 +248,7 @@ const Carusel: React.FC = () => {
                       </Text>
                     </Text>
                   )}
-
-                  <Text style={styles.slideDescription}>
-                    {item.description}
-                  </Text>
+                  <Text style={styles.slideDescription}>{item.description}</Text>
                 </View>
 
                 <View style={styles.ctaCircle}>
