@@ -8,8 +8,9 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Linking
+  Linking,
 } from 'react-native';
+import emailjs from '@emailjs/browser';
 import MapComponent from './MapComponent';
 import { contactFormStyles } from './styles/ContactForm.styles';
 
@@ -22,6 +23,10 @@ const ContactForm = () => {
   const [nombreError, setNombreError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [mensajeError, setMensajeError] = useState('');
+
+  const SERVICE_ID = 'service_f4nam56';
+  const TEMPLATE_ID = 'template_58bdplq'; // Usa el ID real de tu plantilla
+  const PUBLIC_KEY = '61Z51srJVskv93TN3'; // Puedes obtenerlo desde EmailJS
 
   const CALENDLY_BASE_URL = "https://calendly.com/2022034-utsh/gym-powerzone-consultas";
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,33 +66,32 @@ const ContactForm = () => {
 
     setIsSending(true);
 
-    try {
-      // Armar la URL con parámetros pre-rellenados
-      const url = `${CALENDLY_BASE_URL}?name=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&a1=${encodeURIComponent(mensaje)}`;
+    const templateParams = {
+      name: nombre,
+      email: email,
+      message: mensaje,
+      image_url: 'https://angelking.neocities.org/calendly/Imagen%20de%20WhatsApp%202025-07-16%20a%20las%2018.20.10_4e20fbd3.jpg'
+    };
 
+    try {
+      await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+
+      // Abrir Calendly (opcional)
+      const url = `${CALENDLY_BASE_URL}?name=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&a1=${encodeURIComponent(mensaje)}`;
       const canOpen = await Linking.canOpenURL(url);
-      if (!canOpen) {
-        throw new Error('No se puede abrir el enlace de Calendly');
+
+      if (canOpen) {
+        await Linking.openURL(url);
       }
 
-      await Linking.openURL(url);
-
-      Alert.alert(
-        '¡Mensaje Enviado!',
-        'Tu consulta ha sido recibida y hemos abierto el calendario para que agendes una cita.',
-        [{
-          text: 'OK',
-          onPress: () => {
-            setNombre('');
-            setEmail('');
-            setMensaje('');
-          }
-        }]
-      );
+      Alert.alert('¡Mensaje enviado!', 'Tu mensaje ha sido enviado con éxito y hemos abierto el calendario para agendar tu cita.');
+      setNombre('');
+      setEmail('');
+      setMensaje('');
 
     } catch (error) {
       console.error('Error al enviar mensaje:', error);
-      Alert.alert('Error', 'Tu mensaje fue recibido, pero hubo un problema al redirigirte a Calendly.');
+      Alert.alert('Error', 'No se pudo enviar el mensaje. Intenta más tarde.');
     } finally {
       setIsSending(false);
     }
@@ -117,7 +121,6 @@ const ContactForm = () => {
                 nombreError && contactFormStyles.inputError
               ]}
               placeholder="Nombre"
-              placeholderTextColor="#555"
               value={nombre}
               onChangeText={text => {
                 setNombre(text);
@@ -132,7 +135,6 @@ const ContactForm = () => {
                 emailError && contactFormStyles.inputError
               ]}
               placeholder="Email"
-              placeholderTextColor="#555"
               keyboardType="email-address"
               autoCapitalize="none"
               value={email}
@@ -150,7 +152,6 @@ const ContactForm = () => {
                 mensajeError && contactFormStyles.inputError
               ]}
               placeholder="Mensaje"
-              placeholderTextColor="#555"
               multiline={true}
               numberOfLines={4}
               value={mensaje}
@@ -161,8 +162,8 @@ const ContactForm = () => {
             />
             {mensajeError ? <Text style={contactFormStyles.errorText}>{mensajeError}</Text> : null}
 
-            <TouchableOpacity 
-              style={contactFormStyles.sendButton} 
+            <TouchableOpacity
+              style={contactFormStyles.sendButton}
               onPress={handleSendMessage}
               disabled={isSending}
             >
