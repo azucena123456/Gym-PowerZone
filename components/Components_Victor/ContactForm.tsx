@@ -25,8 +25,8 @@ const ContactForm = () => {
   const [mensajeError, setMensajeError] = useState('');
 
   const SERVICE_ID = 'service_f4nam56';
-  const TEMPLATE_ID = 'template_58bdplq'; // Usa el ID real de tu plantilla
-  const PUBLIC_KEY = '61Z51srJVskv93TN3'; // Puedes obtenerlo desde EmailJS
+  const TEMPLATE_ID = 'template_58bdplq';
+  const PUBLIC_KEY = '61Z51srJVskv93TN3';
 
   const CALENDLY_BASE_URL = "https://calendly.com/2022034-utsh/gym-powerzone-consultas";
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -70,13 +70,11 @@ const ContactForm = () => {
       name: nombre,
       email: email,
       message: mensaje,
-      image_url: 'https://angelking.neocities.org/calendly/Imagen%20de%20WhatsApp%202025-07-16%20a%20las%2018.20.10_4e20fbd3.jpg'
     };
 
     try {
       await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
 
-      // Abrir Calendly (opcional)
       const url = `${CALENDLY_BASE_URL}?name=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&a1=${encodeURIComponent(mensaje)}`;
       const canOpen = await Linking.canOpenURL(url);
 
