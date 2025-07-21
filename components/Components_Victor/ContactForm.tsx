@@ -10,7 +10,7 @@ import {
   View,
   Linking,
 } from 'react-native';
-import emailjs from '@emailjs/browser';
+import { send } from '@emailjs/browser'; // Cambio recomendado por ESLint
 import MapComponent from './MapComponent';
 import { contactFormStyles } from './styles/ContactForm.styles';
 
@@ -73,7 +73,7 @@ const ContactForm = () => {
     };
 
     try {
-      await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+      await send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY); // Usando la importación directa
 
       const url = `${CALENDLY_BASE_URL}?name=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&a1=${encodeURIComponent(mensaje)}`;
       const canOpen = await Linking.canOpenURL(url);
