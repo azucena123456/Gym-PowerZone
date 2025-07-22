@@ -11,7 +11,6 @@ import {
   View,
 } from 'react-native';
 
-// Componentes importados
 import Carusel from '../../components/carrusel';
 import ContactForm from '../../components/Components_Victor/ContactForm';
 import SeccionHorario from '../../components/Components_Victor/SeccionHorario';
@@ -23,9 +22,6 @@ import HeroVideo from '../../components/ui/PresentacionVideo';
 
 const { height: windowHeight } = Dimensions.get('window');
 
-// ---------------------------
-// PANTALLA PRINCIPAL (contenido de la aplicación)
-// ---------------------------
 const HomeScreen = () => {
   const [activeSection, setActiveSection] = useState<string | null>('inicio');
   const scrollViewRef = useRef<ScrollView>(null);
@@ -136,9 +132,6 @@ const HomeScreen = () => {
   );
 };
 
-// ---------------------------
-// APP PRINCIPAL (sin login)
-// ---------------------------
 export default function App() {
   const [fontsLoaded] = useFonts({
     'Poppins-Regular': require('../../assets/fonts/Poppins-Regular.ttf'),
@@ -158,9 +151,6 @@ export default function App() {
   return <HomeScreen />;
 }
 
-// ---------------------------
-// ESTILOS
-// ---------------------------
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
