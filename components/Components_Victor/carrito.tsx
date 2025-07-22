@@ -38,7 +38,7 @@ const Carrito = () => {
         
         <div style={styles.shippingInfo}>
           <p>Una parte de tu primer pedido califica para envío</p>
-          <p style={styles.shippingOption}>ORATIS Selección esta opción al finalizar tu campo Detalles</p>
+          <p style={styles.shippingOption}>GRATIS Seleccixón esta opción al finalizar tu campo Detalles</p>
         </div>
         
         <div style={styles.summary}>
