@@ -1,56 +1,48 @@
-// Login.tsx
-import { LinearGradient } from 'expo-linear-gradient'; // Importa LinearGradient para el degradado
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Dimensions,
-    Image,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 
 const { width } = Dimensions.get('window');
 
 interface LoginScreenProps {
-  // Prop que se llama al iniciar sesión correctamente (para cerrar el overlay o navegar).
   onLogin: () => void;
-  // Nueva prop para manejar la navegación a la pantalla de registro.
   onNavigateToRegister: () => void;
+  onNavigateToForgotPassword: () => void;  // <-- nueva prop para "Olvidé contraseña"
 }
 
-/**
- * Componente de la pantalla de inicio de sesión.
- * Permite al usuario ingresar credenciales y tiene un fondo con degradado.
- */
-const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onNavigateToRegister }) => {
+const LoginScreen: React.FC<LoginScreenProps> = ({
+  onLogin,
+  onNavigateToRegister,
+  onNavigateToForgotPassword,
+}) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [rememberMe, setRememberMe] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false); // Estado para el indicador de carga
+  const [loading, setLoading] = useState<boolean>(false);
 
-  /**
-   * Maneja el intento de inicio de sesión.
-   * Simula una autenticación y llama a la prop 'onLogin' si es exitosa.
-   */
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Campos incompletos', 'Por favor, completa todos los campos.');
       return;
     }
 
-    setLoading(true); // Activa el indicador de carga
-
-    // Simulación de una llamada a la API de autenticación
+    setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simula un retraso de 2 segundos
-
+      await new Promise(resolve => setTimeout(resolve, 2000));
       if (email === 'usuario@ejemplo.com' && password === 'password123') {
         Alert.alert('Inicio de Sesión Exitoso', '¡Bienvenido!');
-        onLogin(); // Llama a la prop para cerrar el overlay o navegar
+        onLogin();
       } else {
         Alert.alert('Error de Inicio de Sesión', 'Credenciales incorrectas. Inténtalo de nuevo.');
       }
@@ -58,29 +50,22 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onNavigateToRegister
       console.error('Error durante el inicio de sesión:', error);
       Alert.alert('Error', 'Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
     } finally {
-      setLoading(false); // Desactiva el indicador de carga
+      setLoading(false);
     }
   };
 
-  /**
-   * Maneja el intento de inicio de sesión con Google.
-   * Es un marcador de posición para la integración real.
-   */
   const handleGoogleLogin = () => {
     Alert.alert('Inicio con Google', 'Funcionalidad no implementada.');
   };
 
   return (
-    // Usamos LinearGradient como contenedor principal para aplicar el degradado de fondo
     <LinearGradient
-      // Colores del degradado ajustados para un tono oscuro con matices rojizos/granates
       colors={['#000000', '#330000', '#1a0000']}
-      style={styles.container} // Aplica los estilos del contenedor (flex: 1, centrado, padding) al gradiente
-      start={{ x: 0, y: 0 }} // Punto de inicio del degradado (arriba izquierda)
-      end={{ x: 1, y: 1 }}   // Punto final del degradado (abajo derecha), creando un efecto diagonal
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
     >
       <View style={styles.loginCard}>
-        {/* Sección Izquierda: Formulario de Inicio de Sesión */}
         <View style={styles.formSection}>
           <Text style={styles.title}>Bienvenido</Text>
           <Text style={styles.subtitle}>Bienvenido de nuevo, ingrese sus datos por favor</Text>
@@ -91,11 +76,11 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onNavigateToRegister
               style={styles.input}
               value={email}
               onChangeText={setEmail}
-              keyboardType="email-address" // Teclado optimizado para emails
-              autoCapitalize="none" // No capitalizar automáticamente
+              keyboardType="email-address"
+              autoCapitalize="none"
               placeholder="tu@email.com"
               placeholderTextColor="#aaa"
-              editable={!loading} // Deshabilita la edición mientras carga
+              editable={!loading}
             />
 
             <Text style={styles.label}>Contraseña</Text>
@@ -103,33 +88,32 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onNavigateToRegister
               style={styles.input}
               value={password}
               onChangeText={setPassword}
-              secureTextEntry // Oculta el texto de la contraseña
+              secureTextEntry
               placeholder="********"
               placeholderTextColor="#aaa"
-              editable={!loading} // Deshabilita la edición mientras carga
+              editable={!loading}
             />
 
             <View style={styles.checkboxContainer}>
-              {/* TouchableOpacity para un área táctil más grande para el checkbox */}
               <TouchableOpacity
                 style={styles.checkboxTouchArea}
                 onPress={() => setRememberMe(!rememberMe)}
-                disabled={loading} // Deshabilita mientras carga
+                disabled={loading}
               >
-                {/* View que simula el checkbox, cambia de estilo al marcarse */}
                 <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]} />
               </TouchableOpacity>
               <Text style={styles.checkboxLabel}>Recordar</Text>
-              {/* Enlace para "¿Olvidaste la contraseña?" */}
-              <TouchableOpacity onPress={() => Alert.alert('Recuperar contraseña', 'Funcionalidad no implementada.')} disabled={loading}>
+              <TouchableOpacity
+                onPress={onNavigateToForgotPassword}
+                disabled={loading}
+              >
                 <Text style={styles.forgotPassword}>¿Olvidaste la contraseña?</Text>
               </TouchableOpacity>
             </View>
 
-            {/* Botón de Ingresar */}
             <TouchableOpacity style={styles.loginButton} onPress={handleLogin} disabled={loading}>
               {loading ? (
-                <ActivityIndicator color="#fff" /> // Muestra el indicador de carga
+                <ActivityIndicator color="#fff" />
               ) : (
                 <Text style={styles.buttonText}>Ingresar</Text>
               )}
@@ -137,35 +121,30 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onNavigateToRegister
           </View>
 
           <TouchableOpacity style={styles.googleLoginButton} onPress={handleGoogleLogin} disabled={loading}>
-  <View style={styles.googleButtonContent}>
-    <Image
-      source={require('../../assets/images/image.png')}
-      style={styles.googleIcon}
-    />
-    <Text style={styles.buttonText}>Ingresar con Google</Text>
-  </View>
-</TouchableOpacity>
+            <View style={styles.googleButtonContent}>
+              <Svg width="20" height="20" viewBox="0 0 24 24" fill="none" style={styles.googleIcon}>
+                <Path d="M22.47 12.21c0-.79-.07-1.54-.2-2.27H12v4.28h6.05c-.25 1.25-.97 2.32-2.06 3.03v2.79h3.59c2.1-1.93 3.31-4.77 3.31-8.03z" fill="#4285F4" />
+                <Path d="M12 23c3.24 0 5.95-1.07 7.94-2.91L16.35 17.3c-1.12.75-2.58 1.19-4.35 1.19-3.34 0-6.17-2.25-7.2-5.28H1.2v2.88C3.25 20.66 7.37 23 12 23z" fill="#34A853" />
+                <Path d="M4.8 14.18c-.2-.6-.31-1.24-.31-1.9s.11-1.3.31-1.9V7.4H1.2C.44 8.94 0 10.45 0 12c0 1.55.44 3.06 1.2 4.58L4.8 14.18z" fill="#FBBC05" />
+                <Path d="M12 4.75c1.77 0 3.34.61 4.59 1.79l3.18-3.18C17.95 1.07 15.24 0 12 0 7.37 0 3.25 2.34 1.2 5.82L4.8 8.7C5.83 5.67 8.66 3.42 12 3.42z" fill="#EA4335" />
+              </Svg>
+              <Text style={styles.buttonText}>Ingresar con Google</Text>
+            </View>
+          </TouchableOpacity>
 
-          {/* Texto y enlace para registrarse */}
           <Text style={styles.signupText}>
             ¿No tienes cuenta?{' '}
-            <Text
-              style={styles.registerLink}
-              onPress={onNavigateToRegister} // Llama a la prop para navegar a la pantalla de Registro
-              disabled={loading} // Deshabilita el enlace mientras carga
-            >
-              Regístrate
-            </Text>
+            <TouchableOpacity onPress={onNavigateToRegister} disabled={loading}>
+              <Text style={styles.registerLink}>Regístrate</Text>
+            </TouchableOpacity>
           </Text>
         </View>
 
-        {/* Sección Derecha: Imagen */}
         <View style={styles.imageSection}>
-          {/* La imagen se carga desde una ruta local. Asegúrate de que la ruta sea correcta para tu imagen. */}
           <Image
-            source={require('../../assets/images/login.png')} // Ruta de la imagen del gimnasio
+            source={require('../../assets/images/login.png')}
             style={styles.gymImage}
-            resizeMode="cover" // Ajusta la imagen para cubrir el área sin distorsión
+            resizeMode="cover"
           />
         </View>
       </View>
@@ -175,30 +154,32 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onNavigateToRegister
 
 export default LoginScreen;
 
-// Estilos para el componente LoginScreen
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Ocupa todo el espacio disponible en la pantalla
-    justifyContent: 'center', // Centra el contenido verticalmente
-    alignItems: 'center', // Centra el contenido horizontalmente
-    padding: 20, // Espaciado alrededor de la tarjeta de login
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
   },
   loginCard: {
-    flexDirection: 'row', // Organiza el formulario y la imagen en fila
-    width: width > 900 ? 900 : '95%', // Ancho máximo de 900px para pantallas grandes, 95% para pequeñas
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
+    maxWidth: 900,
     backgroundColor: '#fff',
     borderRadius: 8,
-    overflow: 'hidden', // Asegura que el contenido respete los bordes redondeados
-    elevation: 10, // Sombra para Android
-    shadowColor: '#000', // Sombra para iOS
+    overflow: 'hidden',
+    elevation: 10,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 15,
   },
   formSection: {
-    flex: 1, // Ocupa la mitad del espacio horizontal disponible
-    padding: 30,
-    justifyContent: 'center', // Centra el contenido del formulario verticalmente
+    flex: 1,
+    minWidth: 300,
+    padding: 20,
+    justifyContent: 'center',
   },
   title: {
     fontSize: 28,
@@ -236,7 +217,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   checkboxTouchArea: {
-    padding: 5, // Aumenta el área táctil para facilitar la interacción
+    padding: 5,
     marginRight: 5,
   },
   checkbox: {
@@ -247,18 +228,18 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   checkboxChecked: {
-    backgroundColor: '#ff4500', // Color naranja cuando el checkbox está marcado
+    backgroundColor: '#ff4500',
     borderColor: '#ff4500',
   },
   checkboxLabel: {
     fontSize: 14,
     color: '#555',
-    marginRight: 'auto', // Empuja el enlace "¿Olvidaste la contraseña?" a la derecha
+    marginRight: 'auto',
   },
   forgotPassword: {
     fontSize: 14,
     color: '#ff4500',
-    textDecorationLine: 'underline', // Subraya el texto
+    textDecorationLine: 'underline',
   },
   loginButton: {
     backgroundColor: '#ff4500',
@@ -272,7 +253,18 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 4,
     alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 25,
+  },
+  googleButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  googleIcon: {
+    marginRight: 10,
+    width: 20,
+    height: 20,
   },
   buttonText: {
     color: '#fff',
@@ -291,35 +283,14 @@ const styles = StyleSheet.create({
   },
   imageSection: {
     flex: 1,
+    minWidth: 300,
+    minHeight: 300,
     backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: 300,
   },
   gymImage: {
     width: '100%',
     height: '100%',
   },
-  googleLoginButton: {
-  backgroundColor: '#333',
-  paddingVertical: 12,
-  paddingHorizontal: 20,
-  borderRadius: 4,
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginBottom: 25,
-},
-
-googleButtonContent: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'center',
-},
-
-googleIcon: {
-  width: 30,       // tamaño más compacto
-  height: 18,
-  marginRight: 10,
-  resizeMode: 'contain',
-},
 });

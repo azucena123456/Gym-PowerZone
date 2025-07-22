@@ -1,5 +1,4 @@
-// Register.tsx
-import { useNavigation } from '@react-navigation/native'; // Importa useNavigation para la navegación
+import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import {
@@ -13,26 +12,23 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 
 const { width } = Dimensions.get('window');
 
-/**
- * Componente de la pantalla de registro.
- * Permite al usuario crear una nueva cuenta.
- */
-const RegisterScreen: React.FC = () => {
-  const navigation = useNavigation(); // Hook para acceder al objeto de navegación
+interface RegisterScreenProps {
+  onRegister?: () => void;
+  onLoginNavigate?: () => void;
+}
 
+const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegister, onLoginNavigate }) => {
+  const navigation = useNavigation();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  /**
-   * Maneja el intento de registro de un nuevo usuario.
-   * Simula el proceso de registro y valida los campos.
-   */
   const handleRegister = async () => {
     if (!email || !password || !confirmPassword) {
       Alert.alert('Campos incompletos', 'Por favor, completa todos los campos.');
@@ -45,48 +41,41 @@ const RegisterScreen: React.FC = () => {
     }
 
     setLoading(true);
-
-    // Simulación de una llamada a la API de registro
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simula un retraso de 2 segundos
-
-      // Aquí iría tu lógica real para enviar los datos de registro a tu backend.
-      // Por ahora, solo simulamos un registro exitoso.
+      await new Promise(resolve => setTimeout(resolve, 2000));
       Alert.alert('Registro Exitoso', '¡Tu cuenta ha sido creada con éxito!');
-      navigation.navigate('Login' as never); // Navega de vuelta a la pantalla de Login
+      if (onRegister) {
+        onRegister();
+      } else {
+        navigation.navigate('Login' as never);
+      }
     } catch (error) {
-      console.error('Error durante el registro:', error);
       Alert.alert('Error', 'Ocurrió un error inesperado durante el registro. Inténtalo de nuevo más tarde.');
     } finally {
       setLoading(false);
     }
   };
 
-  /**
-   * Maneja el intento de registro con Google.
-   */
   const handleGoogleRegister = () => {
     Alert.alert('Registro con Google', 'Funcionalidad no implementada.');
   };
 
   return (
     <LinearGradient
-      colors={['#000000', '#330000', '#1a0000']} // Mismos colores de degradado que el login
+      colors={['#000000', '#330000', '#1a0000']}
       style={styles.container}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
     >
       <View style={styles.registerCard}>
-        {/* Sección Izquierda: Imagen */}
         <View style={styles.imageSection}>
           <Image
-            source={require('../../assets/images/login.png')} // Ruta de la imagen de registro
+            source={require('../../assets/images/login.png')}
             style={styles.gymImage}
             resizeMode="cover"
           />
         </View>
 
-        {/* Sección Derecha: Formulario de Registro */}
         <View style={styles.formSection}>
           <Text style={styles.title}>Bienvenido</Text>
           <Text style={styles.subtitle}>Bienvenido a Gym-powerZone, Ingrese sus datos por favor</Text>
@@ -147,18 +136,43 @@ const RegisterScreen: React.FC = () => {
           </View>
 
           <TouchableOpacity style={styles.googleRegisterButton} onPress={handleGoogleRegister} disabled={loading}>
-            <Text style={styles.buttonText}>Registrar con Google</Text>
+            <View style={styles.googleButtonContent}>
+              <Svg width="20" height="20" viewBox="0 0 24 24" fill="none" style={styles.googleIcon}>
+                <Path
+                  d="M22.47 12.21c0-.79-.07-1.54-.2-2.27H12v4.28h6.05c-.25 1.25-.97 2.32-2.06 3.03v2.79h3.59c2.1-1.93 3.31-4.77 3.31-8.03z"
+                  fill="#4285F4"
+                />
+                <Path
+                  d="M12 23c3.24 0 5.95-1.07 7.94-2.91L16.35 17.3c-1.12.75-2.58 1.19-4.35 1.19-3.34 0-6.17-2.25-7.2-5.28H1.2v2.88C3.25 20.66 7.37 23 12 23z"
+                  fill="#34A853"
+                />
+                <Path
+                  d="M4.8 14.18c-.2-.6-.31-1.24-.31-1.9s.11-1.3.31-1.9V7.4H1.2C.44 8.94 0 10.45 0 12c0 1.55.44 3.06 1.2 4.58L4.8 14.18z"
+                  fill="#FBBC05"
+                />
+                <Path
+                  d="M12 4.75c1.77 0 3.34.61 4.59 1.79l3.18-3.18C17.95 1.07 15.24 0 12 0 7.37 0 3.25 2.34 1.2 5.82L4.8 8.7C5.83 5.67 8.66 3.42 12 3.42z"
+                  fill="#EA4335"
+                />
+              </Svg>
+              <Text style={styles.buttonText}>Registrar con Google</Text>
+            </View>
           </TouchableOpacity>
 
           <Text style={styles.loginText}>
             ¿Ya tienes cuenta?{' '}
-            <Text
-              style={styles.loginLink}
-              onPress={() => navigation.navigate('Login' as never)} // Navega a la pantalla de Login
+            <TouchableOpacity
+              onPress={() => {
+                if (onLoginNavigate) {
+                  onLoginNavigate();
+                } else {
+                  navigation.navigate('Login' as never);
+                }
+              }}
               disabled={loading}
             >
-              Inicia sesion
-            </Text>
+              <Text style={styles.loginLink}>Inicia sesión</Text>
+            </TouchableOpacity>
           </Text>
         </View>
       </View>
@@ -173,11 +187,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 10,
   },
   registerCard: {
-    flexDirection: 'row',
-    width: width > 900 ? 900 : '95%',
+    flexDirection: width > 600 ? 'row' : 'column',
+    width: '100%',
+    maxWidth: 900,
     backgroundColor: '#fff',
     borderRadius: 8,
     overflow: 'hidden',
@@ -192,7 +207,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: 300,
+    minHeight: 200,
   },
   gymImage: {
     width: '100%',
@@ -200,7 +215,7 @@ const styles = StyleSheet.create({
   },
   formSection: {
     flex: 1,
-    padding: 30,
+    padding: 25,
     justifyContent: 'center',
   },
   title: {
@@ -212,21 +227,21 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 14,
     color: '#666',
-    marginBottom: 25,
-  },
-  form: {
     marginBottom: 20,
   },
+  form: {
+    marginBottom: 15,
+  },
   label: {
-    marginBottom: 8,
+    marginBottom: 6,
     fontSize: 14,
     color: '#555',
     fontWeight: 'bold',
   },
   input: {
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 15,
-    marginBottom: 18,
+    marginBottom: 12,
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 4,
@@ -236,7 +251,7 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 15,
   },
   checkboxTouchArea: {
     padding: 5,
@@ -256,21 +271,31 @@ const styles = StyleSheet.create({
   checkboxLabel: {
     fontSize: 14,
     color: '#555',
-    marginRight: 'auto',
   },
   registerButton: {
     backgroundColor: '#ff4500',
-    paddingVertical: 14,
+    paddingVertical: 12,
     borderRadius: 4,
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 10,
   },
   googleRegisterButton: {
     backgroundColor: '#333',
-    paddingVertical: 14,
+    paddingVertical: 12,
     borderRadius: 4,
     alignItems: 'center',
-    marginBottom: 25,
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  googleButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  googleIcon: {
+    marginRight: 10,
+    width: 20,
+    height: 20,
   },
   buttonText: {
     color: '#fff',

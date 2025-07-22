@@ -7,9 +7,10 @@ interface NavbarProps {
   onPressMenu?: () => void;
   scrollToSection: (section: string) => void;
   activeSection: string | null;
+  onNavigateToLogin: () => void; // NUEVA PROP para navegar a la pantalla de Login
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, activeSection }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, activeSection, onNavigateToLogin }) => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const slideAnim = useState(new Animated.Value(0))[0];
@@ -60,7 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
 
   const menuHeight = slideAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, menuItems.length * 50 + 80]
+    outputRange: [0, menuItems.length * 50 + 80 + 50] // Se añade espacio para el nuevo botón
   });
 
   return (
@@ -111,6 +112,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
                 </TouchableOpacity>
               ))}
 
+              {/* Botón de Iniciar Sesión para móvil */}
+              <TouchableOpacity
+                style={styles.mobileMenuItem}
+                onPress={() => {
+                  onNavigateToLogin();
+                  setMenuOpen(false); // Cierra el menú después de navegar
+                }}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.mobileMenuText}>INICIAR SESIÓN</Text>
+              </TouchableOpacity>
+
               <View style={styles.mobileSocialIcons}>
                 <TouchableOpacity onPress={() => Linking.openURL('https://www.facebook.com')}>
                   <FontAwesome name="facebook" size={20} color="white" />
@@ -152,6 +165,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
               </Text>
             </TouchableOpacity>
           ))}
+
+          {/* Botón de Iniciar Sesión para escritorio */}
+          <TouchableOpacity
+            style={styles.menuItem}
+            onMouseEnter={() => setHoveredItem('login')}
+            onMouseLeave={() => setHoveredItem(null)}
+            onPress={onNavigateToLogin} // Llama a la prop onNavigateToLogin
+          >
+            <Text style={[
+              styles.menuText,
+              hoveredItem === 'ogin' && styles.menuTextHover, // Aplica hover si no está activo
+            ]}>
+              INICIAR SESIÓN
+            </Text>
+          </TouchableOpacity>
 
           <View style={styles.socialIcons}>
             <TouchableOpacity
