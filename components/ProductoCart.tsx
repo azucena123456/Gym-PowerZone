@@ -58,9 +58,9 @@ cardContainer: {
     alignItems: 'flex-start', 
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 6,
     },
 productImage: {
     width: '100%',
@@ -85,9 +85,10 @@ productName: {
     ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 0,
+    marginBottom: 14,
     alignSelf: 'flex-start', 
-    width: '100%', 
+    width: '100%',
+     
     },
     starIcon: {
     marginHorizontal: 1,
@@ -110,7 +111,7 @@ productName: {
   productPrice: {
     fontSize: 12, 
     fontWeight: 'bold',
-    color: '#E44D26', 
+    color: '#070606ff', 
     textAlign: 'left', 
 },
 addToCartButton: {

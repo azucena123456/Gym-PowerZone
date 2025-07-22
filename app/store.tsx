@@ -63,7 +63,7 @@ const handleProductPress = (product: Product) => {
 const styles = StyleSheet.create({
     safeAreaContainer: { 
     flex: 1,
-    backgroundColor: '#F5F5F5', 
+    backgroundColor: '#EDEDED', 
  },
     scrollContent: {
     paddingBottom: 20,
