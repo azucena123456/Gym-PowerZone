@@ -119,6 +119,7 @@ export const contactFormStyles = StyleSheet.create({
     width: '100%',
   },
 <<<<<<< HEAD
+<<<<<<< HEAD
   inputError: {
     borderColor: 'red',
     borderWidth: 1,
@@ -136,5 +137,7 @@ export const contactFormStyles = StyleSheet.create({
     height: IS_LARGE_SCREEN ? 300 : 200,
     overflow: 'hidden',
   },
+=======
+>>>>>>> parent of 6df512f (subiendo cambios)
 });
 >>>>>>> patricia

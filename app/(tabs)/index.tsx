@@ -1,16 +1,9 @@
 import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import React, { useRef, useState } from 'react';
-import {
-  ActivityIndicator,
-  Dimensions,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Dimensions, NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View } from 'react-native';
 
+// Componentes importados
 import Carusel from '../../components/carrusel';
 import ContactForm from '../../components/Components_Victor/ContactForm';
 import SeccionHorario from '../../components/Components_Victor/SeccionHorario';
@@ -22,8 +15,12 @@ import HeroVideo from '../../components/ui/PresentacionVideo';
 
 const { height: windowHeight } = Dimensions.get('window');
 
+// ---------------------------
+// PANTALLA PRINCIPAL (contenido de la aplicación)
+// ---------------------------
 const HomeScreen = () => {
   const [activeSection, setActiveSection] = useState<string | null>('inicio');
+
   const scrollViewRef = useRef<ScrollView>(null);
   const heroVideoRef = useRef<View>(null);
   const membresiaRef = useRef<View>(null);
@@ -41,7 +38,7 @@ const HomeScreen = () => {
       (x, y, width, height) => {
         sectionLayouts.current[sectionName] = { y, height };
       },
-      () => {}
+      () => { }
     );
   };
 
@@ -58,6 +55,7 @@ const HomeScreen = () => {
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const scrollY = event.nativeEvent.contentOffset.y;
+
     let currentActiveSection: string | null = null;
 
     const sections = [
@@ -73,9 +71,11 @@ const HomeScreen = () => {
     for (let i = sections.length - 1; i >= 0; i--) {
       const { name } = sections[i];
       const layout = sectionLayouts.current[name];
+
       if (layout) {
         const sectionTop = layout.y;
         const sectionBottom = layout.y + layout.height;
+
         if (scrollY + activationOffset >= sectionTop && scrollY < sectionBottom) {
           currentActiveSection = name;
           break;
@@ -91,6 +91,14 @@ const HomeScreen = () => {
       setActiveSection(currentActiveSection);
     }
   };
+
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.mainContainer}>
@@ -133,6 +141,9 @@ const HomeScreen = () => {
   );
 };
 
+// ---------------------------
+// APP PRINCIPAL (sin login)
+// ---------------------------
 export default function App() {
   const [fontsLoaded] = useFonts({
     'Poppins-Regular': require('../../assets/fonts/Poppins-Regular.ttf'),
@@ -152,12 +163,16 @@ export default function App() {
   return <HomeScreen />;
 }
 
+// ---------------------------
+// ESTILOS
+// ---------------------------
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#ffffff', 
   },
   scrollContent: {
+   
     flexGrow: 1,
   },
   content: {
@@ -182,6 +197,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#121212',
+    backgroundColor: '#ffffffff',
   },
 });

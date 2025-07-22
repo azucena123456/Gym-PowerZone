@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clipboard, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Clipboard, Pressable, Text, View, useWindowDimensions, StyleSheet } from 'react-native';
 
 const SeccionMembresia: React.FC = () => {
   const { width } = useWindowDimensions();
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   rowContainer: {
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    flexWrap: 'wrap',
+    flexWrap: 'wrap', 
   },
   columnLeft: {
     flex: 1,
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   membershipCta: {
-    backgroundColor: '#fe370aff',
+    backgroundColor: '#f23a11',
     paddingVertical: 14,
     borderRadius: 6,
     alignItems: 'center',
