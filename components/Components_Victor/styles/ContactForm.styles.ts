@@ -103,4 +103,9 @@ export const contactFormStyles = StyleSheet.create({
     marginVertical: 30,
     width: '100%',
   },
+  map: {
+    width: '100%',
+    height: IS_LARGE_SCREEN ? 300 : 200,
+    overflow: 'hidden',
+  },
 });

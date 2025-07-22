@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import {
   Image,
   ScrollView,
@@ -41,7 +41,6 @@ const WeAreGymso = forwardRef((props, ref) => {
 
   const handleScroll = (event) => {
     const scrollY = event.nativeEvent.contentOffset.y;
-
     if (aboutUsSectionRef.current && aboutUsHeight > 0) {
       aboutUsSectionRef.current.measureLayout(
         findNodeHandle(scrollViewRef.current),
@@ -65,8 +64,7 @@ const WeAreGymso = forwardRef((props, ref) => {
         style={[
           styles.outerContainer,
           {
-            paddingVertical: isPhone ? 8 : isTablet ? 15 : 25, // menos espacio vertical
-            minHeight: 'auto', // no forzar altura completa
+            paddingVertical: isPhone ? 12 : isTablet ? 20 : 32,
             justifyContent: isDesktop ? 'flex-start' : 'center',
           },
         ]}
@@ -79,7 +77,7 @@ const WeAreGymso = forwardRef((props, ref) => {
             {
               flexDirection: isDesktop ? 'row' : 'column',
               alignItems: 'center',
-              paddingVertical: isPhone ? 0 : 15, // menos padding vertical
+              paddingVertical: isPhone ? 4 : 20,
             },
           ]}
         >
@@ -87,22 +85,24 @@ const WeAreGymso = forwardRef((props, ref) => {
             style={[
               styles.textSection,
               {
-                paddingRight: isDesktop ? 40 : 0,
-                marginBottom: isDesktop ? 0 : 30,
+                paddingRight: isDesktop ? 48 : 0,
+                marginBottom: isDesktop ? 0 : 32,
                 alignItems: isDesktop ? 'flex-start' : 'center',
               },
             ]}
           >
-            <Text style={[styles.title, { fontSize: isPhone ? 24 : 32, textAlign: 'center' }]}>
+            <Text style={[styles.title, { fontSize: isPhone ? 28 : 36, textAlign: isDesktop ? 'left' : 'center' }]}>
               Hola, somos Gym-PowerZone
             </Text>
             <Text
               style={[
                 styles.paragraph,
                 {
-                  fontSize: isPhone ? 14 : 17,
-                  lineHeight: isPhone ? 20 : 26,
-                  textAlign: 'center',
+                  fontSize: isPhone ? 15 : 18,
+                  lineHeight: isPhone ? 24 : 30,
+                  textAlign: isDesktop ? 'left' : 'center',
+                  marginBottom: 16,
+                  color: '#444',
                 },
               ]}
             >
@@ -112,9 +112,10 @@ const WeAreGymso = forwardRef((props, ref) => {
               style={[
                 styles.paragraph,
                 {
-                  fontSize: isPhone ? 14 : 17,
-                  lineHeight: isPhone ? 20 : 26,
-                  textAlign: 'center',
+                  fontSize: isPhone ? 15 : 18,
+                  lineHeight: isPhone ? 24 : 30,
+                  textAlign: isDesktop ? 'left' : 'center',
+                  color: '#444',
                 },
               ]}
             >
@@ -132,51 +133,42 @@ const WeAreGymso = forwardRef((props, ref) => {
               },
             ]}
           >
-            <View
-              style={[
-                styles.card,
-                {
-                  width: 280,
-                  marginBottom: isPhone ? 20 : 0,
-                  marginRight: isDesktop ? 15 : 0,
-                },
-              ]}
-            >
-              <Image source={maryImage} style={[styles.cardImage, { height: isPhone ? 200 : 280 }]} />
-              <View style={styles.cardBody}>
-                <View style={styles.textIconRow}>
-                  <Text style={[styles.cardName, { fontSize: isPhone ? 16 : 20 }]}>Emma Torres</Text>
-                  <Icon name="x-twitter" size={18} color="#666" />
-                </View>
-                <View style={styles.textIconRow}>
-                  <Text style={[styles.cardRole, { fontSize: isPhone ? 12 : 15 }]}>Instructora de Pilates</Text>
-                  <Icon name="instagram" size={18} color="#666" />
-                </View>
-              </View>
-            </View>
-
-            <View
-              style={[
-                styles.card,
-                {
-                  width: 280,
-                  marginBottom: isPhone ? 20 : 0,
-                  marginLeft: isDesktop ? 15 : 0,
-                },
-              ]}
-            >
-              <Image source={catherineImage} style={[styles.cardImage, { height: isPhone ? 200 : 280 }]} />
-              <View style={styles.cardBody}>
-                <View style={styles.textIconRow}>
-                  <Text style={[styles.cardName, { fontSize: isPhone ? 16 : 20 }]}>Carla Méndez</Text>
-                  <Icon name="instagram" size={18} color="#666" />
-                </View>
-                <View style={styles.textIconRow}>
-                  <Text style={[styles.cardRole, { fontSize: isPhone ? 12 : 15 }]}>Entrenador Personal</Text>
-                  <Icon name="facebook" size={18} color="#666" />
+            {[{
+              img: maryImage,
+              name: "Emma Torres",
+              role: "Instructora de Pilates",
+              icons: ['x-twitter', 'instagram'],
+            }, {
+              img: catherineImage,
+              name: "Carla Méndez",
+              role: "Entrenador Personal",
+              icons: ['instagram', 'facebook'],
+            }].map(({ img, name, role, icons }, i) => (
+              <View
+                key={i}
+                style={[
+                  styles.card,
+                  {
+                    width: 280,
+                    marginBottom: isPhone ? 24 : 0,
+                    marginRight: (isDesktop && i === 0) ? 20 : 0,
+                    marginLeft: (isDesktop && i === 1) ? 20 : 0,
+                  },
+                ]}
+              >
+                <Image source={img} style={[styles.cardImage, { height: isPhone ? 200 : 280 }]} />
+                <View style={styles.cardBody}>
+                  <View style={styles.textIconRow}>
+                    <Text style={[styles.cardName, { fontSize: isPhone ? 17 : 22 }]}>{name}</Text>
+                    <Icon name={icons[0]} size={20} color="#666" />
+                  </View>
+                  <View style={styles.textIconRow}>
+                    <Text style={[styles.cardRole, { fontSize: isPhone ? 13 : 16 }]}>{role}</Text>
+                    <Icon name={icons[1]} size={20} color="#666" />
+                  </View>
                 </View>
               </View>
-            </View>
+            ))}
           </View>
         </View>
       </View>
@@ -210,12 +202,12 @@ const styles = StyleSheet.create({
     color: '#111',
     fontWeight: '700',
     fontFamily: 'sans-serif',
-    marginBottom: 20,
-    letterSpacing: -0.7,
+    marginBottom: 26,
+    letterSpacing: -0.5,
   },
   paragraph: {
     color: '#555',
-    marginBottom: 10, // reducido de 15 a 10
+    marginBottom: 12,
     fontFamily: 'sans-serif',
   },
   cardsSection: {
@@ -223,13 +215,13 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#fff',
-    borderRadius: 0,
+    borderRadius: 6,
     overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 6,
     alignItems: 'flex-start',
   },
   cardImage: {
@@ -246,8 +238,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    paddingVertical: 2,
-    marginBottom: 0,
+    paddingVertical: 4,
+    marginBottom: 4,
   },
   cardName: {
     color: '#222',
