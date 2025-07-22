@@ -34,7 +34,7 @@ const MapComponent: React.FC = () => {
         overflow: 'hidden',
         border: '1px solid #ccc',
         backgroundColor: '#e0e0e0',
-        borderRadius: 8,
+        borderRadius: 0,
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
       }}
     >
@@ -48,7 +48,7 @@ const MapComponent: React.FC = () => {
           width: '100%',
           height: '100%',
           border: 0,
-          borderRadius: 8,
+          borderRadius: 0,
         }}
         allowFullScreen
         loading="lazy"
