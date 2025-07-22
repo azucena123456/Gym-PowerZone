@@ -1,25 +1,31 @@
+// app/(tabs)/index.tsx
 import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import React, { useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Dimensions, NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View, Platform, Button } from 'react-native';
+import { useRouter } from 'expo-router'; 
+
 
 import Carusel from '@/components/carrusel';
 import ContactForm from '@/components/Components_Victor/ContactForm';
 import SeccionHorario from '@/components/Components_Victor/SeccionHorario';
 import SeccionMembresia from '@/components/Components_Victor/SeccionMembresia';
 import { Footer } from '@/components/Footer';
-import { Navbar } from '@/components/Navbar';
+import { Navbar } from '@/components/Navbar'; 
 import WeAreGymso from '@/components/ui/PresentacionGymso';
 import HeroVideo from '@/components/ui/PresentacionVideo';
 
 const { height: windowHeight } = Dimensions.get('window');
 
-export default function HomeScreen() {
+export default function HomeScreen() { 
+  const router = useRouter(); 
+
   const [fontsLoaded] = useFonts({
-    'Poppins-Regular': require('@/assets/fonts/Poppins-Regular.ttf'),
-    'Poppins-ExtraBold': require('@/assets/fonts/Poppins-ExtraBold.ttf'),
-    'Montserrat-Regular': require('@/assets/fonts/Montserrat-Regular.ttf'),
-    'Montserrat-ExtraBold': require('@/assets/fonts/Montserrat-ExtraBold.ttf'),
+
+    'Poppins-Regular': require('../../assets/fonts/Poppins-Regular.ttf'), 
+    'Poppins-ExtraBold': require('../../assets/fonts/Poppins-ExtraBold.ttf'),
+    'Montserrat-Regular': require('../../assets/fonts/Montserrat-Regular.ttf'),
+    'Montserrat-ExtraBold': require('../../assets/fonts/Montserrat-ExtraBold.ttf'),
   });
 
   const [activeSection, setActiveSection] = useState<string | null>('inicio');
@@ -40,7 +46,7 @@ export default function HomeScreen() {
       (x, y, width, height) => {
         sectionLayouts.current[sectionName] = { y, height };
       },
-      () => { }
+      () => { /* Callback de error */ }
     );
   };
 
@@ -105,7 +111,12 @@ export default function HomeScreen() {
   return (
     <View style={styles.mainContainer}>
       <StatusBar hidden={true} />
-      <Navbar scrollToSection={scrollToSection} activeSection={activeSection} />
+      
+      <Navbar
+        scrollToSection={scrollToSection}
+        activeSection={activeSection}
+        onCartPress={() => router.push('/store')} 
+      />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         ref={scrollViewRef}
@@ -137,6 +148,16 @@ export default function HomeScreen() {
           <ContactForm />
         </View>
 
+        
+        <View style={styles.storeButtonContainer}>
+          <Button
+            title="Ir a la Tienda"
+            onPress={() => router.push('/store')} 
+            color="#E44D26" 
+          />
+        </View>
+        
+
         <Footer />
       </ScrollView>
     </View>
@@ -146,10 +167,9 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#ffffff', 
+    backgroundColor: '#ffffff',
   },
   scrollContent: {
-   
     flexGrow: 1,
   },
   content: {
@@ -176,4 +196,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ffffffff',
   },
+  storeButtonContainer: { 
+    marginVertical: 20,
+    paddingHorizontal: 20,
+  }
 });

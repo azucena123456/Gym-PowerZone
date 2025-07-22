@@ -6,6 +6,7 @@ interface CaruselItem {
   title: string;
   image: any;
   entrenadora?: string;
+  nombreEntrenador?: string;
   description?: string;
   ctaText?: string;
 }
@@ -126,7 +127,8 @@ const Carusel: React.FC = () => {
       id: 1,
       title: 'Aerobic',
       image: require('../assets/images/Aerobic.png'),
-      entrenadora: 'Entrenador ~ Luis',
+      entrenadora: 'Entrenador',
+      nombreEntrenador:'Luis',
       description: 'Sesiones dinámicas que combinan música y movimiento para fortalecer el sistema cardiovascular.',
       ctaText: '$90'
     },
@@ -134,7 +136,8 @@ const Carusel: React.FC = () => {
       id: 2,
       title: 'Cardio',
       image: require('../assets/images/cardio.jpg'),
-      entrenadora: 'Entrenadora ~ Sofia',
+      entrenadora: 'Entrenadora ',
+      nombreEntrenador:'Sofia',
       description: 'Entrenamientos intensos por intervalos para quemar calorías rápidamente.',
       ctaText: '$90'
     },
@@ -142,7 +145,8 @@ const Carusel: React.FC = () => {
       id: 3,
       title: 'Crossfit',
       image: require('../assets/images/Crossfit.png'),
-      entrenadora: 'Entrenador ~ Javier',
+      entrenadora: 'Entrenador',
+      nombreEntrenador:'Javier',
       description: 'Programa de alta intensidad que trabaja fuerza, velocidad y técnica.',
       ctaText: '$90'
     },
@@ -150,7 +154,8 @@ const Carusel: React.FC = () => {
       id: 4,
       title: 'Yoga',
       image: require('../assets/images/yoga.jpg'),
-      entrenadora: 'Entrenadora ~ Emma',
+      entrenadora: 'Entrenadora',
+      nombreEntrenador:'Emma',
       description: 'Relajación profunda y mejora de la flexibilidad para equilibrar cuerpo y mente.',
       ctaText: '$90'
     },
@@ -158,7 +163,8 @@ const Carusel: React.FC = () => {
       id: 5,
       title: 'Pilates',
       image: require('../assets/images/pilates.jpg'),
-      entrenadora: 'Entrenadora ~ Emma',
+      entrenadora: 'Entrenadora',
+      nombreEntrenador:'Emma',
       description: 'Fortalece el core y mejora la postura mediante ejercicios controlados.',
       ctaText: '$90'
     },
@@ -166,7 +172,8 @@ const Carusel: React.FC = () => {
       id: 6,
       title: 'Zumba',
       image: require('../assets/images/Zumba.jpg'),
-      entrenadora: 'Entrenador ~ Diego',
+      entrenadora: 'Entrenador',
+      nombreEntrenador:'Diego',
       description: 'Clases llenas de ritmo y energía con movimientos de baile.',
       ctaText: '$90'
     },
@@ -248,14 +255,20 @@ const Carusel: React.FC = () => {
 
               <View style={styles.contentWrapper}>
                 <View style={styles.textContent}>
-                  {item.entrenadora && (
-                    <Text style={styles.entrenadoraText}>
-                      {item.entrenadora.split('~')[0]}~{' '}
-                      <Text style={styles.nombreEntrenador}>
-                        {item.entrenadora.split('~')[1].trim()}
-                      </Text>
-                    </Text>
-                  )}
+
+                {item.entrenadora && item.nombreEntrenador && (
+  <Text style={styles.entrenadoraText}>
+    {item.entrenadora} ~{' '}
+    <Text style={styles.nombreEntrenador}>
+      {item.nombreEntrenador}
+    </Text>
+  </Text>
+)}
+
+
+
+
+                 
 
                   <Text style={styles.slideDescription}>
                     {item.description}

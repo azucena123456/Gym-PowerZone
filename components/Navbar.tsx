@@ -2,11 +2,13 @@ import { FontAwesome } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { Alert, Animated, Linking, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { styles } from './Navbar.styles';
+import { useRouter } from 'expo-router'; 
 
 interface NavbarProps {
   onPressMenu?: () => void;
   scrollToSection: (section: string) => void;
   activeSection: string | null;
+
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, activeSection }) => {
@@ -16,6 +18,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
 
   const { width } = useWindowDimensions();
   const isMobileOrTablet = width < 1024;
+
+  const router = useRouter(); 
 
   const menuItems = [
     { name: 'INICIO', section: 'inicio' },
@@ -71,6 +75,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
 
       {isMobileOrTablet ? (
         <>
+          
+          <TouchableOpacity
+            style={styles.cartButtonMobile} 
+            onPress={() => router.push('/store')} 
+            activeOpacity={0.7}
+          >
+            <FontAwesome name="shopping-cart" size={24} color="white" />
+          </TouchableOpacity>
+
           <TouchableOpacity
             style={styles.menuButton}
             onPress={toggleMenu}
@@ -110,6 +123,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
                   </Text>
                 </TouchableOpacity>
               ))}
+
+             
+              <TouchableOpacity
+                style={styles.mobileMenuItem}
+                onPress={() => {
+                  router.push('/store'); 
+                  setMenuOpen(false); 
+                }}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.mobileMenuText}>TIENDA</Text>
+              </TouchableOpacity>
 
               <View style={styles.mobileSocialIcons}>
                 <TouchableOpacity onPress={() => Linking.openURL('https://www.facebook.com')}>
@@ -152,6 +177,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
               </Text>
             </TouchableOpacity>
           ))}
+
+          
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => router.push('/store')} 
+            onMouseEnter={() => setHoveredItem('store')}
+            onMouseLeave={() => setHoveredItem(null)}
+          >
+            <Text style={[
+              styles.menuText,
+              hoveredItem === 'store' && styles.menuTextHover,
+            ]}>
+              TIENDA
+            </Text>
+          </TouchableOpacity>
 
           <View style={styles.socialIcons}>
             <TouchableOpacity
