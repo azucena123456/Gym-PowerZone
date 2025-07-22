@@ -9,11 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-<<<<<<< HEAD
-  Linking,
-=======
   useWindowDimensions,
->>>>>>> patricia
 } from 'react-native';
 import { send } from '@emailjs/browser'; // Cambio recomendado por ESLint
 import MapComponent from './MapComponent';
