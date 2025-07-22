@@ -149,13 +149,7 @@ export default function HomeScreen() {
         </View>
 
         
-        <View style={styles.storeButtonContainer}>
-          <Button
-            title="Ir a la Tienda"
-            onPress={() => router.push('/store')} 
-            color="#E44D26" 
-          />
-        </View>
+        
         
 
         <Footer />
