@@ -31,6 +31,7 @@ const HomeScreen = () => {
   const caruselRef = useRef<View>(null);
   const horarioRef = useRef<View>(null);
   const contactFormRef = useRef<View>(null);
+  
 
   const sectionLayouts = useRef<{ [key: string]: { y: number; height: number } }>({});
 
