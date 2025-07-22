@@ -1,10 +1,10 @@
-// components/Header.tsx
+
 import React from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet, Text, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router'; 
 import { HeaderProps } from '@/types'; 
-import { useSafeAreaInsets } from 'react-native-safe-area-context'; // <--- Importa useSafeAreaInsets
+import { useSafeAreaInsets } from 'react-native-safe-area-context'; 
 
 interface HeaderPropsWithoutCartPress extends Omit<HeaderProps, 'onCartPress'> {}
 
@@ -15,7 +15,7 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
   return (
     <View style={[
       styles.headerContainer,
-      { paddingTop: Platform.OS === 'ios' ? insets.top : 15 } // <--- Ajusta paddingTop usando insets.top para iOS
+      { paddingTop: Platform.OS === 'ios' ? insets.top : 10 } 
     ]}>
       <View style={styles.topRow}>
         <Text style={styles.logoText}>Gym-PowerZone</Text>
@@ -49,9 +49,9 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
 const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: '#000',
-    // paddingTop se maneja dinámicamente arriba
+    
     paddingHorizontal: 100,
-    paddingBottom: 10,
+    paddingBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#555',
   },

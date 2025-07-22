@@ -64,7 +64,7 @@ cardContainer: {
     },
 productImage: {
     width: '100%',
-    height: 80, 
+    height: 110, 
     resizeMode: 'contain', 
     marginBottom: 15, 
     },
