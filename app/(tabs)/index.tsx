@@ -15,6 +15,7 @@ import Carusel from '../../components/carrusel';
 import ContactForm from '../../components/Components_Victor/ContactForm';
 import SeccionHorario from '../../components/Components_Victor/SeccionHorario';
 import SeccionMembresia from '../../components/Components_Victor/SeccionMembresia';
+import PreguntasFrecuentes from '../../components/Components_Victor/preguntasFrecuentes'; // Nueva importación
 import { Footer } from '../../components/Footer';
 import { Navbar } from '../../components/Navbar';
 import WeAreGymso from '../../components/ui/PresentacionGymso';
@@ -31,6 +32,7 @@ const HomeScreen = () => {
   const caruselRef = useRef<View>(null);
   const horarioRef = useRef<View>(null);
   const contactFormRef = useRef<View>(null);
+  const preguntasFrecuentesRef = useRef<View>(null); // Nueva referencia
 
   const sectionLayouts = useRef<{ [key: string]: { y: number; height: number } }>({});
 
@@ -61,9 +63,11 @@ const HomeScreen = () => {
 
     const sections = [
       { name: 'inicio', ref: heroVideoRef },
+      { name: 'membresia', ref: membresiaRef },
       { name: 'sobreNosotros', ref: weAreGymsoRef },
       { name: 'clases', ref: caruselRef },
       { name: 'horarios', ref: horarioRef },
+      { name: 'preguntasFrecuentes', ref: preguntasFrecuentesRef }, // Nueva sección
       { name: 'contacto', ref: contactFormRef },
     ];
 
@@ -122,6 +126,11 @@ const HomeScreen = () => {
           <SeccionHorario />
         </View>
 
+        {/* Nueva sección de Preguntas Frecuentes */}
+        <View style={styles.preguntasFrecuentesContainer} ref={preguntasFrecuentesRef} onLayout={() => measureSection('preguntasFrecuentes', preguntasFrecuentesRef)}>
+          <PreguntasFrecuentes />
+        </View>
+
         <View style={styles.contactFormContainer} ref={contactFormRef} onLayout={() => measureSection('contacto', contactFormRef)}>
           <ContactForm />
         </View>
@@ -171,6 +180,10 @@ const styles = StyleSheet.create({
   },
   horarioContainer: {
     paddingVertical: 20,
+    backgroundColor: '#121212',
+  },
+  preguntasFrecuentesContainer: {
+    paddingVertical: 30,
     backgroundColor: '#121212',
   },
   contactFormContainer: {
