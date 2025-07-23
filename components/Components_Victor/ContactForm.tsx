@@ -15,30 +15,77 @@ import {
 import { send } from '@emailjs/browser';
 import MapComponent from './MapComponent';
 
-const CALENDLY_URL = 'https://calendly.com/2022034-utsh/gym-powerzone-consultas';
-
 const ContactForm = () => {
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
+  
+  // Definimos puntos de ruptura responsivos
+  const breakpoints = {
+    small: 480,
+    medium: 768,
+    large: 1024,
+    xlarge: 1200
+  };
 
-  // Definir rangos para dispositivo
-  const IS_DESKTOP = width >= 1024;
-  const IS_TABLET = width >= 600 && width < 1024;
-  const IS_MOBILE = width < 600;
+  // Funciones para determinar el tamaño de pantalla
+  const isSmallScreen = width <= breakpoints.small;
+  const isMediumScreen = width > breakpoints.small && width <= breakpoints.medium;
+  const isLargeScreen = width > breakpoints.medium && width <= breakpoints.large;
+  const isXLargeScreen = width > breakpoints.large;
 
-  const [nombre, setNombre] = useState('');
-  const [email, setEmail] = useState('');
-  const [mensaje, setMensaje] = useState('');
+  // Configuraciones responsivas
+  const responsiveConfig = {
+    padding: {
+      small: 16,
+      medium: 20,
+      large: 24,
+      xlarge: 28
+    },
+    fontSize: {
+      small: 14,
+      medium: 16,
+      large: 18,
+      xlarge: 20
+    },
+    inputHeight: {
+      small: 40,
+      medium: 45,
+      large: 50,
+      xlarge: 55
+    },
+    messageInputHeight: {
+      small: 120,
+      medium: 150,
+      large: 180,
+      xlarge: 200
+    }
+  };
+
+  // Obtener valores responsivos basados en el tamaño de pantalla
+  const getResponsiveValue = (values: any) => {
+    if (isSmallScreen) return values.small;
+    if (isMediumScreen) return values.medium;
+    if (isLargeScreen) return values.large;
+    return values.xlarge;
+  };
+
+  const [formData, setFormData] = useState({
+    nombre: '',
+    email: '',
+    mensaje: ''
+  });
+
+  const [errors, setErrors] = useState({
+    nombre: '',
+    email: '',
+    mensaje: ''
+  });
+
   const [isSending, setIsSending] = useState(false);
-
-  const [nombreError, setNombreError] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [mensajeError, setMensajeError] = useState('');
 
   const SERVICE_ID = 'service_f4nam56';
   const TEMPLATE_ID = 'template_58bdplq';
   const PUBLIC_KEY = '61Z51srJVskv93TN3';
-
-  const CALENDLY_BASE_URL = "https://calendly.com/2022034-utsh/gym-powerzone-consultas";
+  const CALENDLY_URL = 'https://calendly.com/2022034-utsh/gym-powerzone-consultas';
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const gymInfo = {
@@ -48,36 +95,38 @@ const ContactForm = () => {
     name: "Gym \"PowerZone\""
   };
 
-  const isLargeScreen = Dimensions.get('window').width > 768;
-
   const validateForm = () => {
-    let valid = true;
+    let isValid = true;
+    const newErrors = { nombre: '', email: '', mensaje: '' };
 
-    if (!nombre.trim()) {
-      setNombreError('El nombre es obligatorio.');
-      valid = false;
-    } else {
-      setNombreError('');
+    if (!formData.nombre.trim()) {
+      newErrors.nombre = 'El nombre es obligatorio.';
+      isValid = false;
     }
 
-    if (!email.trim()) {
-      setEmailError('El correo es obligatorio.');
-      valid = false;
-    } else if (!emailRegex.test(email)) {
-      setEmailError('El correo no es válido.');
-      valid = false;
-    } else {
-      setEmailError('');
+    if (!formData.email.trim()) {
+      newErrors.email = 'El correo es obligatorio.';
+      isValid = false;
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = 'El correo no es válido.';
+      isValid = false;
     }
 
-    if (!mensaje.trim()) {
-      setMensajeError('El mensaje no puede estar vacío.');
-      valid = false;
-    } else {
-      setMensajeError('');
+    if (!formData.mensaje.trim()) {
+      newErrors.mensaje = 'El mensaje no puede estar vacío.';
+      isValid = false;
     }
 
-    return valid;
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const handleInputChange = (name: string, value: string) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+    // Limpiar error cuando el usuario empieza a escribir
+    if (errors[name as keyof typeof errors]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
   const handleSendMessage = async () => {
@@ -85,252 +134,216 @@ const ContactForm = () => {
 
     setIsSending(true);
 
-    const templateParams = {
-      name: nombre,
-      email: email,
-      message: mensaje,
-    };
-
     try {
-      await send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+      await send(SERVICE_ID, TEMPLATE_ID, {
+        name: formData.nombre,
+        email: formData.email,
+        message: formData.mensaje
+      }, PUBLIC_KEY);
 
-      const url = `${CALENDLY_BASE_URL}?name=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&a1=${encodeURIComponent(mensaje)}`;
-      const canOpen = await Linking.canOpenURL(url);
-
-      if (canOpen) {
+      const url = `${CALENDLY_URL}?name=${encodeURIComponent(formData.nombre)}&email=${encodeURIComponent(formData.email)}&a1=${encodeURIComponent(formData.mensaje)}`;
+      
+      if (await Linking.canOpenURL(url)) {
         await Linking.openURL(url);
       }
 
       Alert.alert('¡Mensaje enviado!', 'Tu mensaje ha sido enviado con éxito y hemos abierto el calendario para agendar tu cita.');
-      setNombre('');
-      setEmail('');
-      setMensaje('');
+      setFormData({ nombre: '', email: '', mensaje: '' });
 
     } catch (error) {
       console.error('Error al enviar mensaje:', error);
       Alert.alert('Error', 'No se pudo enviar el mensaje. Intenta más tarde.');
-
     } finally {
       setIsSending(false);
     }
   };
 
+  // Estilos dinámicos basados en el tamaño de pantalla
+  const dynamicStyles = StyleSheet.create({
+    container: {
+      flexDirection: isMediumScreen || isLargeScreen || isXLargeScreen ? 'row' : 'column',
+      padding: getResponsiveValue(responsiveConfig.padding),
+      width: '100%',
+      maxWidth: 1200,
+      alignSelf: 'center'
+    },
+    formContainer: {
+      flex: 1,
+      padding: getResponsiveValue(responsiveConfig.padding),
+      marginRight: isMediumScreen || isLargeScreen || isXLargeScreen ? getResponsiveValue(responsiveConfig.padding) : 0,
+      marginBottom: isSmallScreen ? getResponsiveValue(responsiveConfig.padding) : 0
+    },
+    mapContainer: {
+      flex: 1,
+      padding: getResponsiveValue(responsiveConfig.padding)
+    },
+    title: {
+      fontSize: getResponsiveValue({
+        small: 20,
+        medium: 24,
+        large: 28,
+        xlarge: 32
+      }),
+      fontWeight: 'bold',
+      marginBottom: getResponsiveValue(responsiveConfig.padding),
+      color: '#333'
+    },
+    input: {
+      height: getResponsiveValue(responsiveConfig.inputHeight),
+      borderWidth: 1,
+      borderColor: errors.nombre || errors.email || errors.mensaje ? 'red' : '#ccc',
+      borderRadius: 8,
+      paddingHorizontal: 15,
+      marginBottom: 15,
+      fontSize: getResponsiveValue(responsiveConfig.fontSize),
+      backgroundColor: '#fff'
+    },
+    messageInput: {
+      height: getResponsiveValue(responsiveConfig.messageInputHeight),
+      textAlignVertical: 'top'
+    },
+    button: {
+      backgroundColor: '#222',
+      paddingVertical: getResponsiveValue(responsiveConfig.padding),
+      borderRadius: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 10
+    },
+    buttonText: {
+      color: '#fff',
+      fontWeight: 'bold',
+      fontSize: getResponsiveValue(responsiveConfig.fontSize),
+      textTransform: 'uppercase'
+    },
+    errorText: {
+      color: 'red',
+      fontSize: getResponsiveValue(responsiveConfig.fontSize) - 2,
+      marginBottom: 10,
+      marginLeft: 5
+    }
+  });
+
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContent}>
-      <View style={styles.sectionContainer}>
-        <View style={[
-          styles.contentWrapper,
-          isLargeScreen && styles.contentWrapperLargeScreen
-        ]}>
-          <View style={[
-            styles.formColumn,
-            isLargeScreen && styles.formColumnLargeScreen
-          ]}>
-            <Text style={styles.formTitle}>Siéntete libre de preguntar cualquier cosa</Text>
-
-            <TextInput
-              style={[
-                styles.input,
-                nombreError && styles.inputError
-              ]}
-              placeholder="Nombre"
-              value={nombre}
-              onChangeText={text => {
-                setNombre(text);
-                if (text.trim()) setNombreError('');
-              }}
-            />
-            {nombreError ? <Text style={styles.errorText}>{nombreError}</Text> : null}
-
-            <TextInput
-              style={[
-                styles.input,
-                emailError && styles.inputError
-              ]}
-              placeholder="Email"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              value={email}
-              onChangeText={text => {
-                setEmail(text);
-                if (emailRegex.test(text)) setEmailError('');
-              }}
-            />
-            {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-
-            <TextInput
-              style={[
-                styles.input,
-                styles.messageInput,
-                mensajeError && styles.inputError
-              ]}
-              placeholder="Mensaje"
-              multiline={true}
-              numberOfLines={4}
-              value={mensaje}
-              onChangeText={text => {
-                setMensaje(text);
-                if (text.trim()) setMensajeError('');
-              }}
-            />
-            {mensajeError ? <Text style={styles.errorText}>{mensajeError}</Text> : null}
-
-            <TouchableOpacity
-              style={styles.sendButton}
-              onPress={handleSendMessage}
-              disabled={isSending}
-            >
-              <Text style={styles.sendButtonText}>
-                {isSending ? 'Enviando...' : 'Enviar Mensaje'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <View
+    <ScrollView 
+      contentContainerStyle={{ 
+        flexGrow: 1, 
+        backgroundColor: '#fff',
+        paddingVertical: getResponsiveValue(responsiveConfig.padding)
+      }}
+    >
+      <View style={dynamicStyles.container}>
+        {/* Columna del formulario */}
+        <View style={dynamicStyles.formContainer}>
+          <Text style={dynamicStyles.title}>Siéntete libre de preguntar cualquier cosa</Text>
+          
+          <TextInput
             style={[
-              styles.mapColumn,
-              {
-                padding: IS_DESKTOP ? 30 : IS_TABLET ? 25 : 20,
-                maxWidth: IS_DESKTOP ? '55%' : '100%',
-                width: IS_TABLET ? '100%' : undefined,
-                alignItems: IS_DESKTOP ? 'flex-start' : 'center',
-              },
+              dynamicStyles.input,
+              errors.nombre && { borderColor: 'red' }
             ]}
+            placeholder="Nombre"
+            value={formData.nombre}
+            onChangeText={(text) => handleInputChange('nombre', text)}
+          />
+          {errors.nombre ? <Text style={dynamicStyles.errorText}>{errors.nombre}</Text> : null}
+
+          <TextInput
+            style={[
+              dynamicStyles.input,
+              errors.email && { borderColor: 'red' }
+            ]}
+            placeholder="Email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={formData.email}
+            onChangeText={(text) => handleInputChange('email', text)}
+          />
+          {errors.email ? <Text style={dynamicStyles.errorText}>{errors.email}</Text> : null}
+
+          <TextInput
+            style={[
+              dynamicStyles.input,
+              dynamicStyles.messageInput,
+              errors.mensaje && { borderColor: 'red' }
+            ]}
+            placeholder="Mensaje"
+            multiline
+            value={formData.mensaje}
+            onChangeText={(text) => handleInputChange('mensaje', text)}
+          />
+          {errors.mensaje ? <Text style={dynamicStyles.errorText}>{errors.mensaje}</Text> : null}
+
+          <TouchableOpacity
+            style={dynamicStyles.button}
+            onPress={handleSendMessage}
+            disabled={isSending}
           >
-            <Text
-              style={[
-                styles.mapTitle,
-                {
-                  fontSize: IS_DESKTOP ? 32 : IS_TABLET ? 28 : 22,
-                  lineHeight: IS_DESKTOP ? 40 : 30,
-                  textAlign: IS_DESKTOP ? 'left' : 'center',
-                },
-              ]}
-            >
-              Dónde puedes encontrarnos
+            <Text style={dynamicStyles.buttonText}>
+              {isSending ? 'Enviando...' : 'Enviar Mensaje'}
             </Text>
-            <View style={styles.locationDetail}>
-              <Image
-                source={require('./styles/image.png')}
-                style={styles.locationIcon}
-              />
-              <Text style={styles.locationText}>
-                {gymInfo.address} ({gymInfo.name})
-              </Text>
-            </View>
-            <View style={styles.divider} />
-            <MapComponent
-              latitude={gymInfo.latitude}
-              longitude={gymInfo.longitude}
-              name={gymInfo.name}
-              address={gymInfo.address}
-              height={280}
+          </TouchableOpacity>
+        </View>
+
+        {/* Columna del mapa */}
+        <View style={dynamicStyles.mapContainer}>
+          <Text style={dynamicStyles.title}>Dónde puedes encontrarnos</Text>
+          
+          <View style={{ 
+            flexDirection: 'row', 
+            alignItems: 'center', 
+            marginBottom: getResponsiveValue(responsiveConfig.padding) 
+          }}>
+            <Image
+              source={require('./styles/image.png')}
+              style={{ 
+                width: getResponsiveValue({
+                  small: 16,
+                  medium: 18,
+                  large: 20,
+                  xlarge: 22
+                }), 
+                height: getResponsiveValue({
+                  small: 16,
+                  medium: 18,
+                  large: 20,
+                  xlarge: 22
+                }),
+                marginRight: 8 
+              }}
             />
+            <Text style={{ 
+              fontSize: getResponsiveValue(responsiveConfig.fontSize),
+              color: '#555',
+              flexShrink: 1
+            }}>
+              {gymInfo.address} ({gymInfo.name})
+            </Text>
           </View>
+          
+          <View style={{ 
+            height: 1, 
+            backgroundColor: '#ccc', 
+            marginVertical: getResponsiveValue(responsiveConfig.padding),
+            width: '100%' 
+          }} />
+          
+          <MapComponent
+            latitude={gymInfo.latitude}
+            longitude={gymInfo.longitude}
+            name={gymInfo.name}
+            address={gymInfo.address}
+            height={getResponsiveValue({
+              small: 200,
+              medium: 250,
+              large: 300,
+              xlarge: 350
+            })}
+          />
         </View>
       </View>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  scrollViewContent: {
-    flexGrow: 1,
-    backgroundColor: '#fff',
-  },
-  sectionContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  contentWrapper: {
-    justifyContent: 'space-between',
-  },
-  contentWrapperLargeScreen: {
-    flexDirection: 'row',
-  },
-  formColumn: {
-    backgroundColor: '#fff',
-    padding: 20,
-    flex: 1,
-  },
-  formColumnLargeScreen: {
-    padding: 40,
-    maxWidth: '45%',
-  },
-  formTitle: {
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 25,
-    fontSize: 24,
-  },
-  input: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    marginBottom: 20,
-    fontSize: 16,
-    color: '#333',
-    borderRadius: 6,
-  },
-  inputError: {
-    borderColor: 'red',
-  },
-  messageInput: {
-    height: 180,
-    textAlignVertical: 'top',
-  },
-  sendButton: {
-    backgroundColor: '#222',
-    paddingVertical: 18,
-    paddingHorizontal: 30,
-    alignItems: 'center',
-    borderRadius: 6,
-    marginTop: 10,
-  },
-  sendButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    fontSize: 18,
-  },
-  errorText: {
-    color: 'red',
-    marginBottom: 10,
-    fontSize: 14,
-  },
-  mapColumn: {
-    backgroundColor: '#fff',
-  },
-  mapTitle: {
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 25,
-  },
-  locationDetail: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  locationIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 8,
-  },
-  locationText: {
-    fontSize: 18,
-    color: '#555',
-    flexShrink: 1,
-    lineHeight: 22,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#ccc',
-    marginVertical: 30,
-    width: '100%',
-  },
-});
 
 export default ContactForm;
