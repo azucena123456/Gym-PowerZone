@@ -21,14 +21,12 @@ export const contactFormStyles = StyleSheet.create({
     paddingHorizontal: 20,
     justifyContent: 'space-between',
   },
-<<<<<<< HEAD
   contentWrapperLargeScreen: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '90%',
   },
-=======
->>>>>>> patricia
+
   formColumn: {
     flex: 1,
     padding: IS_LARGE_SCREEN ? 30 : 20,
@@ -118,7 +116,6 @@ export const contactFormStyles = StyleSheet.create({
     marginVertical: 30,
     width: '100%',
   },
-<<<<<<< HEAD
   inputError: {
     borderColor: 'red',
     borderWidth: 1,
@@ -130,11 +127,4 @@ export const contactFormStyles = StyleSheet.create({
     marginLeft: 4,
   },
 });
-=======
-  map: {
-    width: '100%',
-    height: IS_LARGE_SCREEN ? 300 : 200,
-    overflow: 'hidden',
-  },
-});
->>>>>>> patricia
+

@@ -1,9 +1,6 @@
 import React from 'react';
-<<<<<<< HEAD
 import { Clipboard, Pressable, Text, View, useWindowDimensions, StyleSheet } from 'react-native';
-=======
-import { Clipboard, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
->>>>>>> patricia
+
 
 const SeccionMembresia: React.FC = () => {
   const { width } = useWindowDimensions();
@@ -145,11 +142,8 @@ const styles = StyleSheet.create({
   rowContainer: {
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-<<<<<<< HEAD
     flexWrap: 'wrap', // permite que las columnas bajen si no caben
-=======
-    flexWrap: 'wrap', 
->>>>>>> patricia
+
   },
   columnLeft: {
     flex: 1,
@@ -166,11 +160,7 @@ const styles = StyleSheet.create({
   offerText: {
     color: '#d4d9d0',
     fontWeight: '600',
-<<<<<<< HEAD
     marginBottom: 8,
-=======
-    marginBottom: 0,
->>>>>>> patricia
   },
   membershipPrice: {
     color: '#fff',
@@ -181,15 +171,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   membershipCta: {
-<<<<<<< HEAD
     backgroundColor: '#f23a11',
     paddingVertical: 14,
     borderRadius: 6,
-=======
-    backgroundColor: '#fe370aff',
-    paddingVertical: 14,
-    borderRadius: 3,
->>>>>>> patricia
+
     alignItems: 'center',
     width: '100%',
     marginTop: 15,
