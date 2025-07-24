@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import {
   FAQContainer,
   FAQTitle,
@@ -7,7 +7,6 @@ import {
   FAQColumn,
   FAQQuestion,
   QuestionText,
-  FAQToggleButton,
   ToggleIcon,
   FAQAnswer,
   QuestionContainer,
@@ -15,10 +14,11 @@ import {
 } from './styles/preguntasFrecuentes.styles';
 
 const PreguntasFrecuentes = () => {
-  const [activeQuestion, setActiveQuestion] = useState<string | null>(null);
-  const [hoveredQuestion, setHoveredQuestion] = useState<string | null>(null);
+  const [activeQuestion, setActiveQuestion] = useState<number | null>(null);
+  const [hoveredQuestion, setHoveredQuestion] = useState<number | null>(null);
+  const { width } = useWindowDimensions();
 
-  const toggleQuestion = (index: string) => {
+  const toggleQuestion = (index: number) => {
     setActiveQuestion(activeQuestion === index ? null : index);
   };
 
@@ -49,62 +49,61 @@ const PreguntasFrecuentes = () => {
     }
   ];
 
-  // Dividir las preguntas en dos columnas
-  const leftColumnQuestions = faqData.slice(0, 3);
-  const rightColumnQuestions = faqData.slice(3, 6);
+  // Determinar si mostrar en una o dos columnas basado en el ancho
+  const showSingleColumn = width < 768;
 
   return (
     <FAQContainer>
       <FAQTitle>PREGUNTAS FRECUENTES</FAQTitle>
 
       <FAQColumnsContainer>
-        <FAQColumn>
-          {leftColumnQuestions.map((item, index) => (
-            <View key={`question-left-${index}`}>
+        {/* Primera columna (siempre visible) */}
+        <FAQColumn singleColumn={showSingleColumn}>
+          {faqData.slice(0, showSingleColumn ? faqData.length : 3).map((item, index) => (
+            <View key={`question-${index}`}>
               <FAQQuestion
-                onPress={() => toggleQuestion(`left-${index}`)}
-                onPressIn={() => setHoveredQuestion(`left-${index}`)}
+                onPress={() => toggleQuestion(index)}
+                onPressIn={() => setHoveredQuestion(index)}
                 onPressOut={() => setHoveredQuestion(null)}
               >
                 <QuestionContainer>
-                  <QuestionHighlight style={{
-                    backgroundColor: hoveredQuestion === `left-${index}` ? '#ff5722' : 'transparent'
-                  }} />
+                  <QuestionHighlight hovered={hoveredQuestion === index} />
                   <QuestionText>{item.question}</QuestionText>
                 </QuestionContainer>
-                <ToggleIcon>{activeQuestion === `left-${index}` ? '−' : '+'}</ToggleIcon>
+                <ToggleIcon>{activeQuestion === index ? '−' : '+'}</ToggleIcon>
               </FAQQuestion>
               
-              {activeQuestion === `left-${index}` && (
+              {activeQuestion === index && (
                 <FAQAnswer>{item.answer}</FAQAnswer>
               )}
             </View>
           ))}
         </FAQColumn>
 
-        <FAQColumn>
-          {rightColumnQuestions.map((item, index) => (
-            <View key={`question-right-${index}`}>
-              <FAQQuestion
-                onPress={() => toggleQuestion(`right-${index}`)}
-                onPressIn={() => setHoveredQuestion(`right-${index}`)}
-                onPressOut={() => setHoveredQuestion(null)}
-              >
-                <QuestionContainer>
-                  <QuestionHighlight style={{
-                    backgroundColor: hoveredQuestion === `right-${index}` ? '#ff5722' : 'transparent'
-                  }} />
-                  <QuestionText>{item.question}</QuestionText>
-                </QuestionContainer>
-                <ToggleIcon>{activeQuestion === `right-${index}` ? '−' : '+'}</ToggleIcon>
-              </FAQQuestion>
-              
-              {activeQuestion === `right-${index}` && (
-                <FAQAnswer>{item.answer}</FAQAnswer>
-              )}
-            </View>
-          ))}
-        </FAQColumn>
+        {/* Segunda columna (solo en pantallas anchas) */}
+        {!showSingleColumn && (
+          <FAQColumn singleColumn={false}>
+            {faqData.slice(3, 6).map((item, index) => (
+              <View key={`question-${index + 3}`}>
+                <FAQQuestion
+                  onPress={() => toggleQuestion(index + 3)}
+                  onPressIn={() => setHoveredQuestion(index + 3)}
+                  onPressOut={() => setHoveredQuestion(null)}
+                >
+                  <QuestionContainer>
+                    <QuestionHighlight hovered={hoveredQuestion === index + 3} />
+                    <QuestionText>{item.question}</QuestionText>
+                  </QuestionContainer>
+                  <ToggleIcon>{activeQuestion === index + 3 ? '−' : '+'}</ToggleIcon>
+                </FAQQuestion>
+                
+                {activeQuestion === index + 3 && (
+                  <FAQAnswer>{item.answer}</FAQAnswer>
+                )}
+              </View>
+            ))}
+          </FAQColumn>
+        )}
       </FAQColumnsContainer>
     </FAQContainer>
   );
