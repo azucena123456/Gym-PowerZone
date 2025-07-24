@@ -7,7 +7,6 @@ const isTablet = screenWidth >= 400 && screenWidth < 800;
 
 const fontSizes = {
   title: isPhone ? 20 : isTablet ? 26 : 30,
-  sectionTitle: isPhone ? 16 : isTablet ? 18 : 20,
   question: isPhone ? 14 : isTablet ? 15 : 16,
   answer: isPhone ? 13 : isTablet ? 14 : 15,
   toggleIcon: isPhone ? 18 : isTablet ? 20 : 22
@@ -27,20 +26,14 @@ export const FAQTitle = styled(Text)`
   text-transform: uppercase;
 `;
 
-export const FAQSection = styled(View)`
-  margin-bottom: ${isPhone ? 15 : 20}px;
-  background-color: #1E1E1E;
-  padding: ${isPhone ? 12 : 15}px;
-  border-radius: 8px;
-  margin-left: ${isPhone ? 20 : 60}px;
-  margin-right: ${isPhone ? 20 : 60}px;
+export const FAQColumnsContainer = styled(View)`
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 ${isPhone ? 10 : 20}px;
 `;
 
-export const SectionTitle = styled(Text)`
-  font-size: ${fontSizes.sectionTitle}px;
-  color: #ff5722;
-  margin-bottom: ${isPhone ? 10 : 12}px;
-  font-weight: bold;
+export const FAQColumn = styled(View)`
+  width: 48%;
 `;
 
 export const QuestionContainer = styled(View)`
@@ -61,6 +54,7 @@ export const FAQQuestion = styled(TouchableOpacity)`
   justify-content: space-between;
   align-items: center;
   padding: ${isPhone ? 6 : 8}px 0;
+  margin-bottom: ${isPhone ? 10 : 15}px;
 `;
 
 export const QuestionText = styled(Text)`
@@ -88,4 +82,5 @@ export const FAQAnswer = styled(Text)`
   background-color: #2A2A2A;
   border-radius: 5px;
   line-height: ${isPhone ? 18 : 20}px;
+  margin-bottom: ${isPhone ? 15 : 20}px;
 `;
