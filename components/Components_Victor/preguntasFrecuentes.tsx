@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import {
   FAQContainer,
+  FAQContentWrapper,
   FAQTitle,
   FAQColumnsContainer,
   FAQColumn,
@@ -49,62 +50,61 @@ const PreguntasFrecuentes = () => {
     }
   ];
 
-  // Determinar si mostrar en una o dos columnas basado en el ancho
   const showSingleColumn = width < 768;
 
   return (
     <FAQContainer>
-      <FAQTitle>PREGUNTAS FRECUENTES</FAQTitle>
+      <FAQContentWrapper>
+        <FAQTitle>PREGUNTAS FRECUENTES</FAQTitle>
 
-      <FAQColumnsContainer>
-        {/* Primera columna (siempre visible) */}
-        <FAQColumn singleColumn={showSingleColumn}>
-          {faqData.slice(0, showSingleColumn ? faqData.length : 3).map((item, index) => (
-            <View key={`question-${index}`}>
-              <FAQQuestion
-                onPress={() => toggleQuestion(index)}
-                onPressIn={() => setHoveredQuestion(index)}
-                onPressOut={() => setHoveredQuestion(null)}
-              >
-                <QuestionContainer>
-                  <QuestionHighlight hovered={hoveredQuestion === index} />
-                  <QuestionText>{item.question}</QuestionText>
-                </QuestionContainer>
-                <ToggleIcon>{activeQuestion === index ? '−' : '+'}</ToggleIcon>
-              </FAQQuestion>
-              
-              {activeQuestion === index && (
-                <FAQAnswer>{item.answer}</FAQAnswer>
-              )}
-            </View>
-          ))}
-        </FAQColumn>
-
-        {/* Segunda columna (solo en pantallas anchas) */}
-        {!showSingleColumn && (
-          <FAQColumn singleColumn={false}>
-            {faqData.slice(3, 6).map((item, index) => (
-              <View key={`question-${index + 3}`}>
+        <FAQColumnsContainer>
+          <FAQColumn singleColumn={showSingleColumn}>
+            {faqData.slice(0, showSingleColumn ? faqData.length : 3).map((item, index) => (
+              <View key={`question-${index}`}>
                 <FAQQuestion
-                  onPress={() => toggleQuestion(index + 3)}
-                  onPressIn={() => setHoveredQuestion(index + 3)}
+                  onPress={() => toggleQuestion(index)}
+                  onPressIn={() => setHoveredQuestion(index)}
                   onPressOut={() => setHoveredQuestion(null)}
                 >
                   <QuestionContainer>
-                    <QuestionHighlight hovered={hoveredQuestion === index + 3} />
+                    <QuestionHighlight hovered={hoveredQuestion === index} />
                     <QuestionText>{item.question}</QuestionText>
                   </QuestionContainer>
-                  <ToggleIcon>{activeQuestion === index + 3 ? '−' : '+'}</ToggleIcon>
+                  <ToggleIcon>{activeQuestion === index ? '−' : '+'}</ToggleIcon>
                 </FAQQuestion>
                 
-                {activeQuestion === index + 3 && (
+                {activeQuestion === index && (
                   <FAQAnswer>{item.answer}</FAQAnswer>
                 )}
               </View>
             ))}
           </FAQColumn>
-        )}
-      </FAQColumnsContainer>
+
+          {!showSingleColumn && (
+            <FAQColumn singleColumn={false}>
+              {faqData.slice(3, 6).map((item, index) => (
+                <View key={`question-${index + 3}`}>
+                  <FAQQuestion
+                    onPress={() => toggleQuestion(index + 3)}
+                    onPressIn={() => setHoveredQuestion(index + 3)}
+                    onPressOut={() => setHoveredQuestion(null)}
+                  >
+                    <QuestionContainer>
+                      <QuestionHighlight hovered={hoveredQuestion === index + 3} />
+                      <QuestionText>{item.question}</QuestionText>
+                    </QuestionContainer>
+                    <ToggleIcon>{activeQuestion === index + 3 ? '−' : '+'}</ToggleIcon>
+                  </FAQQuestion>
+                  
+                  {activeQuestion === index + 3 && (
+                    <FAQAnswer>{item.answer}</FAQAnswer>
+                  )}
+                </View>
+              ))}
+            </FAQColumn>
+          )}
+        </FAQColumnsContainer>
+      </FAQContentWrapper>
     </FAQContainer>
   );
 };
