@@ -1,3 +1,4 @@
+import { send } from '@emailjs/browser';
 import React, { useState } from 'react';
 import {
   Alert,
@@ -9,18 +10,18 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  useWindowDimensions,
+  useWindowDimensions
 } from 'react-native';
-import { send } from '@emailjs/browser'; // Cambio recomendado por ESLint
 import MapComponent from './MapComponent';
 
-const CALENDLY_TOKEN = 'TU_TOKEN_AQUI'; // usar variable de entorno real
-const CALENDLY_URL = 'https://calendly.com/2022034-utsh/gym-powerzone-consultas';
+const SERVICE_ID = 'service_f4nam56';
+const TEMPLATE_ID = 'template_58bdplq';
+const PUBLIC_KEY = '61Z51srJVskv93TN3';
+const CALENDLY_BASE_URL = 'https://calendly.com/2022034-utsh/gym-powerzone-consultas';
 
 const ContactForm = () => {
   const { width } = useWindowDimensions();
 
-  // Definir rangos para dispositivo
   const IS_DESKTOP = width >= 1024;
   const IS_TABLET = width >= 600 && width < 1024;
   const IS_MOBILE = width < 600;
@@ -30,16 +31,10 @@ const ContactForm = () => {
   const [mensaje, setMensaje] = useState('');
   const [isSending, setIsSending] = useState(false);
 
-<<<<<<< HEAD
   const [nombreError, setNombreError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [mensajeError, setMensajeError] = useState('');
 
-  const SERVICE_ID = 'service_f4nam56';
-  const TEMPLATE_ID = 'template_58bdplq';
-  const PUBLIC_KEY = '61Z51srJVskv93TN3';
-
-  const CALENDLY_BASE_URL = "https://calendly.com/2022034-utsh/gym-powerzone-consultas";
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const validateForm = () => {
@@ -84,7 +79,7 @@ const ContactForm = () => {
     };
 
     try {
-      await send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY); // Usando la importación directa
+      await send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
 
       const url = `${CALENDLY_BASE_URL}?name=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&a1=${encodeURIComponent(mensaje)}`;
       const canOpen = await Linking.canOpenURL(url);
@@ -97,78 +92,14 @@ const ContactForm = () => {
       setNombre('');
       setEmail('');
       setMensaje('');
-
     } catch (error) {
       console.error('Error al enviar mensaje:', error);
       Alert.alert('Error', 'No se pudo enviar el mensaje. Intenta más tarde.');
-=======
-  const handleSendMessage = async () => {
-    if (!nombre || !email || !mensaje) {
-      Alert.alert('Error', 'Por favor, completa todos los campos.');
-      return;
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      Alert.alert('Error', 'Introduce un correo electrónico válido.');
-      return;
-    }
-    setIsSending(true);
-    try {
-      const userResponse = await fetch('https://api.calendly.com/users/me', {
-        headers: {
-          Authorization: `Bearer ${CALENDLY_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      if (!userResponse.ok) throw new Error('Token Calendly inválido o sin permisos.');
-
-      const calendlyUrlWithParams = `${CALENDLY_URL}?name=${encodeURIComponent(
-        nombre
-      )}&email=${encodeURIComponent(email)}&a1=${encodeURIComponent(mensaje)}`;
-
-      const canOpen = await Linking.canOpenURL(calendlyUrlWithParams);
-      if (!canOpen) throw new Error('No se puede abrir el enlace de Calendly');
-
-      await Linking.openURL(calendlyUrlWithParams);
-
-      Alert.alert('¡Mensaje enviado!', 'Redirigiéndote al calendario de citas.');
-      setNombre('');
-      setEmail('');
-      setMensaje('');
-    } catch (error) {
-      console.error('Error:', error);
-      Alert.alert('Error', 'No se pudo abrir Calendly. Intenta más tarde.');
->>>>>>> patricia
     } finally {
       setIsSending(false);
     }
   };
 
-<<<<<<< HEAD
-  const gymCoordinates = { latitude: 20.2806, longitude: -98.0569 };
-  const gymAddress = "C. de Olivo, Centro, 43200 Zacualtipán, Hgo.";
-  const gymName = "Gym \"PowerZone\"";
-  const isLargeScreen = Dimensions.get('window').width > 768;
-
-  return (
-    <ScrollView contentContainerStyle={contactFormStyles.scrollViewContent}>
-      <View style={contactFormStyles.sectionContainer}>
-        <View style={[
-          contactFormStyles.contentWrapper,
-          isLargeScreen && contactFormStyles.contentWrapperLargeScreen
-        ]}>
-          <View style={[
-            contactFormStyles.formColumn,
-            isLargeScreen && contactFormStyles.formColumnLargeScreen
-          ]}>
-            <Text style={contactFormStyles.formTitle}>Siéntete libre de preguntar cualquier cosa</Text>
-
-            <TextInput
-              style={[
-                contactFormStyles.input,
-                nombreError && contactFormStyles.inputError
-              ]}
-=======
   const gymInfo = {
     latitude: 20.2806,
     longitude: -98.0569,
@@ -223,9 +154,12 @@ const ContactForm = () => {
             >
               Siéntete libre de preguntar cualquier cosa
             </Text>
+
             <TextInput
-              style={styles.input}
->>>>>>> patricia
+              style={[
+                styles.input,
+                nombreError && { borderColor: 'red' },
+              ]}
               placeholder="Nombre"
               value={nombre}
               onChangeText={text => {
@@ -233,17 +167,13 @@ const ContactForm = () => {
                 if (text.trim()) setNombreError('');
               }}
             />
-            {nombreError ? <Text style={contactFormStyles.errorText}>{nombreError}</Text> : null}
+            {nombreError ? <Text style={{ color: 'red' }}>{nombreError}</Text> : null}
 
             <TextInput
-<<<<<<< HEAD
               style={[
-                contactFormStyles.input,
-                emailError && contactFormStyles.inputError
+                styles.input,
+                emailError && { borderColor: 'red' },
               ]}
-=======
-              style={styles.input}
->>>>>>> patricia
               placeholder="Email"
               keyboardType="email-address"
               autoCapitalize="none"
@@ -253,39 +183,26 @@ const ContactForm = () => {
                 if (emailRegex.test(text)) setEmailError('');
               }}
             />
-            {emailError ? <Text style={contactFormStyles.errorText}>{emailError}</Text> : null}
+            {emailError ? <Text style={{ color: 'red' }}>{emailError}</Text> : null}
 
             <TextInput
-<<<<<<< HEAD
               style={[
-                contactFormStyles.input,
-                contactFormStyles.messageInput,
-                mensajeError && contactFormStyles.inputError
+                styles.input,
+                styles.messageInput,
+                mensajeError && { borderColor: 'red' },
               ]}
               placeholder="Mensaje"
-              multiline={true}
-              numberOfLines={4}
-=======
-              style={[styles.input, styles.messageInput]}
-              placeholder="Mensaje"
-              placeholderTextColor="#555"
               multiline
->>>>>>> patricia
               value={mensaje}
               onChangeText={text => {
                 setMensaje(text);
                 if (text.trim()) setMensajeError('');
               }}
             />
-<<<<<<< HEAD
-            {mensajeError ? <Text style={contactFormStyles.errorText}>{mensajeError}</Text> : null}
+            {mensajeError ? <Text style={{ color: 'red' }}>{mensajeError}</Text> : null}
 
             <TouchableOpacity
-              style={contactFormStyles.sendButton}
-=======
-            <TouchableOpacity
               style={styles.sendButton}
->>>>>>> patricia
               onPress={handleSendMessage}
               disabled={isSending}
             >

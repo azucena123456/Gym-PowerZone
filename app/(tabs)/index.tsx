@@ -1,7 +1,16 @@
 import { useFonts } from 'expo-font';
+import { router } from 'expo-router'; // Importamos `router` para la navegación
 import { StatusBar } from 'expo-status-bar';
 import React, { useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Dimensions,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 // Componentes importados
 import Carusel from '../../components/carrusel';
@@ -15,9 +24,6 @@ import HeroVideo from '../../components/ui/PresentacionVideo';
 
 const { height: windowHeight } = Dimensions.get('window');
 
-// ---------------------------
-// PANTALLA PRINCIPAL (contenido de la aplicación)
-// ---------------------------
 const HomeScreen = () => {
   const [activeSection, setActiveSection] = useState<string | null>('inicio');
 
@@ -28,7 +34,6 @@ const HomeScreen = () => {
   const caruselRef = useRef<View>(null);
   const horarioRef = useRef<View>(null);
   const contactFormRef = useRef<View>(null);
-  
 
   const sectionLayouts = useRef<{ [key: string]: { y: number; height: number } }>({});
 
@@ -38,7 +43,7 @@ const HomeScreen = () => {
       (x, y, width, height) => {
         sectionLayouts.current[sectionName] = { y, height };
       },
-      () => { }
+      () => {}
     );
   };
 
@@ -92,18 +97,19 @@ const HomeScreen = () => {
     }
   };
 
-  if (!fontsLoaded) {
-    return (
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#ffffff" />
-      </View>
-    );
-  }
+  const handleNavigateToLogin = () => {
+    router.push('/Login');
+  };
 
   return (
     <View style={styles.mainContainer}>
       <StatusBar hidden={true} />
-      <Navbar scrollToSection={scrollToSection} activeSection={activeSection} />
+      <Navbar 
+        scrollToSection={scrollToSection} 
+        activeSection={activeSection} 
+        onNavigateToLogin={handleNavigateToLogin} 
+      />
+      
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         ref={scrollViewRef}
@@ -119,7 +125,11 @@ const HomeScreen = () => {
           <SeccionMembresia />
         </View>
 
-        <View style={styles.weAreContainer} ref={weAreGymsoRef} onLayout={() => measureSection('sobreNosotros', weAreGymsoRef)}>
+        <View
+          style={styles.weAreContainer}
+          ref={weAreGymsoRef}
+          onLayout={() => measureSection('sobreNosotros', weAreGymsoRef)}
+        >
           <WeAreGymso />
         </View>
 
@@ -131,7 +141,11 @@ const HomeScreen = () => {
           <SeccionHorario />
         </View>
 
-        <View style={styles.contactFormContainer} ref={contactFormRef} onLayout={() => measureSection('contacto', contactFormRef)}>
+        <View
+          style={styles.contactFormContainer}
+          ref={contactFormRef}
+          onLayout={() => measureSection('contacto', contactFormRef)}
+        >
           <ContactForm />
         </View>
 
@@ -141,9 +155,6 @@ const HomeScreen = () => {
   );
 };
 
-// ---------------------------
-// APP PRINCIPAL (sin login)
-// ---------------------------
 export default function App() {
   const [fontsLoaded] = useFonts({
     'Poppins-Regular': require('../../assets/fonts/Poppins-Regular.ttf'),
@@ -163,16 +174,12 @@ export default function App() {
   return <HomeScreen />;
 }
 
-// ---------------------------
-// ESTILOS
-// ---------------------------
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#ffffff', 
+    backgroundColor: '#ffffff',
   },
   scrollContent: {
-   
     flexGrow: 1,
   },
   content: {

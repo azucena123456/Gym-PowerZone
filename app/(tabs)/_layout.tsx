@@ -18,9 +18,11 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: {
-          display: 'none', // This line hides the tab bar
+          display: 'none',
         },
-      }}>
+      }}
+    >
+      
       <Tabs.Screen
         name="index"
         options={{
@@ -28,6 +30,36 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="Login"
+        options={{
+          title: 'Inicio de Sesión',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="Register"
+        options={{
+          title: 'Registro',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.badge.plus.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="ForgotPassword"
+        options={{
+          title: 'Recuperar Contraseña',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="questionmark.circle.fill" color={color} />,
+        }}
+      />
+     
+      <Tabs.Screen
+        name="Store"
+        options={{
+          title: 'Tienda',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="cart.fill" color={color} />,
+        }}
+      />
+      
       <Tabs.Screen
         name="explore"
         options={{

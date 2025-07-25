@@ -1,38 +1,50 @@
-import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router'; // Importamos `router` de expo-router
 import React, { useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Dimensions,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+  Image, // Importamos Image para la imagen
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
 const ForgotPasswordScreen: React.FC = () => {
-  const navigation = useNavigation();
+  // Eliminamos useNavigation ya que usaremos router
+  // const navigation = useNavigation();
   const [email, setEmail] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
+  const validateEmail = (email: string) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  };
+
   const handleResetPassword = async () => {
-    if (!email) {
+    if (!email.trim()) { // Usamos trim() para validar que no sea solo espacios en blanco
       Alert.alert('Campo incompleto', 'Por favor, ingresa tu dirección de email.');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      Alert.alert('Email inválido', 'Por favor, introduce un correo electrónico válido.');
       return;
     }
 
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Simula tiempo de espera de API
       Alert.alert(
         'Instrucciones Enviadas',
         'Si tu email está registrado, recibirás instrucciones para restablecer tu contraseña.'
       );
-      navigation.navigate('Login' as never);
+      router.push('/Login'); // Redirigir a la pantalla de Login
     } catch (error) {
       console.error('Error durante el restablecimiento de contraseña:', error);
       Alert.alert('Error', 'Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
@@ -48,7 +60,15 @@ const ForgotPasswordScreen: React.FC = () => {
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
     >
-      <View style={styles.card}>
+      <View style={styles.passwordResetCard}> {/* Cambiado de 'card' a 'passwordResetCard' para mayor claridad */}
+        <View style={styles.imageSection}>
+          <Image
+            source={require('../../assets/images/login.png')} // Ruta de la imagen del login
+            style={styles.gymImage}
+            resizeMode="cover"
+          />
+        </View>
+
         <View style={styles.formSection}>
           <Text style={styles.title}>¿Olvidaste tu contraseña?</Text>
           <Text style={styles.subtitle}>
@@ -79,7 +99,7 @@ const ForgotPasswordScreen: React.FC = () => {
 
           <Text style={styles.backToLoginText}>
             ¿Recordaste tu contraseña?{' '}
-            <TouchableOpacity onPress={() => navigation.navigate('Login' as never)} disabled={loading}>
+            <TouchableOpacity onPress={() => router.push('/Login')} disabled={loading}> {/* Usamos router.push */}
               <Text style={styles.loginLink}>
                 Inicia sesión
               </Text>
@@ -98,11 +118,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 10, // Ajustado a 10 para consistencia con Login/Register
   },
-  card: {
-    flexDirection: 'row',
-    width: width > 900 ? 900 : '95%',
+  passwordResetCard: { // Nuevo estilo para la tarjeta de restablecimiento de contraseña
+    flexDirection: width > 600 ? 'row' : 'column', // Responsive layout
+    width: '100%',
+    maxWidth: 900, // Consistente con Login/Register
     backgroundColor: '#fff',
     borderRadius: 8,
     overflow: 'hidden',
@@ -117,7 +138,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: 300,
+    minHeight: 200, // Consistente con Register
   },
   gymImage: {
     width: '100%',
@@ -125,7 +146,7 @@ const styles = StyleSheet.create({
   },
   formSection: {
     flex: 1,
-    padding: 30,
+    padding: 25, // Ajustado a 25 para consistencia con Register
     justifyContent: 'center',
   },
   title: {
@@ -137,21 +158,21 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 14,
     color: '#666',
-    marginBottom: 25,
+    marginBottom: 20, // Ajustado a 20 para consistencia
   },
   form: {
-    marginBottom: 20,
+    marginBottom: 15, // Ajustado a 15 para consistencia
   },
   label: {
-    marginBottom: 8,
+    marginBottom: 6, // Ajustado a 6 para consistencia
     fontSize: 14,
     color: '#555',
     fontWeight: 'bold',
   },
   input: {
-    paddingVertical: 12,
+    paddingVertical: 10, // Ajustado a 10 para consistencia
     paddingHorizontal: 15,
-    marginBottom: 18,
+    marginBottom: 12, // Ajustado a 12 para consistencia
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 4,
@@ -160,10 +181,10 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     backgroundColor: '#ff4500',
-    paddingVertical: 14,
+    paddingVertical: 12, // Ajustado a 12 para consistencia
     borderRadius: 4,
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 10, // Ajustado a 10 para consistencia
   },
   buttonText: {
     color: '#fff',
@@ -174,7 +195,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 14,
     color: '#666',
-    marginTop: 10,
+    marginTop: 20, // Ajustado a 20 para consistencia
   },
   loginLink: {
     color: '#ff4500',

@@ -21,14 +21,6 @@ export const contactFormStyles = StyleSheet.create({
     paddingHorizontal: 20,
     justifyContent: 'space-between',
   },
-<<<<<<< HEAD
-  contentWrapperLargeScreen: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '90%',
-  },
-=======
->>>>>>> patricia
   formColumn: {
     flex: 1,
     padding: IS_LARGE_SCREEN ? 30 : 20,
@@ -36,10 +28,6 @@ export const contactFormStyles = StyleSheet.create({
     marginBottom: IS_LARGE_SCREEN ? 0 : 40,
     marginRight: IS_LARGE_SCREEN ? 40 : 0,
     maxWidth: IS_LARGE_SCREEN ? 500 : '100%',
-  },
-  formColumnLargeScreen: {
-    width: '48%',
-    marginRight: 40,
   },
   formTitle: {
     fontSize: IS_LARGE_SCREEN ? 32 : width < 380 ? 22 : 26,
@@ -85,9 +73,6 @@ export const contactFormStyles = StyleSheet.create({
     backgroundColor: '#fff',
     maxWidth: IS_LARGE_SCREEN ? '55%' : '100%',
   },
-  mapColumnLargeScreen: {
-    width: '48%',
-  },
   mapTitle: {
     fontSize: IS_LARGE_SCREEN ? 32 : width < 380 ? 22 : 26,
     fontWeight: 'bold',
@@ -118,8 +103,6 @@ export const contactFormStyles = StyleSheet.create({
     marginVertical: 30,
     width: '100%',
   },
-<<<<<<< HEAD
-<<<<<<< HEAD
   inputError: {
     borderColor: 'red',
     borderWidth: 1,
@@ -130,14 +113,9 @@ export const contactFormStyles = StyleSheet.create({
     marginBottom: 12,
     marginLeft: 4,
   },
-});
-=======
   map: {
     width: '100%',
     height: IS_LARGE_SCREEN ? 300 : 200,
     overflow: 'hidden',
   },
-=======
->>>>>>> parent of 6df512f (subiendo cambios)
 });
->>>>>>> patricia
