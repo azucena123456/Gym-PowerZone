@@ -1,6 +1,6 @@
 // app/Store.tsx
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router'; // Para la navegación de regreso o a otras secciones
+import { router } from 'expo-router'; 
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 

@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
-  Image, // Import Platform to adjust KeyboardAvoidingView behavior
+  Image,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -64,42 +64,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    try {
-      const prompt = "Simular inicio de sesión con Google. Genera un mensaje de éxito.";
-      let chatHistory = [];
-      chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-      const payload = { contents: chatHistory };
-      const apiKey = ""; // Consider using environment variables for API keys
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      const result = await response.json();
-
-      if (result.candidates && result.candidates.length > 0 &&
-        result.candidates[0].content && result.candidates[0].content.parts &&
-        result.candidates[0].content.parts.length > 0) {
-        const text = result.candidates[0].content.parts[0].text;
-        Alert.alert('Inicio de Sesión con Google Exitoso', '¡Bienvenido con tu cuenta de Google!');
-        onLogin();
-        router.replace('/Store');
-      } else {
-        Alert.alert('Error de Inicio de Sesión con Google', 'No se pudo completar el inicio de sesión con Google. Inténtalo de nuevo.');
-      }
-    } catch (error) {
-      console.error('Error durante el inicio de sesión con Google:', error);
-      Alert.alert('Error', 'Ocurrió un error inesperado al intentar iniciar sesión con Google.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const navigateToRegister = () => {
     router.push('/Register');
   };
@@ -115,17 +79,17 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
     >
-      <KeyboardAvoidingView // Wrap the loginCard with KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // Adjust behavior for iOS/Android
-        style={styles.keyboardAvoidingContainer} // This style needs to take full space
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardAvoidingContainer}
       >
         <View style={[
           styles.loginCard,
-          !isLargeScreen && styles.loginCardSmallScreen // Apply flex-direction: column for small screens
+          !isLargeScreen && styles.loginCardSmallScreen
         ]}>
           <View style={[
             styles.formSection,
-            !isLargeScreen && styles.formSectionSmallScreen // Adjust minWidth for small screens
+            !isLargeScreen && styles.formSectionSmallScreen
           ]}>
             <Text style={styles.title}>Bienvenido</Text>
             <Text style={styles.subtitle}>Bienvenido de nuevo, ingrese sus datos por favor</Text>
@@ -213,7 +177,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   keyboardAvoidingContainer: {
-    flex: 1, // Ensure KeyboardAvoidingView takes full space
+    flex: 1,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -233,33 +197,31 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
   },
   loginCardSmallScreen: {
-    flexDirection: 'column', // Stack items vertically on small screens
-    maxWidth: '95%', // Allow a bit of margin
+    flexDirection: 'column',
+    maxWidth: '95%',
   },
   formSection: {
     flex: 1,
-    minWidth: 395, // This minWidth can be too restrictive on small screens
+    minWidth: 395,
     padding: 20,
     justifyContent: 'center',
   },
   formSectionSmallScreen: {
-    minWidth: 'auto', // Remove minWidth constraint for small screens
-    width: '100%', // Take full width
-    paddingHorizontal: 20, // Keep padding
-    paddingVertical: 30, // Adjust vertical padding for more space
+    minWidth: 'auto',
+    width: '100%',
+    paddingHorizontal: 20,
+    paddingVertical: 30,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#333',
-    textAlign: 'center', // Center text on small screens
   },
   subtitle: {
-    fontSize: 19,
+    fontSize: 18,
     color: '#666',
     marginBottom: 25,
-    textAlign: 'center', // Center text on small screens
   },
   form: {
     marginBottom: 20,
