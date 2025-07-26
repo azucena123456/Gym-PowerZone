@@ -7,7 +7,7 @@ interface NavbarProps {
   onPressMenu?: () => void;
   scrollToSection: (section: string) => void;
   activeSection: string | null;
-  onNavigateToLogin: () => void; // NUEVA PROP para navegar a la pantalla de Login
+  onNavigateToLogin: () => void; // Prop para navegar a la pantalla de Login
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, activeSection, onNavigateToLogin }) => {
@@ -61,7 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
 
   const menuHeight = slideAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, menuItems.length * 50 + 80 + 50] // Se añade espacio para el nuevo botón
+    outputRange: [0, menuItems.length * 50 + 80 + 50]
   });
 
   return (
@@ -112,12 +112,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
                 </TouchableOpacity>
               ))}
 
-              {/* Botón de Iniciar Sesión para móvil */}
               <TouchableOpacity
                 style={styles.mobileMenuItem}
                 onPress={() => {
                   onNavigateToLogin();
-                  setMenuOpen(false); // Cierra el menú después de navegar
+                  setMenuOpen(false);
                 }}
                 activeOpacity={0.7}
               >
@@ -166,16 +165,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
             </TouchableOpacity>
           ))}
 
-          {/* Botón de Iniciar Sesión para escritorio */}
           <TouchableOpacity
             style={styles.menuItem}
-            onMouseEnter={() => setHoveredItem('login')}
+            onMouseEnter={() => setHoveredItem('Login')}
             onMouseLeave={() => setHoveredItem(null)}
-            onPress={onNavigateToLogin} // Llama a la prop onNavigateToLogin
+            onPress={onNavigateToLogin}
           >
             <Text style={[
               styles.menuText,
-              hoveredItem === 'ogin' && styles.menuTextHover, // Aplica hover si no está activo
+              hoveredItem === 'Login' && styles.menuTextHover,
             ]}>
               INICIAR SESIÓN
             </Text>

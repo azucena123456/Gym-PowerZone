@@ -1,3 +1,4 @@
+import { send } from '@emailjs/browser';
 import React, { useState } from 'react';
 import {
   Alert,
@@ -10,82 +11,36 @@ import {
   TouchableOpacity,
   View,
   useWindowDimensions,
-  Dimensions,
 } from 'react-native';
-import { send } from '@emailjs/browser';
+import { send } from '@emailjs/browser'; // Cambio recomendado por ESLint
 import MapComponent from './MapComponent';
 
+const CALENDLY_TOKEN = 'TU_TOKEN_AQUI'; // usar variable de entorno real
+const CALENDLY_URL = 'https://calendly.com/2022034-utsh/gym-powerzone-consultas';
+
 const ContactForm = () => {
-  const { width, height } = useWindowDimensions();
-  
-  // Definimos puntos de ruptura responsivos
-  const breakpoints = {
-    small: 480,
-    medium: 768,
-    large: 1024,
-    xlarge: 1200
-  };
+  const { width } = useWindowDimensions();
 
-  // Funciones para determinar el tamaño de pantalla
-  const isSmallScreen = width <= breakpoints.small;
-  const isMediumScreen = width > breakpoints.small && width <= breakpoints.medium;
-  const isLargeScreen = width > breakpoints.medium && width <= breakpoints.large;
-  const isXLargeScreen = width > breakpoints.large;
+  // Definir rangos para dispositivo
+  const IS_DESKTOP = width >= 1024;
+  const IS_TABLET = width >= 600 && width < 1024;
+  const IS_MOBILE = width < 600;
 
-  // Configuraciones responsivas
-  const responsiveConfig = {
-    padding: {
-      small: 16,
-      medium: 20,
-      large: 24,
-      xlarge: 28
-    },
-    fontSize: {
-      small: 14,
-      medium: 16,
-      large: 18,
-      xlarge: 20
-    },
-    inputHeight: {
-      small: 40,
-      medium: 45,
-      large: 50,
-      xlarge: 55
-    },
-    messageInputHeight: {
-      small: 120,
-      medium: 150,
-      large: 180,
-      xlarge: 200
-    }
-  };
-
-  // Obtener valores responsivos basados en el tamaño de pantalla
-  const getResponsiveValue = (values: any) => {
-    if (isSmallScreen) return values.small;
-    if (isMediumScreen) return values.medium;
-    if (isLargeScreen) return values.large;
-    return values.xlarge;
-  };
-
-  const [formData, setFormData] = useState({
-    nombre: '',
-    email: '',
-    mensaje: ''
-  });
-
-  const [errors, setErrors] = useState({
-    nombre: '',
-    email: '',
-    mensaje: ''
-  });
-
+  const [nombre, setNombre] = useState('');
+  const [email, setEmail] = useState('');
+  const [mensaje, setMensaje] = useState('');
   const [isSending, setIsSending] = useState(false);
+
+<<<<<<< HEAD
+  const [nombreError, setNombreError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [mensajeError, setMensajeError] = useState('');
 
   const SERVICE_ID = 'service_f4nam56';
   const TEMPLATE_ID = 'template_58bdplq';
   const PUBLIC_KEY = '61Z51srJVskv93TN3';
-  const CALENDLY_URL = 'https://calendly.com/2022034-utsh/gym-powerzone-consultas';
+
+  const CALENDLY_BASE_URL = "https://calendly.com/2022034-utsh/gym-powerzone-consultas";
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const gymInfo = {
@@ -134,12 +89,14 @@ const ContactForm = () => {
 
     setIsSending(true);
 
+    const templateParams = {
+      name: nombre,
+      email: email,
+      message: mensaje,
+    };
+
     try {
-      await send(SERVICE_ID, TEMPLATE_ID, {
-        name: formData.nombre,
-        email: formData.email,
-        message: formData.mensaje
-      }, PUBLIC_KEY);
+      await send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY); // Usando la importación directa
 
       const url = `${CALENDLY_URL}?name=${encodeURIComponent(formData.nombre)}&email=${encodeURIComponent(formData.email)}&a1=${encodeURIComponent(formData.mensaje)}`;
       
@@ -148,7 +105,9 @@ const ContactForm = () => {
       }
 
       Alert.alert('¡Mensaje enviado!', 'Tu mensaje ha sido enviado con éxito y hemos abierto el calendario para agendar tu cita.');
-      setFormData({ nombre: '', email: '', mensaje: '' });
+      setNombre('');
+      setEmail('');
+      setMensaje('');
 
     } catch (error) {
       console.error('Error al enviar mensaje:', error);
@@ -158,71 +117,37 @@ const ContactForm = () => {
     }
   };
 
-  // Estilos dinámicos basados en el tamaño de pantalla
-  const dynamicStyles = StyleSheet.create({
-    container: {
-      flexDirection: isMediumScreen || isLargeScreen || isXLargeScreen ? 'row' : 'column',
-      padding: getResponsiveValue(responsiveConfig.padding),
-      width: '100%',
-      maxWidth: 1200,
-      alignSelf: 'center'
-    },
-    formContainer: {
-      flex: 1,
-      padding: getResponsiveValue(responsiveConfig.padding),
-      marginRight: isMediumScreen || isLargeScreen || isXLargeScreen ? getResponsiveValue(responsiveConfig.padding) : 0,
-      marginBottom: isSmallScreen ? getResponsiveValue(responsiveConfig.padding) : 0
-    },
-    mapContainer: {
-      flex: 1,
-      padding: getResponsiveValue(responsiveConfig.padding)
-    },
-    title: {
-      fontSize: getResponsiveValue({
-        small: 20,
-        medium: 24,
-        large: 28,
-        xlarge: 32
-      }),
-      fontWeight: 'bold',
-      marginBottom: getResponsiveValue(responsiveConfig.padding),
-      color: '#333'
-    },
-    input: {
-      height: getResponsiveValue(responsiveConfig.inputHeight),
-      borderWidth: 1,
-      borderColor: errors.nombre || errors.email || errors.mensaje ? 'red' : '#ccc',
-      borderRadius: 8,
-      paddingHorizontal: 15,
-      marginBottom: 15,
-      fontSize: getResponsiveValue(responsiveConfig.fontSize),
-      backgroundColor: '#fff'
-    },
-    messageInput: {
-      height: getResponsiveValue(responsiveConfig.messageInputHeight),
-      textAlignVertical: 'top'
-    },
-    button: {
-      backgroundColor: '#222',
-      paddingVertical: getResponsiveValue(responsiveConfig.padding),
-      borderRadius: 8,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: 10
-    },
-    buttonText: {
-      color: '#fff',
-      fontWeight: 'bold',
-      fontSize: getResponsiveValue(responsiveConfig.fontSize),
-      textTransform: 'uppercase'
-    },
-    errorText: {
-      color: 'red',
-      fontSize: getResponsiveValue(responsiveConfig.fontSize) - 2,
-      marginBottom: 10,
-      marginLeft: 5
-    }
-  });
+<<<<<<< HEAD
+  const gymCoordinates = { latitude: 20.2806, longitude: -98.0569 };
+  const gymAddress = "C. de Olivo, Centro, 43200 Zacualtipán, Hgo.";
+  const gymName = "Gym \"PowerZone\"";
+  const isLargeScreen = Dimensions.get('window').width > 768;
+
+  return (
+    <ScrollView contentContainerStyle={contactFormStyles.scrollViewContent}>
+      <View style={contactFormStyles.sectionContainer}>
+        <View style={[
+          contactFormStyles.contentWrapper,
+          isLargeScreen && contactFormStyles.contentWrapperLargeScreen
+        ]}>
+          <View style={[
+            contactFormStyles.formColumn,
+            isLargeScreen && contactFormStyles.formColumnLargeScreen
+          ]}>
+            <Text style={contactFormStyles.formTitle}>Siéntete libre de preguntar cualquier cosa</Text>
+
+            <TextInput
+              style={[
+                contactFormStyles.input,
+                nombreError && contactFormStyles.inputError
+              ]}
+=======
+  const gymInfo = {
+    latitude: 20.2806,
+    longitude: -98.0569,
+    address: 'C. de Olivo, Centro, 43200 Zacualtipán, Hgo.',
+    name: 'Gym "PowerZone"',
+  };
 
   return (
     <ScrollView 
@@ -239,51 +164,99 @@ const ContactForm = () => {
           
           <TextInput
             style={[
-              dynamicStyles.input,
-              errors.nombre && { borderColor: 'red' }
+              styles.formColumn,
+              {
+                padding: IS_DESKTOP ? 30 : IS_TABLET ? 25 : 20,
+                marginBottom: IS_DESKTOP ? 0 : 40,
+                marginRight: IS_DESKTOP ? 40 : 0,
+                maxWidth: IS_DESKTOP ? 500 : '100%',
+                width: IS_TABLET ? '100%' : undefined,
+              },
             ]}
-            placeholder="Nombre"
-            value={formData.nombre}
-            onChangeText={(text) => handleInputChange('nombre', text)}
-          />
-          {errors.nombre ? <Text style={dynamicStyles.errorText}>{errors.nombre}</Text> : null}
-
-          <TextInput
-            style={[
-              dynamicStyles.input,
-              errors.email && { borderColor: 'red' }
-            ]}
-            placeholder="Email"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={formData.email}
-            onChangeText={(text) => handleInputChange('email', text)}
-          />
-          {errors.email ? <Text style={dynamicStyles.errorText}>{errors.email}</Text> : null}
-
-          <TextInput
-            style={[
-              dynamicStyles.input,
-              dynamicStyles.messageInput,
-              errors.mensaje && { borderColor: 'red' }
-            ]}
-            placeholder="Mensaje"
-            multiline
-            value={formData.mensaje}
-            onChangeText={(text) => handleInputChange('mensaje', text)}
-          />
-          {errors.mensaje ? <Text style={dynamicStyles.errorText}>{errors.mensaje}</Text> : null}
-
-          <TouchableOpacity
-            style={dynamicStyles.button}
-            onPress={handleSendMessage}
-            disabled={isSending}
           >
-            <Text style={dynamicStyles.buttonText}>
-              {isSending ? 'Enviando...' : 'Enviar Mensaje'}
+            <Text
+              style={[
+                styles.formTitle,
+                {
+                  fontSize: IS_DESKTOP ? 32 : IS_TABLET ? 28 : 22,
+                  lineHeight: IS_DESKTOP ? 40 : 30,
+                  textAlign: IS_DESKTOP ? 'left' : 'center',
+                },
+              ]}
+            >
+              Siéntete libre de preguntar cualquier cosa
             </Text>
-          </TouchableOpacity>
-        </View>
+            <TextInput
+              style={styles.input}
+>>>>>>> patricia
+              placeholder="Nombre"
+              value={nombre}
+              onChangeText={text => {
+                setNombre(text);
+                if (text.trim()) setNombreError('');
+              }}
+            />
+            {nombreError ? <Text style={contactFormStyles.errorText}>{nombreError}</Text> : null}
+
+            <TextInput
+<<<<<<< HEAD
+              style={[
+                contactFormStyles.input,
+                emailError && contactFormStyles.inputError
+              ]}
+=======
+              style={styles.input}
+>>>>>>> patricia
+              placeholder="Email"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              value={email}
+              onChangeText={text => {
+                setEmail(text);
+                if (emailRegex.test(text)) setEmailError('');
+              }}
+            />
+            {emailError ? <Text style={contactFormStyles.errorText}>{emailError}</Text> : null}
+
+            <TextInput
+<<<<<<< HEAD
+              style={[
+                contactFormStyles.input,
+                contactFormStyles.messageInput,
+                mensajeError && contactFormStyles.inputError
+              ]}
+              placeholder="Mensaje"
+              multiline={true}
+              numberOfLines={4}
+=======
+              style={[styles.input, styles.messageInput]}
+              placeholder="Mensaje"
+              placeholderTextColor="#555"
+              multiline
+>>>>>>> patricia
+              value={mensaje}
+              onChangeText={text => {
+                setMensaje(text);
+                if (text.trim()) setMensajeError('');
+              }}
+            />
+<<<<<<< HEAD
+            {mensajeError ? <Text style={contactFormStyles.errorText}>{mensajeError}</Text> : null}
+
+            <TouchableOpacity
+              style={contactFormStyles.sendButton}
+=======
+            <TouchableOpacity
+              style={styles.sendButton}
+>>>>>>> patricia
+              onPress={handleSendMessage}
+              disabled={isSending}
+            >
+              <Text style={styles.sendButtonText}>
+                {isSending ? 'Enviando...' : 'Enviar Mensaje'}
+              </Text>
+            </TouchableOpacity>
+          </View>
 
         {/* Columna del mapa */}
         <View style={dynamicStyles.mapContainer}>

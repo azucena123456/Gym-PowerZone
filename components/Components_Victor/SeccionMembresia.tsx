@@ -1,6 +1,9 @@
 import React from 'react';
 import { Clipboard, Pressable, Text, View, useWindowDimensions, StyleSheet } from 'react-native';
+<<<<<<< HEAD
 
+=======
+>>>>>>> patricia
 
 const SeccionMembresia: React.FC = () => {
   const { width } = useWindowDimensions();
@@ -142,8 +145,12 @@ const styles = StyleSheet.create({
   rowContainer: {
     justifyContent: 'space-between',
     alignItems: 'flex-start',
+<<<<<<< HEAD
     flexWrap: 'wrap', // permite que las columnas bajen si no caben
 
+=======
+    flexWrap: 'wrap', 
+>>>>>>> patricia
   },
   columnLeft: {
     flex: 1,
@@ -174,7 +181,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#f23a11',
     paddingVertical: 14,
     borderRadius: 6,
+<<<<<<< HEAD
 
+=======
+>>>>>>> patricia
     alignItems: 'center',
     width: '100%',
     marginTop: 15,

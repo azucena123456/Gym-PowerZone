@@ -1,4 +1,5 @@
 import { useFonts } from 'expo-font';
+import { router } from 'expo-router'; // Importamos `router` para la navegación
 import { StatusBar } from 'expo-status-bar';
 import React, { useRef, useState } from 'react';
 import {
@@ -11,6 +12,7 @@ import {
   View,
 } from 'react-native';
 
+// Componentes importados
 import Carusel from '../../components/carrusel';
 import ContactForm from '../../components/Components_Victor/ContactForm';
 import SeccionHorario from '../../components/Components_Victor/SeccionHorario';
@@ -25,6 +27,7 @@ const { height: windowHeight } = Dimensions.get('window');
 
 const HomeScreen = () => {
   const [activeSection, setActiveSection] = useState<string | null>('inicio');
+
   const scrollViewRef = useRef<ScrollView>(null);
   const heroVideoRef = useRef<View>(null);
   const membresiaRef = useRef<View>(null);
@@ -59,6 +62,7 @@ const HomeScreen = () => {
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const scrollY = event.nativeEvent.contentOffset.y;
+
     let currentActiveSection: string | null = null;
 
     const sections = [
@@ -76,9 +80,11 @@ const HomeScreen = () => {
     for (let i = sections.length - 1; i >= 0; i--) {
       const { name } = sections[i];
       const layout = sectionLayouts.current[name];
+
       if (layout) {
         const sectionTop = layout.y;
         const sectionBottom = layout.y + layout.height;
+
         if (scrollY + activationOffset >= sectionTop && scrollY < sectionBottom) {
           currentActiveSection = name;
           break;
@@ -95,10 +101,19 @@ const HomeScreen = () => {
     }
   };
 
+  const handleNavigateToLogin = () => {
+    router.push('/Login');
+  };
+
   return (
     <View style={styles.mainContainer}>
       <StatusBar hidden={true} />
-      <Navbar scrollToSection={scrollToSection} activeSection={activeSection} />
+      <Navbar 
+        scrollToSection={scrollToSection} 
+        activeSection={activeSection} 
+        onNavigateToLogin={handleNavigateToLogin} 
+      />
+      
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         ref={scrollViewRef}
@@ -114,7 +129,11 @@ const HomeScreen = () => {
           <SeccionMembresia />
         </View>
 
-        <View style={styles.weAreContainer} ref={weAreGymsoRef} onLayout={() => measureSection('sobreNosotros', weAreGymsoRef)}>
+        <View
+          style={styles.weAreContainer}
+          ref={weAreGymsoRef}
+          onLayout={() => measureSection('sobreNosotros', weAreGymsoRef)}
+        >
           <WeAreGymso />
         </View>
 
@@ -194,6 +213,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#121212',
+    backgroundColor: '#ffffffff',
   },
 });
