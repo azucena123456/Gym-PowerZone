@@ -45,7 +45,7 @@ export const QuestionContainer = styled(View)`
 export const QuestionHighlight = styled(View)<{ hovered: boolean }>`
   width: 4px;
   height: 24px;
-  background-color: ${props => props.hovered ? '#ff5722' : 'transparent'};
+  background-color: ${props => props.hovered ? '#ff5722' : 'transparent'  };
   margin-right: 10px;
   border-radius: 2px;
   transition: background-color 0.2s ease; /* Agregada transición suave */

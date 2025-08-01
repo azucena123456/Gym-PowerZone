@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import axios from 'axios';
 import React, {
   forwardRef,
@@ -7,9 +6,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-=======
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
->>>>>>> patricia
 import {
   Image,
   ScrollView,
@@ -18,18 +14,32 @@ import {
   View,
   findNodeHandle,
   useWindowDimensions,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
-const maryImage = require('../../assets/images/tarjeta1.png');
-const catherineImage = require('../../assets/images/tarjeta2.jpg');
+const fallbackImage = require('../../assets/images/tarjeta1.png');
 
-const WeAreGymso = forwardRef((props, ref) => {
+interface Trainer {
+  nombre_entrenador: string;
+  especialidad: string;
+  foto_url: string;
+}
+
+interface WeAreGymsoProps {
+  onSectionVisibilityChange?: (section: string, isVisible: boolean) => void;
+}
+
+const API_URL = 'https://tu-api.com/entrenadores';
+
+const WeAreGymso = forwardRef<{scrollToAboutUs: () => void}, WeAreGymsoProps>((props, ref) => {
   const { onSectionVisibilityChange } = props;
   const { width, height } = useWindowDimensions();
-  const scrollViewRef = useRef(null);
-  const aboutUsSectionRef = useRef(null);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const aboutUsSectionRef = useRef<View>(null);
   const [aboutUsHeight, setAboutUsHeight] = useState(0);
+  const [entrenadores, setEntrenadores] = useState<Trainer[]>([]);
 
   const isDesktop = width >= 1024;
   const isTablet = width >= 600 && width < 1024;
@@ -42,7 +52,7 @@ const WeAreGymso = forwardRef((props, ref) => {
         aboutUsSectionRef.current.measureLayout(
           node,
           (x, y) => {
-            scrollViewRef.current.scrollTo({ y, animated: true });
+            scrollViewRef.current?.scrollTo({ y, animated: true });
           },
           (err) => console.error("scroll error:", err)
         );
@@ -50,61 +60,34 @@ const WeAreGymso = forwardRef((props, ref) => {
     },
   }));
 
-    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const scrollY = event.nativeEvent.contentOffset.y;
-
-      if (aboutUsSectionRef.current && aboutUsHeight > 0 && scrollViewRef.current) {
-        const node = findNodeHandle(scrollViewRef.current);
-        aboutUsSectionRef.current.measureLayout(
-          node!,
-          (x, y) => {
-            const isVisible = y < scrollY + height && y + aboutUsHeight > scrollY;
-            onSectionVisibilityChange?.('aboutUs', isVisible);
-          },
-          () => {
-            console.warn('Error midiendo la sección aboutUs');
-          }
-        );
-      }
-    };
-
-<<<<<<< HEAD
-    useEffect(() => {
-      axios
-        .get(API_URL)
-        .then((res) => {
-          setEntrenadores(res.data);
-        })
-        .catch((error: unknown) => {
-          console.error('Error al cargar entrenadores:', error);
-        });
-    }, []);
-
-    return (
-      <ScrollView
-        ref={scrollViewRef}
-        style={styles.scrollView}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-      >
-        <View
-          style={styles.outerContainer}
-          ref={aboutUsSectionRef}
-          onLayout={(e) => setAboutUsHeight(e.nativeEvent.layout.height)}
-=======
-  const handleScroll = (event) => {
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const scrollY = event.nativeEvent.contentOffset.y;
-    if (aboutUsSectionRef.current && aboutUsHeight > 0) {
+
+    if (aboutUsSectionRef.current && aboutUsHeight > 0 && scrollViewRef.current) {
+      const node = findNodeHandle(scrollViewRef.current);
       aboutUsSectionRef.current.measureLayout(
-        findNodeHandle(scrollViewRef.current),
+        node,
         (x, y) => {
           const isVisible = y < scrollY + height && y + aboutUsHeight > scrollY;
           onSectionVisibilityChange?.('aboutUs', isVisible);
         },
-        (err) => console.log("layout error", err)
+        () => {
+          console.warn('Error midiendo la sección aboutUs');
+        }
       );
     }
   };
+
+  useEffect(() => {
+    axios
+      .get<Trainer[]>(API_URL)
+      .then((res) => {
+        setEntrenadores(res.data);
+      })
+      .catch((error) => {
+        console.error('Error al cargar entrenadores:', error);
+      });
+  }, []);
 
   return (
     <ScrollView
@@ -114,13 +97,7 @@ const WeAreGymso = forwardRef((props, ref) => {
       scrollEventThrottle={16}
     >
       <View
-        style={[
-          styles.outerContainer,
-          {
-            paddingVertical: isPhone ? 12 : isTablet ? 20 : 32,
-            justifyContent: isDesktop ? 'flex-start' : 'center',
-          },
-        ]}
+        style={styles.outerContainer}
         ref={aboutUsSectionRef}
         onLayout={(e) => setAboutUsHeight(e.nativeEvent.layout.height)}
       >
@@ -129,121 +106,27 @@ const WeAreGymso = forwardRef((props, ref) => {
             styles.contentBox,
             {
               flexDirection: isDesktop ? 'row' : 'column',
-              alignItems: 'center',
-              paddingVertical: isPhone ? 4 : 20,
+              justifyContent: isDesktop ? 'flex-end' : 'center',
+              paddingVertical: isDesktop ? 0 : 30,
             },
           ]}
->>>>>>> patricia
         >
           <View
             style={[
-              styles.contentBox,
+              styles.textSection,
               {
-<<<<<<< HEAD
-                flexDirection: isDesktop ? 'row' : 'column',
-                justifyContent: isDesktop ? 'flex-end' : 'center',
-                paddingVertical: isDesktop ? 0 : 30,
+                paddingRight: isDesktop ? 40 : 0,
+                marginBottom: isDesktop ? 0 : 30,
               },
             ]}
           >
-            <View
-              style={[
-                styles.textSection,
-                {
-                  paddingRight: isDesktop ? 40 : 0,
-                  marginBottom: isDesktop ? 0 : 30,
-                },
-              ]}
-            >
-              <Text style={[styles.title, { fontSize: isPhone ? 24 : 32 }]}>
-                Hola, somos Gym-PowerZone
-              </Text>
-              <Text
-                style={[
-                  styles.paragraph,
-                  { fontSize: isPhone ? 14 : 17, lineHeight: isPhone ? 20 : 26 },
-                ]}
-              >
-                Tu centro de transformación física y mental integral. En Gym-PowerZone, no solo entrenamos tu cuerpo, sino que fortalecemos tu mente para enfrentar cualquier desafío.
-              </Text>
-              <Text
-                style={[
-                  styles.paragraph,
-                  { fontSize: isPhone ? 14 : 17, lineHeight: isPhone ? 20 : 26 },
-                ]}
-              >
-                Contamos con un equipo de entrenadores certificados y altamente experimentados que diseñan programas personalizados para tus objetivos. Estamos listos para guiarte en cada paso de tu camino.
-              </Text>
-            </View>
-
-            <View
-              style={[
-                styles.cardsSection,
-                {
-                  flexDirection: isDesktop || isTablet ? 'row' : 'column',
-                  justifyContent: isDesktop || isTablet ? 'flex-end' : 'center',
-                  alignItems: isDesktop || isTablet ? 'flex-start' : 'center',
-                },
-              ]}
-            >
-              {entrenadores.map((entrenador, index) => (
-                <View
-                  key={index}
-                  style={[
-                    styles.card,
-                    {
-                      width: 280,
-                      marginBottom: isPhone ? 20 : 0,
-                      marginHorizontal: isDesktop || isTablet ? 15 : 0,
-                    },
-                  ]}
-                >
-                  <Image
-                    source={{ uri: entrenador.foto_url || '' }}
-                    style={[styles.cardImage, { height: isPhone ? 200 : 280 }]}
-                    defaultSource={fallbackImage}
-                  />
-                  <View style={styles.cardBody}>
-                    <View style={styles.textIconRow}>
-                      <Text
-                        style={[styles.cardName, { fontSize: isPhone ? 16 : 20 }]}
-                      >
-                        {entrenador.nombre_entrenador}
-                      </Text>
-                      <Icon name="instagram" size={18} color="#666" />
-                    </View>
-                    <View style={styles.textIconRow}>
-                      <Text
-                        style={[styles.cardRole, { fontSize: isPhone ? 12 : 15 }]}
-                      >
-                        {entrenador.especialidad}
-                      </Text>
-                      <Icon name="facebook" size={18} color="#666" />
-                    </View>
-                  </View>
-                </View>
-              ))}
-            </View>
-=======
-                paddingRight: isDesktop ? 48 : 0,
-                marginBottom: isDesktop ? 0 : 32,
-                alignItems: isDesktop ? 'flex-start' : 'center',
-              },
-            ]}
-          >
-            <Text style={[styles.title, { fontSize: isPhone ? 28 : 36, textAlign: isDesktop ? 'left' : 'center' }]}>
+            <Text style={[styles.title, { fontSize: isPhone ? 24 : 32 }]}>
               Hola, somos Gym-PowerZone
             </Text>
             <Text
               style={[
                 styles.paragraph,
-                {
-                  fontSize: isPhone ? 15 : 18,
-                  lineHeight: isPhone ? 24 : 30,
-                  textAlign: isDesktop ? 'left' : 'center',
-                  marginBottom: 16,
-                  color: '#444',
-                },
+                { fontSize: isPhone ? 14 : 17, lineHeight: isPhone ? 20 : 26 },
               ]}
             >
               Tu centro de transformación física y mental integral. En Gym-PowerZone, no solo entrenamos tu cuerpo, sino que fortalecemos tu mente para enfrentar cualquier desafío.
@@ -251,12 +134,7 @@ const WeAreGymso = forwardRef((props, ref) => {
             <Text
               style={[
                 styles.paragraph,
-                {
-                  fontSize: isPhone ? 15 : 18,
-                  lineHeight: isPhone ? 24 : 30,
-                  textAlign: isDesktop ? 'left' : 'center',
-                  color: '#444',
-                },
+                { fontSize: isPhone ? 14 : 17, lineHeight: isPhone ? 20 : 26 },
               ]}
             >
               Contamos con un equipo de entrenadores certificados y altamente experimentados que diseñan programas personalizados para tus objetivos. Estamos listos para guiarte en cada paso de tu camino.
@@ -267,57 +145,55 @@ const WeAreGymso = forwardRef((props, ref) => {
             style={[
               styles.cardsSection,
               {
-                flexDirection: (isDesktop || isTablet) ? 'row' : 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
+                flexDirection: isDesktop || isTablet ? 'row' : 'column',
+                justifyContent: isDesktop || isTablet ? 'flex-end' : 'center',
+                alignItems: isDesktop || isTablet ? 'flex-start' : 'center',
               },
             ]}
           >
-            {[{
-              img: maryImage,
-              name: "Emma Torres",
-              role: "Instructora de Pilates",
-              icons: ['x-twitter', 'instagram'],
-            }, {
-              img: catherineImage,
-              name: "Carla Méndez",
-              role: "Entrenador Personal",
-              icons: ['instagram', 'facebook'],
-            }].map(({ img, name, role, icons }, i) => (
+            {entrenadores.map((entrenador, index) => (
               <View
-                key={i}
+                key={index}
                 style={[
                   styles.card,
                   {
                     width: 280,
-                    marginBottom: isPhone ? 24 : 0,
-                    marginRight: (isDesktop && i === 0) ? 20 : 0,
-                    marginLeft: (isDesktop && i === 1) ? 20 : 0,
+                    marginBottom: isPhone ? 20 : 0,
+                    marginHorizontal: isDesktop || isTablet ? 15 : 0,
                   },
                 ]}
               >
-                <Image source={img} style={[styles.cardImage, { height: isPhone ? 200 : 280 }]} />
+                <Image
+                  source={{ uri: entrenador.foto_url }}
+                  style={[styles.cardImage, { height: isPhone ? 200 : 280 }]}
+                  defaultSource={fallbackImage}
+                />
                 <View style={styles.cardBody}>
                   <View style={styles.textIconRow}>
-                    <Text style={[styles.cardName, { fontSize: isPhone ? 17 : 22 }]}>{name}</Text>
-                    <Icon name={icons[0]} size={20} color="#666" />
+                    <Text
+                      style={[styles.cardName, { fontSize: isPhone ? 16 : 20 }]}
+                    >
+                      {entrenador.nombre_entrenador}
+                    </Text>
+                    <Icon name="instagram" size={18} color="#666" />
                   </View>
                   <View style={styles.textIconRow}>
-                    <Text style={[styles.cardRole, { fontSize: isPhone ? 13 : 16 }]}>{role}</Text>
-                    <Icon name={icons[1]} size={20} color="#666" />
+                    <Text
+                      style={[styles.cardRole, { fontSize: isPhone ? 12 : 15 }]}
+                    >
+                      {entrenador.especialidad}
+                    </Text>
+                    <Icon name="facebook" size={18} color="#666" />
                   </View>
                 </View>
               </View>
             ))}
->>>>>>> patricia
           </View>
         </View>
-      </ScrollView>
-    );
-  }
-);
-
-export default WeAreGymso;
+      </View>
+    </ScrollView>
+  );
+});
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -395,3 +271,5 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
 });
+
+export default WeAreGymso;

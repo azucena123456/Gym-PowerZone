@@ -1,4 +1,3 @@
-import { send } from '@emailjs/browser';
 import React, { useState } from 'react';
 import {
   Alert,
@@ -12,10 +11,10 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import { send } from '@emailjs/browser'; // Cambio recomendado por ESLint
+import { send } from '@emailjs/browser';
 import MapComponent from './MapComponent';
 
-const CALENDLY_TOKEN = 'TU_TOKEN_AQUI'; // usar variable de entorno real
+const CALENDLY_TOKEN = 'eyJraWQiOiIxY2UxZTEzNjE3ZGNmNzY2YjNjZWJjY2Y4ZGM1YmFmYThhNjVlNjg0MDIzZjdjMzJiZTgzNDliMjM4MDEzNWI0IiwidHlwIjoiUEFUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJodHRwczovL2F1dGguY2FsZW5kbHkuY29tIiwiaWF0IjoxNzUyNzgyMTcxLCJqdGkiOiI5YTEzOGMzOS1kMTNmLTQ5YzgtOGQ0OS00YzI0MjA0NDQ2MDAiLCJ1c2VyX3V1aWQiOiJkOTM1NmY4NS1hNDdhLTQzMGMtOTFlMS0wY2RlODk5YjA2OWIifQ.mFnWFi-90INsi5XS9h9Ihz3QpOP2QaPMha7ZurXz738Kf5FLt37t8xoTCAyX5UHfd2s7QltdE-xxvnCADxBZ6g'; // usar variable de entorno real
 const CALENDLY_URL = 'https://calendly.com/2022034-utsh/gym-powerzone-consultas';
 
 const ContactForm = () => {
@@ -31,7 +30,6 @@ const ContactForm = () => {
   const [mensaje, setMensaje] = useState('');
   const [isSending, setIsSending] = useState(false);
 
-<<<<<<< HEAD
   const [nombreError, setNombreError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [mensajeError, setMensajeError] = useState('');
@@ -43,45 +41,34 @@ const ContactForm = () => {
   const CALENDLY_BASE_URL = "https://calendly.com/2022034-utsh/gym-powerzone-consultas";
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const gymInfo = {
-    latitude: 20.2806,
-    longitude: -98.0569,
-    address: "C. de Olivo, Centro, 43200 Zacualtipán, Hgo.",
-    name: "Gym \"PowerZone\""
-  };
-
   const validateForm = () => {
-    let isValid = true;
-    const newErrors = { nombre: '', email: '', mensaje: '' };
+    let valid = true;
 
-    if (!formData.nombre.trim()) {
-      newErrors.nombre = 'El nombre es obligatorio.';
-      isValid = false;
+    if (!nombre.trim()) {
+      setNombreError('El nombre es obligatorio.');
+      valid = false;
+    } else {
+      setNombreError('');
     }
 
-    if (!formData.email.trim()) {
-      newErrors.email = 'El correo es obligatorio.';
-      isValid = false;
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = 'El correo no es válido.';
-      isValid = false;
+    if (!email.trim()) {
+      setEmailError('El correo es obligatorio.');
+      valid = false;
+    } else if (!emailRegex.test(email)) {
+      setEmailError('El correo no es válido.');
+      valid = false;
+    } else {
+      setEmailError('');
     }
 
-    if (!formData.mensaje.trim()) {
-      newErrors.mensaje = 'El mensaje no puede estar vacío.';
-      isValid = false;
+    if (!mensaje.trim()) {
+      setMensajeError('El mensaje no puede estar vacío.');
+      valid = false;
+    } else {
+      setMensajeError('');
     }
 
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleInputChange = (name: string, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
-    // Limpiar error cuando el usuario empieza a escribir
-    if (errors[name as keyof typeof errors]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
+    return valid;
   };
 
   const handleSendMessage = async () => {
@@ -96,11 +83,12 @@ const ContactForm = () => {
     };
 
     try {
-      await send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY); // Usando la importación directa
+      await send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
 
-      const url = `${CALENDLY_URL}?name=${encodeURIComponent(formData.nombre)}&email=${encodeURIComponent(formData.email)}&a1=${encodeURIComponent(formData.mensaje)}`;
-      
-      if (await Linking.canOpenURL(url)) {
+      const url = `${CALENDLY_BASE_URL}?name=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&a1=${encodeURIComponent(mensaje)}`;
+      const canOpen = await Linking.canOpenURL(url);
+
+      if (canOpen) {
         await Linking.openURL(url);
       }
 
@@ -117,31 +105,6 @@ const ContactForm = () => {
     }
   };
 
-<<<<<<< HEAD
-  const gymCoordinates = { latitude: 20.2806, longitude: -98.0569 };
-  const gymAddress = "C. de Olivo, Centro, 43200 Zacualtipán, Hgo.";
-  const gymName = "Gym \"PowerZone\"";
-  const isLargeScreen = Dimensions.get('window').width > 768;
-
-  return (
-    <ScrollView contentContainerStyle={contactFormStyles.scrollViewContent}>
-      <View style={contactFormStyles.sectionContainer}>
-        <View style={[
-          contactFormStyles.contentWrapper,
-          isLargeScreen && contactFormStyles.contentWrapperLargeScreen
-        ]}>
-          <View style={[
-            contactFormStyles.formColumn,
-            isLargeScreen && contactFormStyles.formColumnLargeScreen
-          ]}>
-            <Text style={contactFormStyles.formTitle}>Siéntete libre de preguntar cualquier cosa</Text>
-
-            <TextInput
-              style={[
-                contactFormStyles.input,
-                nombreError && contactFormStyles.inputError
-              ]}
-=======
   const gymInfo = {
     latitude: 20.2806,
     longitude: -98.0569,
@@ -150,19 +113,29 @@ const ContactForm = () => {
   };
 
   return (
-    <ScrollView 
-      contentContainerStyle={{ 
-        flexGrow: 1, 
-        backgroundColor: '#fff',
-        paddingVertical: getResponsiveValue(responsiveConfig.padding)
-      }}
+    <ScrollView
+      contentContainerStyle={[
+        styles.scrollViewContent,
+        {
+          paddingVertical: IS_DESKTOP ? 60 : IS_TABLET ? 50 : 40,
+          alignItems: 'center',
+        },
+      ]}
+      keyboardShouldPersistTaps="handled"
     >
-      <View style={dynamicStyles.container}>
-        {/* Columna del formulario */}
-        <View style={dynamicStyles.formContainer}>
-          <Text style={dynamicStyles.title}>Siéntete libre de preguntar cualquier cosa</Text>
-          
-          <TextInput
+      <View style={styles.sectionContainer}>
+        <View
+          style={[
+            styles.contentWrapper,
+            {
+              flexDirection: IS_DESKTOP ? 'row' : 'column',
+              width: IS_DESKTOP ? '90%' : IS_TABLET ? 700 : '95%',
+              maxWidth: IS_DESKTOP ? 1200 : undefined,
+              justifyContent: 'space-between',
+            },
+          ]}
+        >
+          <View
             style={[
               styles.formColumn,
               {
@@ -186,9 +159,12 @@ const ContactForm = () => {
             >
               Siéntete libre de preguntar cualquier cosa
             </Text>
+
             <TextInput
-              style={styles.input}
->>>>>>> patricia
+              style={[
+                styles.input,
+                nombreError && styles.inputError
+              ]}
               placeholder="Nombre"
               value={nombre}
               onChangeText={text => {
@@ -196,17 +172,13 @@ const ContactForm = () => {
                 if (text.trim()) setNombreError('');
               }}
             />
-            {nombreError ? <Text style={contactFormStyles.errorText}>{nombreError}</Text> : null}
+            {nombreError ? <Text style={styles.errorText}>{nombreError}</Text> : null}
 
             <TextInput
-<<<<<<< HEAD
               style={[
-                contactFormStyles.input,
-                emailError && contactFormStyles.inputError
+                styles.input,
+                emailError && styles.inputError
               ]}
-=======
-              style={styles.input}
->>>>>>> patricia
               placeholder="Email"
               keyboardType="email-address"
               autoCapitalize="none"
@@ -216,39 +188,27 @@ const ContactForm = () => {
                 if (emailRegex.test(text)) setEmailError('');
               }}
             />
-            {emailError ? <Text style={contactFormStyles.errorText}>{emailError}</Text> : null}
+            {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
             <TextInput
-<<<<<<< HEAD
               style={[
-                contactFormStyles.input,
-                contactFormStyles.messageInput,
-                mensajeError && contactFormStyles.inputError
+                styles.input,
+                styles.messageInput,
+                mensajeError && styles.inputError
               ]}
               placeholder="Mensaje"
               multiline={true}
               numberOfLines={4}
-=======
-              style={[styles.input, styles.messageInput]}
-              placeholder="Mensaje"
-              placeholderTextColor="#555"
-              multiline
->>>>>>> patricia
               value={mensaje}
               onChangeText={text => {
                 setMensaje(text);
                 if (text.trim()) setMensajeError('');
               }}
             />
-<<<<<<< HEAD
-            {mensajeError ? <Text style={contactFormStyles.errorText}>{mensajeError}</Text> : null}
+            {mensajeError ? <Text style={styles.errorText}>{mensajeError}</Text> : null}
 
             <TouchableOpacity
-              style={contactFormStyles.sendButton}
-=======
-            <TouchableOpacity
               style={styles.sendButton}
->>>>>>> patricia
               onPress={handleSendMessage}
               disabled={isSending}
             >
@@ -258,65 +218,140 @@ const ContactForm = () => {
             </TouchableOpacity>
           </View>
 
-        {/* Columna del mapa */}
-        <View style={dynamicStyles.mapContainer}>
-          <Text style={dynamicStyles.title}>Dónde puedes encontrarnos</Text>
-          
-          <View style={{ 
-            flexDirection: 'row', 
-            alignItems: 'center', 
-            marginBottom: getResponsiveValue(responsiveConfig.padding) 
-          }}>
-            <Image
-              source={require('./styles/image.png')}
-              style={{ 
-                width: getResponsiveValue({
-                  small: 16,
-                  medium: 18,
-                  large: 20,
-                  xlarge: 22
-                }), 
-                height: getResponsiveValue({
-                  small: 16,
-                  medium: 18,
-                  large: 20,
-                  xlarge: 22
-                }),
-                marginRight: 8 
-              }}
-            />
-            <Text style={{ 
-              fontSize: getResponsiveValue(responsiveConfig.fontSize),
-              color: '#555',
-              flexShrink: 1
-            }}>
-              {gymInfo.address} ({gymInfo.name})
+          <View
+            style={[
+              styles.mapColumn,
+              {
+                padding: IS_DESKTOP ? 30 : IS_TABLET ? 25 : 20,
+                maxWidth: IS_DESKTOP ? '55%' : '100%',
+                width: IS_TABLET ? '100%' : undefined,
+                alignItems: IS_DESKTOP ? 'flex-start' : 'center',
+              },
+            ]}
+          >
+            <Text
+              style={[
+                styles.mapTitle,
+                {
+                  fontSize: IS_DESKTOP ? 32 : IS_TABLET ? 28 : 22,
+                  lineHeight: IS_DESKTOP ? 40 : 30,
+                  textAlign: IS_DESKTOP ? 'left' : 'center',
+                },
+              ]}
+            >
+              Dónde puedes encontrarnos
             </Text>
+            <View style={styles.locationDetail}>
+              <Image
+                source={require('./styles/image.png')}
+                style={styles.locationIcon}
+              />
+              <Text style={styles.locationText}>
+                {gymInfo.address} ({gymInfo.name})
+              </Text>
+            </View>
+            <View style={styles.divider} />
+            <MapComponent
+              latitude={gymInfo.latitude}
+              longitude={gymInfo.longitude}
+              name={gymInfo.name}
+              address={gymInfo.address}
+              height={280}
+            />
           </View>
-          
-          <View style={{ 
-            height: 1, 
-            backgroundColor: '#ccc', 
-            marginVertical: getResponsiveValue(responsiveConfig.padding),
-            width: '100%' 
-          }} />
-          
-          <MapComponent
-            latitude={gymInfo.latitude}
-            longitude={gymInfo.longitude}
-            name={gymInfo.name}
-            address={gymInfo.address}
-            height={getResponsiveValue({
-              small: 200,
-              medium: 250,
-              large: 300,
-              xlarge: 350
-            })}
-          />
         </View>
       </View>
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  scrollViewContent: {
+    flexGrow: 1,
+    backgroundColor: '#fff',
+  },
+  sectionContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  contentWrapper: {
+    justifyContent: 'space-between',
+  },
+  formColumn: {
+    backgroundColor: '#fff',
+  },
+  formTitle: {
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 25,
+  },
+  input: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    marginBottom: 20,
+    fontSize: 16,
+    color: '#333',
+    borderRadius: 6,
+  },
+  inputError: {
+    borderColor: 'red',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+  },
+  messageInput: {
+    height: 180,
+    textAlignVertical: 'top',
+  },
+  sendButton: {
+    backgroundColor: '#222',
+    paddingVertical: 18,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    borderRadius: 6,
+    marginTop: 10,
+  },
+  sendButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    fontSize: 18,
+  },
+  mapColumn: {
+    backgroundColor: '#fff',
+  },
+  mapTitle: {
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 25,
+  },
+  locationDetail: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  locationIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 8,
+  },
+  locationText: {
+    fontSize: 18,
+    color: '#555',
+    flexShrink: 1,
+    lineHeight: 22,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#ccc',
+    marginVertical: 30,
+    width: '100%',
+  },
+});
 
 export default ContactForm;
