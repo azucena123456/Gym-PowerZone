@@ -1,33 +1,32 @@
 // app/(tabs)/index.tsx
 import { useFonts } from 'expo-font';
+import { router } from 'expo-router'; // Importamos `router` para la navegación
 import { StatusBar } from 'expo-status-bar';
 import React, { useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View, Platform, Button } from 'react-native';
-import { useRouter } from 'expo-router'; 
+import {
+  ActivityIndicator,
+  Dimensions,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
-
-import Carusel from '@/components/carrusel';
-import ContactForm from '@/components/Components_Victor/ContactForm';
-import SeccionHorario from '@/components/Components_Victor/SeccionHorario';
-import SeccionMembresia from '@/components/Components_Victor/SeccionMembresia';
-import { Footer } from '@/components/Footer';
-import { Navbar } from '@/components/Navbar'; 
-import WeAreGymso from '@/components/ui/PresentacionGymso';
-import HeroVideo from '@/components/ui/PresentacionVideo';
+// Componentes importados
+import Carusel from '../../components/carrusel';
+import ContactForm from '../../components/Components_Victor/ContactForm';
+import PreguntasFrecuentes from '../../components/Components_Victor/preguntasFrecuentes'; // Nueva importación
+import SeccionHorario from '../../components/Components_Victor/SeccionHorario';
+import SeccionMembresia from '../../components/Components_Victor/SeccionMembresia';
+import { Footer } from '../../components/Footer';
+import { Navbar } from '../../components/Navbar';
+import WeAreGymso from '../../components/ui/PresentacionGymso';
+import HeroVideo from '../../components/ui/PresentacionVideo';
 
 const { height: windowHeight } = Dimensions.get('window');
 
-export default function HomeScreen() { 
-  const router = useRouter(); 
-
-  const [fontsLoaded] = useFonts({
-
-    'Poppins-Regular': require('../../assets/fonts/Poppins-Regular.ttf'), 
-    'Poppins-ExtraBold': require('../../assets/fonts/Poppins-ExtraBold.ttf'),
-    'Montserrat-Regular': require('../../assets/fonts/Montserrat-Regular.ttf'),
-    'Montserrat-ExtraBold': require('../../assets/fonts/Montserrat-ExtraBold.ttf'),
-  });
-
+const HomeScreen = () => {
   const [activeSection, setActiveSection] = useState<string | null>('inicio');
 
   const scrollViewRef = useRef<ScrollView>(null);
@@ -37,6 +36,7 @@ export default function HomeScreen() {
   const caruselRef = useRef<View>(null);
   const horarioRef = useRef<View>(null);
   const contactFormRef = useRef<View>(null);
+  const preguntasFrecuentesRef = useRef<View>(null); // Nueva referencia
 
   const sectionLayouts = useRef<{ [key: string]: { y: number; height: number } }>({});
 
@@ -46,7 +46,7 @@ export default function HomeScreen() {
       (x, y, width, height) => {
         sectionLayouts.current[sectionName] = { y, height };
       },
-      () => { /* Callback de error */ }
+      () => {}
     );
   };
 
@@ -68,9 +68,11 @@ export default function HomeScreen() {
 
     const sections = [
       { name: 'inicio', ref: heroVideoRef },
+      { name: 'membresia', ref: membresiaRef },
       { name: 'sobreNosotros', ref: weAreGymsoRef },
       { name: 'clases', ref: caruselRef },
       { name: 'horarios', ref: horarioRef },
+      { name: 'preguntasFrecuentes', ref: preguntasFrecuentesRef }, // Nueva sección
       { name: 'contacto', ref: contactFormRef },
     ];
 
@@ -100,23 +102,19 @@ export default function HomeScreen() {
     }
   };
 
-  if (!fontsLoaded) {
-    return (
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#ffffff" />
-      </View>
-    );
-  }
+  const handleNavigateToLogin = () => {
+    router.push('/Login');
+  };
 
   return (
     <View style={styles.mainContainer}>
       <StatusBar hidden={true} />
-      
-      <Navbar
-        scrollToSection={scrollToSection}
-        activeSection={activeSection}
-        onCartPress={() => router.push('/store')} 
+      <Navbar 
+        scrollToSection={scrollToSection} 
+        activeSection={activeSection} 
+        onNavigateToLogin={handleNavigateToLogin} 
       />
+      
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         ref={scrollViewRef}
@@ -132,7 +130,11 @@ export default function HomeScreen() {
           <SeccionMembresia />
         </View>
 
-        <View style={styles.weAreContainer} ref={weAreGymsoRef} onLayout={() => measureSection('sobreNosotros', weAreGymsoRef)}>
+        <View
+          style={styles.weAreContainer}
+          ref={weAreGymsoRef}
+          onLayout={() => measureSection('sobreNosotros', weAreGymsoRef)}
+        >
           <WeAreGymso />
         </View>
 
@@ -142,6 +144,11 @@ export default function HomeScreen() {
 
         <View style={styles.horarioContainer} ref={horarioRef} onLayout={() => measureSection('horarios', horarioRef)}>
           <SeccionHorario />
+        </View>
+
+        {/* Nueva sección de Preguntas Frecuentes */}
+        <View style={styles.preguntasFrecuentesContainer} ref={preguntasFrecuentesRef} onLayout={() => measureSection('preguntasFrecuentes', preguntasFrecuentesRef)}>
+          <PreguntasFrecuentes />
         </View>
 
         <View style={styles.contactFormContainer} ref={contactFormRef} onLayout={() => measureSection('contacto', contactFormRef)}>
@@ -156,6 +163,25 @@ export default function HomeScreen() {
       </ScrollView>
     </View>
   );
+};
+
+export default function App() {
+  const [fontsLoaded] = useFonts({
+    'Poppins-Regular': require('../../assets/fonts/Poppins-Regular.ttf'),
+    'Poppins-ExtraBold': require('../../assets/fonts/Poppins-ExtraBold.ttf'),
+    'Montserrat-Regular': require('../../assets/fonts/Montserrat-Regular.ttf'),
+    'Montserrat-ExtraBold': require('../../assets/fonts/Montserrat-ExtraBold.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    );
+  }
+
+  return <HomeScreen />;
 }
 
 const styles = StyleSheet.create({
@@ -180,6 +206,10 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     backgroundColor: '#121212',
   },
+  preguntasFrecuentesContainer: {
+    paddingVertical: 30,
+    backgroundColor: '#121212',
+  },
   contactFormContainer: {
     paddingVertical: 30,
     backgroundColor: '#fffefeff',
@@ -190,8 +220,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ffffffff',
   },
-  storeButtonContainer: { 
-    marginVertical: 20,
-    paddingHorizontal: 20,
-  }
 });

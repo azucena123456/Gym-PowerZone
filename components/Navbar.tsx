@@ -1,17 +1,17 @@
 import { FontAwesome } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, Animated, Linking, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { styles } from './Navbar.styles';
-import { useRouter } from 'expo-router'; 
 
 interface NavbarProps {
   onPressMenu?: () => void;
   scrollToSection: (section: string) => void;
   activeSection: string | null;
-
+  onNavigateToLogin: () => void; // Prop para navegar a la pantalla de Login
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, activeSection }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, activeSection, onNavigateToLogin }) => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const slideAnim = useState(new Animated.Value(0))[0];
@@ -64,7 +64,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
 
   const menuHeight = slideAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, menuItems.length * 50 + 80]
+    outputRange: [0, menuItems.length * 50 + 80 + 50]
   });
 
   return (
@@ -124,16 +124,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
                 </TouchableOpacity>
               ))}
 
-             
               <TouchableOpacity
                 style={styles.mobileMenuItem}
                 onPress={() => {
-                  router.push('/store'); 
-                  setMenuOpen(false); 
+                  onNavigateToLogin();
+                  setMenuOpen(false);
                 }}
                 activeOpacity={0.7}
               >
-                <Text style={styles.mobileMenuText}>TIENDA</Text>
+                <Text style={styles.mobileMenuText}>INICIAR SESIÓN</Text>
               </TouchableOpacity>
 
               <View style={styles.mobileSocialIcons}>
@@ -178,18 +177,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
             </TouchableOpacity>
           ))}
 
-          
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() => router.push('/store')} 
-            onMouseEnter={() => setHoveredItem('store')}
+            onMouseEnter={() => setHoveredItem('Login')}
             onMouseLeave={() => setHoveredItem(null)}
+            onPress={onNavigateToLogin}
           >
             <Text style={[
               styles.menuText,
-              hoveredItem === 'store' && styles.menuTextHover,
+              hoveredItem === 'Login' && styles.menuTextHover,
             ]}>
-              TIENDA
+              INICIAR SESIÓN
             </Text>
           </TouchableOpacity>
 

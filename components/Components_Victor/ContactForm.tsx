@@ -1,121 +1,261 @@
 import React, { useState } from 'react';
 import {
   Alert,
-  Dimensions,
-  Image 
-  ,
+  Image,
+  Linking,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
+  useWindowDimensions,
 } from 'react-native';
-
+import { send } from '@emailjs/browser';
 import MapComponent from './MapComponent';
 
-import { contactFormStyles } from './styles/ContactForm.styles';
+const CALENDLY_TOKEN = 'eyJraWQiOiIxY2UxZTEzNjE3ZGNmNzY2YjNjZWJjY2Y4ZGM1YmFmYThhNjVlNjg0MDIzZjdjMzJiZTgzNDliMjM4MDEzNWI0IiwidHlwIjoiUEFUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJodHRwczovL2F1dGguY2FsZW5kbHkuY29tIiwiaWF0IjoxNzUyNzgyMTcxLCJqdGkiOiI5YTEzOGMzOS1kMTNmLTQ5YzgtOGQ0OS00YzI0MjA0NDQ2MDAiLCJ1c2VyX3V1aWQiOiJkOTM1NmY4NS1hNDdhLTQzMGMtOTFlMS0wY2RlODk5YjA2OWIifQ.mFnWFi-90INsi5XS9h9Ihz3QpOP2QaPMha7ZurXz738Kf5FLt37t8xoTCAyX5UHfd2s7QltdE-xxvnCADxBZ6g'; // usar variable de entorno real
+const CALENDLY_URL = 'https://calendly.com/2022034-utsh/gym-powerzone-consultas';
 
 const ContactForm = () => {
+  const { width } = useWindowDimensions();
+
+  // Definir rangos para dispositivo
+  const IS_DESKTOP = width >= 1024;
+  const IS_TABLET = width >= 600 && width < 1024;
+  const IS_MOBILE = width < 600;
+
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [mensaje, setMensaje] = useState('');
+  const [isSending, setIsSending] = useState(false);
 
-  const handleSendMessage = () => {
-    if (!nombre || !email || !mensaje) {
-      Alert.alert('Error', 'Por favor, completa todos los campos.');
-      return;
+  const [nombreError, setNombreError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [mensajeError, setMensajeError] = useState('');
+
+  const SERVICE_ID = 'service_f4nam56';
+  const TEMPLATE_ID = 'template_58bdplq';
+  const PUBLIC_KEY = '61Z51srJVskv93TN3';
+
+  const CALENDLY_BASE_URL = "https://calendly.com/2022034-utsh/gym-powerzone-consultas";
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const validateForm = () => {
+    let valid = true;
+
+    if (!nombre.trim()) {
+      setNombreError('El nombre es obligatorio.');
+      valid = false;
+    } else {
+      setNombreError('');
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      Alert.alert('Error', 'Por favor, introduce un correo electrónico válido.');
-      return;
+    if (!email.trim()) {
+      setEmailError('El correo es obligatorio.');
+      valid = false;
+    } else if (!emailRegex.test(email)) {
+      setEmailError('El correo no es válido.');
+      valid = false;
+    } else {
+      setEmailError('');
     }
 
-    console.log('Mensaje enviado:', { nombre, email, mensaje });
-    Alert.alert('Mensaje Enviado', '¡Tu mensaje ha sido enviado con éxito!');
+    if (!mensaje.trim()) {
+      setMensajeError('El mensaje no puede estar vacío.');
+      valid = false;
+    } else {
+      setMensajeError('');
+    }
 
-    setNombre('');
-    setEmail('');
-    setMensaje('');
+    return valid;
   };
 
-  const gymCoordinates = {
+  const handleSendMessage = async () => {
+    if (!validateForm()) return;
+
+    setIsSending(true);
+
+    const templateParams = {
+      name: nombre,
+      email: email,
+      message: mensaje,
+    };
+
+    try {
+      await send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+
+      const url = `${CALENDLY_BASE_URL}?name=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&a1=${encodeURIComponent(mensaje)}`;
+      const canOpen = await Linking.canOpenURL(url);
+
+      if (canOpen) {
+        await Linking.openURL(url);
+      }
+
+      Alert.alert('¡Mensaje enviado!', 'Tu mensaje ha sido enviado con éxito y hemos abierto el calendario para agendar tu cita.');
+      setNombre('');
+      setEmail('');
+      setMensaje('');
+
+    } catch (error) {
+      console.error('Error al enviar mensaje:', error);
+      Alert.alert('Error', 'No se pudo enviar el mensaje. Intenta más tarde.');
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const gymInfo = {
     latitude: 20.2806,
     longitude: -98.0569,
+    address: 'C. de Olivo, Centro, 43200 Zacualtipán, Hgo.',
+    name: 'Gym "PowerZone"',
   };
 
-  const gymAddress = "C. de Olivo, Centro, 43200 Zacualtipán, Hgo.";
-  const gymName = "Gym \"PowerZone\"";
-
-  const isLargeScreen = Dimensions.get('window').width > 768;
-
   return (
-    <ScrollView contentContainerStyle={contactFormStyles.scrollViewContent}>
-      <View style={contactFormStyles.sectionContainer}>
-        <View style={[
-          contactFormStyles.contentWrapper,
-          isLargeScreen && contactFormStyles.contentWrapperLargeScreen
-        ]}>
-          <View style={[
-            contactFormStyles.formColumn,
-            isLargeScreen && contactFormStyles.formColumnLargeScreen
-          ]}>
-            <Text style={contactFormStyles.formTitle}>Siéntete libre de preguntar cualquier cosa</Text>
+    <ScrollView
+      contentContainerStyle={[
+        styles.scrollViewContent,
+        {
+          paddingVertical: IS_DESKTOP ? 60 : IS_TABLET ? 50 : 40,
+          alignItems: 'center',
+        },
+      ]}
+      keyboardShouldPersistTaps="handled"
+    >
+      <View style={styles.sectionContainer}>
+        <View
+          style={[
+            styles.contentWrapper,
+            {
+              flexDirection: IS_DESKTOP ? 'row' : 'column',
+              width: IS_DESKTOP ? '90%' : IS_TABLET ? 700 : '95%',
+              maxWidth: IS_DESKTOP ? 1200 : undefined,
+              justifyContent: 'space-between',
+            },
+          ]}
+        >
+          <View
+            style={[
+              styles.formColumn,
+              {
+                padding: IS_DESKTOP ? 30 : IS_TABLET ? 25 : 20,
+                marginBottom: IS_DESKTOP ? 0 : 40,
+                marginRight: IS_DESKTOP ? 40 : 0,
+                maxWidth: IS_DESKTOP ? 500 : '100%',
+                width: IS_TABLET ? '100%' : undefined,
+              },
+            ]}
+          >
+            <Text
+              style={[
+                styles.formTitle,
+                {
+                  fontSize: IS_DESKTOP ? 32 : IS_TABLET ? 28 : 22,
+                  lineHeight: IS_DESKTOP ? 40 : 30,
+                  textAlign: IS_DESKTOP ? 'left' : 'center',
+                },
+              ]}
+            >
+              Siéntete libre de preguntar cualquier cosa
+            </Text>
+
             <TextInput
-              style={contactFormStyles.input}
+              style={[
+                styles.input,
+                nombreError && styles.inputError
+              ]}
               placeholder="Nombre"
-              placeholderTextColor="#555"
               value={nombre}
-              onChangeText={setNombre}
+              onChangeText={text => {
+                setNombre(text);
+                if (text.trim()) setNombreError('');
+              }}
             />
+            {nombreError ? <Text style={styles.errorText}>{nombreError}</Text> : null}
+
             <TextInput
-              style={contactFormStyles.input}
+              style={[
+                styles.input,
+                emailError && styles.inputError
+              ]}
               placeholder="Email"
-              placeholderTextColor="#555"
               keyboardType="email-address"
               autoCapitalize="none"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={text => {
+                setEmail(text);
+                if (emailRegex.test(text)) setEmailError('');
+              }}
             />
+            {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+
             <TextInput
-              style={[contactFormStyles.input, contactFormStyles.messageInput]}
+              style={[
+                styles.input,
+                styles.messageInput,
+                mensajeError && styles.inputError
+              ]}
               placeholder="Mensaje"
-              placeholderTextColor="#555"
               multiline={true}
               numberOfLines={4}
               value={mensaje}
-              onChangeText={setMensaje}
+              onChangeText={text => {
+                setMensaje(text);
+                if (text.trim()) setMensajeError('');
+              }}
             />
-            <TouchableOpacity style={contactFormStyles.sendButton} onPress={handleSendMessage}>
-              <Text style={contactFormStyles.sendButtonText}>Enviar Mensaje</Text>
+            {mensajeError ? <Text style={styles.errorText}>{mensajeError}</Text> : null}
+
+            <TouchableOpacity
+              style={styles.sendButton}
+              onPress={handleSendMessage}
+              disabled={isSending}
+            >
+              <Text style={styles.sendButtonText}>
+                {isSending ? 'Enviando...' : 'Enviar Mensaje'}
+              </Text>
             </TouchableOpacity>
           </View>
 
-          <View style={[
-            contactFormStyles.mapColumn,
-            isLargeScreen && contactFormStyles.mapColumnLargeScreen
-          ]}>
-            <Text style={contactFormStyles.mapTitle}>Dónde puedes encontrarnos</Text>
-
-            <View style={contactFormStyles.locationDetail}>
-             
+          <View
+            style={[
+              styles.mapColumn,
+              {
+                padding: IS_DESKTOP ? 30 : IS_TABLET ? 25 : 20,
+                maxWidth: IS_DESKTOP ? '55%' : '100%',
+                width: IS_TABLET ? '100%' : undefined,
+                alignItems: IS_DESKTOP ? 'flex-start' : 'center',
+              },
+            ]}
+          >
+            <Text
+              style={[
+                styles.mapTitle,
+                {
+                  fontSize: IS_DESKTOP ? 32 : IS_TABLET ? 28 : 22,
+                  lineHeight: IS_DESKTOP ? 40 : 30,
+                  textAlign: IS_DESKTOP ? 'left' : 'center',
+                },
+              ]}
+            >
+              Dónde puedes encontrarnos
+            </Text>
+            <View style={styles.locationDetail}>
               <Image
                 source={require('./styles/image.png')}
-                style={contactFormStyles.locationIcon}
+                style={styles.locationIcon}
               />
-              <Text style={contactFormStyles.locationText}>
-                {gymAddress} ({gymName})
+              <Text style={styles.locationText}>
+                {gymInfo.address} ({gymInfo.name})
               </Text>
             </View>
-
-            <View style={contactFormStyles.divider} />
-
+            <View style={styles.divider} />
             <MapComponent
-              latitude={gymCoordinates.latitude}
-              longitude={gymCoordinates.longitude}
-              name={gymName}
-              address={gymAddress}
+              latitude={gymInfo.latitude}
+              longitude={gymInfo.longitude}
+              name={gymInfo.name}
+              address={gymInfo.address}
               height={280}
             />
           </View>
@@ -124,5 +264,94 @@ const ContactForm = () => {
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  scrollViewContent: {
+    flexGrow: 1,
+    backgroundColor: '#fff',
+  },
+  sectionContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  contentWrapper: {
+    justifyContent: 'space-between',
+  },
+  formColumn: {
+    backgroundColor: '#fff',
+  },
+  formTitle: {
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 25,
+  },
+  input: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    marginBottom: 20,
+    fontSize: 16,
+    color: '#333',
+    borderRadius: 6,
+  },
+  inputError: {
+    borderColor: 'red',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+  },
+  messageInput: {
+    height: 180,
+    textAlignVertical: 'top',
+  },
+  sendButton: {
+    backgroundColor: '#222',
+    paddingVertical: 18,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    borderRadius: 6,
+    marginTop: 10,
+  },
+  sendButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    fontSize: 18,
+  },
+  mapColumn: {
+    backgroundColor: '#fff',
+  },
+  mapTitle: {
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 25,
+  },
+  locationDetail: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  locationIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 8,
+  },
+  locationText: {
+    fontSize: 18,
+    color: '#555',
+    flexShrink: 1,
+    lineHeight: 22,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#ccc',
+    marginVertical: 30,
+    width: '100%',
+  },
+});
 
 export default ContactForm;
