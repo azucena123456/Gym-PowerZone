@@ -101,8 +101,6 @@ const styles = StyleSheet.create({
     color: '#666',
     lineHeight: 18,
     marginBottom: 65, // NO CAMBIADO como pediste
-
-
   },
 
   ctaCircle: {
