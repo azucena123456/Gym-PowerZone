@@ -101,9 +101,8 @@ const styles = StyleSheet.create({
     color: '#666',
     lineHeight: 18,
     marginBottom: 65, // NO CAMBIADO como pediste
-=======
-    marginBottom: 65,
->>>>>>> patricia
+
+
   },
 
   ctaCircle: {
