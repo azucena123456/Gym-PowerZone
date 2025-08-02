@@ -1,3 +1,4 @@
+// app/(tabs)/index.tsx
 import { useFonts } from 'expo-font';
 import { router } from 'expo-router'; // Importamos `router` para la navegación
 import { StatusBar } from 'expo-status-bar';
@@ -15,9 +16,9 @@ import {
 // Componentes importados
 import Carusel from '../../components/carrusel';
 import ContactForm from '../../components/Components_Victor/ContactForm';
+import PreguntasFrecuentes from '../../components/Components_Victor/preguntasFrecuentes'; // Nueva importación
 import SeccionHorario from '../../components/Components_Victor/SeccionHorario';
 import SeccionMembresia from '../../components/Components_Victor/SeccionMembresia';
-import PreguntasFrecuentes from '../../components/Components_Victor/preguntasFrecuentes'; // Nueva importación
 import { Footer } from '../../components/Footer';
 import { Navbar } from '../../components/Navbar';
 import WeAreGymso from '../../components/ui/PresentacionGymso';
@@ -153,6 +154,10 @@ const HomeScreen = () => {
         <View style={styles.contactFormContainer} ref={contactFormRef} onLayout={() => measureSection('contacto', contactFormRef)}>
           <ContactForm />
         </View>
+
+        
+        
+        
 
         <Footer />
       </ScrollView>

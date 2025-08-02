@@ -1,4 +1,5 @@
 import { FontAwesome } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, Animated, Linking, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { styles } from './Navbar.styles';
@@ -17,6 +18,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
 
   const { width } = useWindowDimensions();
   const isMobileOrTablet = width < 1024;
+
+  const router = useRouter(); 
 
   const menuItems = [
     { name: 'INICIO', section: 'inicio' },
@@ -72,6 +75,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
 
       {isMobileOrTablet ? (
         <>
+          
+          <TouchableOpacity
+            style={styles.cartButtonMobile} 
+            onPress={() => router.push('/store')} 
+            activeOpacity={0.7}
+          >
+            <FontAwesome name="shopping-cart" size={24} color="white" />
+          </TouchableOpacity>
+
           <TouchableOpacity
             style={styles.menuButton}
             onPress={toggleMenu}

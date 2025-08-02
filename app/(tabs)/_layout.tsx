@@ -6,9 +6,23 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useFonts } from 'expo-font';
+import 'react-native-reanimated';
 
-export default function TabLayout() {
+export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const [loaded] = useFonts({
+
+    'Poppins-Regular': require('../../assets/fonts/Poppins-Regular.ttf'), 
+    'Poppins-ExtraBold': require('../../assets/fonts/Poppins-ExtraBold.ttf'),
+    'Montserrat-Regular': require('../../assets/fonts/Montserrat-Regular.ttf'),
+    'Montserrat-ExtraBold': require('../../assets/fonts/Montserrat-ExtraBold.ttf'),
+    SpaceMono: require('../../assets/fonts/SpaceMono-Regular.ttf'), 
+  });
+
+  if (!loaded) {
+    return null;
+  }
 
   return (
     <Tabs

@@ -1,98 +1,84 @@
-// app/Store.tsx
-import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router'; 
-import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+// app/store.tsx
+import React, { useState } from 'react';
+import { Dimensions, FlatList, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const StoreScreen: React.FC = () => {
-  return (
-    <LinearGradient
-      colors={['#000000', '#330000', '#1a0000']}
-      style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-    >
-      <View style={styles.content}>
-        <Text style={styles.title}>¡Bienvenido a la Tienda!</Text>
-        <Text style={styles.subtitle}>
-          Aquí encontrarás todos nuestros productos y servicios.
-        </Text>
-        <Text style={styles.description}>
-          Estamos trabajando para tener un catálogo increíble para ti.
-          ¡Pronto podrás explorar todas nuestras ofertas!
-        </Text>
 
-        <TouchableOpacity style={styles.button} onPress={() => Alert.alert('Comprar', 'Funcionalidad de compra en desarrollo.')}>
-          <Text style={styles.buttonText}>Explorar Productos (Pronto)</Text>
-        </TouchableOpacity>
+import Header from '@/components/Header';
+import ImageCarousel from '@/components/ImageCarousel';
+import ProductCard from '@/components/ProductoCart';
+import { products } from '@/data/products';
+import { Product } from '@/types';
 
-        <TouchableOpacity onPress={() => router.replace('/')}>
-          <Text style={styles.backToHome}>Volver al Inicio</Text>
-        </TouchableOpacity>
-      </View>
-    </LinearGradient>
-  );
+const { width } = Dimensions.get('window');
+
+const numColumns = width > 1200 ? 5 : width > 900 ? 4 : width > 600 ? 3 : width > 400 ? 2 : 2;
+
+const listPaddingHorizontal = 52; 
+
+export default function StoreScreen() {
+    const [searchTerm, setSearchTerm] = useState<string>('');
+
+    const filteredProducts: Product[] = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+const handleProductPress = (product: Product) => {
+    console.log('Producto presionado:', product.name);
+    };
+
+    return (
+   <SafeAreaView style={styles.safeAreaContainer} edges={['bottom']}>
+     <Header
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        onMenuPress={() => console.log('Menú Presionado')}
+    />
+
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+        <ImageCarousel />
+
+
+        <FlatList
+            data={filteredProducts}
+            renderItem={({ item }) => (
+            <ProductCard 
+                product={item} 
+                onPress={handleProductPress} 
+                numColumns={numColumns}
+                listPaddingHorizontal={listPaddingHorizontal} 
+            />
+        )}
+        keyExtractor={(item: Product) => item.id}
+        numColumns={numColumns}
+        contentContainerStyle={styles.productList}
+        columnWrapperStyle={styles.columnWrapper}
+        scrollEnabled={false} 
+        />
+    </ScrollView>
+    </SafeAreaView> 
+    );
 };
 
-export default StoreScreen;
-
 const styles = StyleSheet.create({
-  container: {
+    safeAreaContainer: { 
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  content: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 30,
-    width: '100%',
-    maxWidth: 600,
-    alignItems: 'center',
-    elevation: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 15,
-  },
-  title: {
-    fontSize: 28,
+    backgroundColor: '#EDEDED', 
+ },
+    scrollContent: {
+    paddingBottom: 20,
+    },
+  sectionTitle: {
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 15,
+    marginHorizontal: 15,
+    marginTop: 20,
+    marginBottom: 10,
     color: '#333',
-    textAlign: 'center',
   },
-  subtitle: {
-    fontSize: 18,
-    color: '#666',
-    marginBottom: 20,
-    textAlign: 'center',
+   productList: {
+    paddingHorizontal: listPaddingHorizontal, 
   },
-  description: {
-    fontSize: 16,
-    color: '#555',
-    marginBottom: 30,
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  button: {
-    backgroundColor: '#ff4500',
-    paddingVertical: 14,
-    borderRadius: 4,
-    alignItems: 'center',
-    width: '80%',
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  backToHome: {
-    fontSize: 14,
-    color: '#ff4500',
-    textDecorationLine: 'underline',
-    marginTop: 10,
+  columnWrapper: {
+    justifyContent: 'space-between', 
   },
 });
