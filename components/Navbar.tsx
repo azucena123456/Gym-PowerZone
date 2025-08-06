@@ -27,7 +27,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
     { name: 'CLASES', section: 'clases' },
     { name: 'HORARIOS', section: 'horarios' },
     { name: 'CONTACTO', section: 'contacto' },
-    { name: 'TIENDA', section: 'Store', isRoute: true }, // Nueva opción para la tienda
   ];
 
   useEffect(() => {
@@ -42,12 +41,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
     setMenuOpen(!menuOpen);
   };
 
-  const handleMenuItemPress = (itemSection: string, isRoute: boolean = false) => {
-    if (isRoute) {
-      router.push(`/${itemSection}`);
-    } else {
-      scrollToSection(itemSection);
-    }
+  const handleMenuItemPress = (itemSection: string) => {
+    scrollToSection(itemSection);
     setTimeout(() => {
       setMenuOpen(false);
     }, 200);
@@ -81,14 +76,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
       {isMobileOrTablet ? (
         <>
           <TouchableOpacity
-            style={styles.cartButtonMobile} 
-            onPress={() => router.push('/Store')} 
-            activeOpacity={0.7}
-          >
-            <FontAwesome name="shopping-cart" size={24} color="white" />
-          </TouchableOpacity>
-
-          <TouchableOpacity
             style={styles.menuButton}
             onPress={toggleMenu}
             activeOpacity={0.7}
@@ -116,7 +103,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
                 <TouchableOpacity
                   key={item.name}
                   style={styles.mobileMenuItem}
-                  onPress={() => handleMenuItemPress(item.section, item.isRoute)}
+                  onPress={() => handleMenuItemPress(item.section)}
                   activeOpacity={0.7}
                 >
                   <Text style={[
@@ -169,7 +156,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
               style={styles.menuItem}
               onMouseEnter={() => setHoveredItem(item.section)}
               onMouseLeave={() => setHoveredItem(null)}
-              onPress={() => handleMenuItemPress(item.section, item.isRoute)}
+              onPress={() => handleMenuItemPress(item.section)}
             >
               <Text style={[
                 styles.menuText,
