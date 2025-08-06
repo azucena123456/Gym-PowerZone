@@ -201,8 +201,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     width: '100%',
-    maxWidth: 800, // Ajuste para hacerlo menos ancho
-    minHeight: 550, // Ajuste para hacerlo más alto
+    maxWidth: 800, 
+    minHeight: 550,
     backgroundColor: '#fff',
     borderRadius: 8,
     overflow: 'hidden',
@@ -219,9 +219,9 @@ const styles = StyleSheet.create({
   },
   formSection: {
     flex: 1,
-    minWidth: 350, // Ajuste del ancho mínimo
+    minWidth: 350,
     padding: 20,
-    paddingVertical: 50, // Ajuste para aumentar la altura
+    paddingVertical: 50,
     justifyContent: 'center',
   },
   formSectionSmallScreen: {
@@ -318,8 +318,8 @@ const styles = StyleSheet.create({
   },
   imageSection: {
     flex: 1,
-    minWidth: 300, // Ajuste para el ancho mínimo de la imagen
-    minHeight: 550, // Ajuste para la altura mínima de la imagen
+    minWidth: 300,
+    minHeight: 550,
     backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',

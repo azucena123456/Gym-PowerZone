@@ -75,7 +75,7 @@ const RegisterScreen: React.FC = () => {
   };
 
   const handleNextStep = () => {
-    setFormError(''); // Limpiar errores al intentar pasar al siguiente paso
+    setFormError('');
     if (currentStep === 1) {
       if (!name || !lastNamePaternal || !lastNameMaternal || !email || !password) {
         setFormError('Por favor, completa todos los campos de información personal.');
@@ -85,8 +85,9 @@ const RegisterScreen: React.FC = () => {
         setFormError('Por favor, introduce un correo electrónico válido.');
         return;
       }
-      if (password.length < 6 || password.length > 8) {
-        setPasswordError('La contraseña debe tener entre 6 y 8 caracteres.');
+      // **AQUÍ ESTÁ EL CAMBIO**
+      if (password.length < 8 || password.length > 10) {
+        setPasswordError('La contraseña debe tener entre 8 y 10 caracteres.');
         setFormError('La contraseña no cumple los requisitos.');
         return;
       }
@@ -106,14 +107,13 @@ const RegisterScreen: React.FC = () => {
   };
 
   const handlePreviousStep = () => {
-    setFormError(''); // Limpiar errores al volver al paso anterior
+    setFormError('');
     setCurrentStep(prevStep => prevStep - 1);
   };
 
   const handleRegister = async () => {
-    setFormError(''); // Limpiar errores al intentar registrarse
+    setFormError(''); 
 
-    // Validar los campos del último paso
     if (!city || !state || !zipCode || !references) {
       setFormError('Por favor, completa todos los campos de detalles de dirección y referencias.');
       return;
@@ -151,7 +151,7 @@ const RegisterScreen: React.FC = () => {
         <View style={[
           styles.registerCard,
           !isLargeScreen && styles.registerCardSmallScreen,
-          isLargeScreen && styles.registerCardLargeScreen // Añadido para el tamaño fijo en pantallas grandes
+          isLargeScreen && styles.registerCardLargeScreen 
         ]}>
           {isLargeScreen && (
             <View style={styles.imageSection}>
@@ -352,7 +352,6 @@ const RegisterScreen: React.FC = () => {
                         />
                       </View>
                       <View style={[styles.columnFieldLast, !isLargeScreen && styles.columnFieldSmallScreen]}>
-                        {/* Empty column */}
                       </View>
                     </View>
 
@@ -407,7 +406,7 @@ const RegisterScreen: React.FC = () => {
                 <TouchableOpacity
                   style={[
                     styles.registerButton,
-                    styles.registerButtonFixed, // Aplicamos el estilo fijo aquí
+                    styles.registerButtonFixed,
                     currentStep > 1 ? styles.marginLeft : {}
                   ]}
                   onPress={handleRegister}
@@ -461,7 +460,6 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
     minHeight: 500,
   },
-  // Estilo para pantalla grande con tamaño fijo (añadido)
   registerCardLargeScreen: {
     width: 900,
     height: 600,
@@ -507,9 +505,9 @@ const styles = StyleSheet.create({
   },
   formStepContent: {
     flex: 1,
-    minHeight: 300, // Ajusta este valor según el espacio que desees que ocupen los formularios.
+    minHeight: 300,
   },
-  // Estilo para el contenido del formulario con altura fija (añadido)
+
   formStepContentFixedSize: {
     height: 350,
     minHeight: undefined,
@@ -667,10 +665,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
   },
-  // Estilo para el botón de registro con ancho fijo (añadido)
   registerButtonFixed: {
-    width: 150, // Ejemplo de ancho fijo
-    flex: undefined, // Anulamos la propiedad flex para que el ancho fijo funcione
+    width: 150,
+    flex: undefined,
   },
   smallNavButton: {
     backgroundColor: '#ff4500',
@@ -685,7 +682,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 5,
     flexDirection: 'row',
-    width: 120, // Este es el ancho fijo que mencionaste
+    width: 120,
   },
   buttonText: {
     color: '#fff',
