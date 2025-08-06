@@ -2,6 +2,7 @@ import React from 'react';
 import { Clipboard, Pressable, Text, View, useWindowDimensions, StyleSheet } from 'react-native';
 
 
+
 const SeccionMembresia: React.FC = () => {
   const { width } = useWindowDimensions();
   const isSmall = width < 600;
@@ -143,7 +144,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     flexWrap: 'wrap', // permite que las columnas bajen si no caben
-
 
   },
   columnLeft: {

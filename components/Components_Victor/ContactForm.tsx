@@ -9,7 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  useWindowDimensions,
+  useWindowDimensions
 } from 'react-native';
 import { send } from '@emailjs/browser';
 import MapComponent from './MapComponent';
@@ -17,28 +17,27 @@ import MapComponent from './MapComponent';
 const CALENDLY_TOKEN = 'eyJraWQiOiIxY2UxZTEzNjE3ZGNmNzY2YjNjZWJjY2Y4ZGM1YmFmYThhNjVlNjg0MDIzZjdjMzJiZTgzNDliMjM4MDEzNWI0IiwidHlwIjoiUEFUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJodHRwczovL2F1dGguY2FsZW5kbHkuY29tIiwiaWF0IjoxNzUyNzgyMTcxLCJqdGkiOiI5YTEzOGMzOS1kMTNmLTQ5YzgtOGQ0OS00YzI0MjA0NDQ2MDAiLCJ1c2VyX3V1aWQiOiJkOTM1NmY4NS1hNDdhLTQzMGMtOTFlMS0wY2RlODk5YjA2OWIifQ.mFnWFi-90INsi5XS9h9Ihz3QpOP2QaPMha7ZurXz738Kf5FLt37t8xoTCAyX5UHfd2s7QltdE-xxvnCADxBZ6g'; // usar variable de entorno real
 const CALENDLY_URL = 'https://calendly.com/2022034-utsh/gym-powerzone-consultas';
 
+
 const ContactForm = () => {
   const { width } = useWindowDimensions();
 
-  // Definir rangos para dispositivo
+  // Variables para detectar el tamaño de la pantalla
   const IS_DESKTOP = width >= 1024;
   const IS_TABLET = width >= 600 && width < 1024;
-  const IS_MOBILE = width < 600;
+  const IS_MOBILE = width < 600; // Aunque no se usa directamente, es útil mantenerla para claridad.
 
+  // Estados para los campos del formulario
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [mensaje, setMensaje] = useState('');
   const [isSending, setIsSending] = useState(false);
 
+
   const [nombreError, setNombreError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [mensajeError, setMensajeError] = useState('');
 
-  const SERVICE_ID = 'service_f4nam56';
-  const TEMPLATE_ID = 'template_58bdplq';
-  const PUBLIC_KEY = '61Z51srJVskv93TN3';
-
-  const CALENDLY_BASE_URL = "https://calendly.com/2022034-utsh/gym-powerzone-consultas";
+  // Regex para la validación de email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const validateForm = () => {
@@ -71,10 +70,11 @@ const ContactForm = () => {
     return valid;
   };
 
+  // Manejador para el envío del mensaje
   const handleSendMessage = async () => {
-    if (!validateForm()) return;
+    if (!validateForm()) return; // Si la validación falla, no continúa.
 
-    setIsSending(true);
+    setIsSending(true); // Activa el estado de envío
 
     const templateParams = {
       name: nombre,
@@ -90,20 +90,23 @@ const ContactForm = () => {
 
       if (canOpen) {
         await Linking.openURL(url);
+
       }
 
+      // Muestra una alerta de éxito y limpia el formulario
       Alert.alert('¡Mensaje enviado!', 'Tu mensaje ha sido enviado con éxito y hemos abierto el calendario para agendar tu cita.');
       setNombre('');
       setEmail('');
       setMensaje('');
-
     } catch (error) {
+      // Manejo de errores
       console.error('Error al enviar mensaje:', error);
       Alert.alert('Error', 'No se pudo enviar el mensaje. Intenta más tarde.');
     } finally {
-      setIsSending(false);
+      setIsSending(false); // Desactiva el estado de envío al finalizar
     }
   };
+
 
   const gymInfo = {
     latitude: 20.2806,
@@ -117,11 +120,13 @@ const ContactForm = () => {
       contentContainerStyle={[
         styles.scrollViewContent,
         {
+
           paddingVertical: IS_DESKTOP ? 60 : IS_TABLET ? 50 : 40,
           alignItems: 'center',
         },
       ]}
       keyboardShouldPersistTaps="handled"
+
     >
       <View style={styles.sectionContainer}>
         <View
@@ -135,15 +140,16 @@ const ContactForm = () => {
             },
           ]}
         >
+
           <View
             style={[
               styles.formColumn,
               {
-                padding: IS_DESKTOP ? 30 : IS_TABLET ? 25 : 20,
-                marginBottom: IS_DESKTOP ? 0 : 40,
-                marginRight: IS_DESKTOP ? 40 : 0,
-                maxWidth: IS_DESKTOP ? 500 : '100%',
-                width: IS_TABLET ? '100%' : undefined,
+                padding: IS_DESKTOP ? 30 : IS_TABLET ? 25 : 20, // Padding adaptativo
+                marginBottom: IS_DESKTOP ? 0 : 40, // Margen inferior en móvil/tablet
+                marginRight: IS_DESKTOP ? 40 : 0, // Margen derecho en desktop
+                maxWidth: IS_DESKTOP ? 500 : '100%', // Ancho máximo
+                width: IS_TABLET ? '100%' : undefined, // Ancho en tablet
               },
             ]}
           >
@@ -151,9 +157,9 @@ const ContactForm = () => {
               style={[
                 styles.formTitle,
                 {
-                  fontSize: IS_DESKTOP ? 32 : IS_TABLET ? 28 : 22,
-                  lineHeight: IS_DESKTOP ? 40 : 30,
-                  textAlign: IS_DESKTOP ? 'left' : 'center',
+                  fontSize: IS_DESKTOP ? 32 : IS_TABLET ? 28 : 22, // Tamaño de fuente adaptativo
+                  lineHeight: IS_DESKTOP ? 40 : 30, // Altura de línea adaptativa
+                  textAlign: IS_DESKTOP ? 'left' : 'center', // Alineación de texto
                 },
               ]}
             >
@@ -164,20 +170,23 @@ const ContactForm = () => {
               style={[
                 styles.input,
                 nombreError && styles.inputError
+
               ]}
               placeholder="Nombre"
               value={nombre}
               onChangeText={text => {
                 setNombre(text);
-                if (text.trim()) setNombreError('');
+                if (text.trim()) setNombreError(''); // Limpia el error al escribir
               }}
             />
             {nombreError ? <Text style={styles.errorText}>{nombreError}</Text> : null}
+
 
             <TextInput
               style={[
                 styles.input,
                 emailError && styles.inputError
+
               ]}
               placeholder="Email"
               keyboardType="email-address"
@@ -185,10 +194,11 @@ const ContactForm = () => {
               value={email}
               onChangeText={text => {
                 setEmail(text);
-                if (emailRegex.test(text)) setEmailError('');
+                if (emailRegex.test(text)) setEmailError(''); // Limpia el error si el email es válido
               }}
             />
             {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+
 
             <TextInput
               style={[
@@ -199,24 +209,27 @@ const ContactForm = () => {
               placeholder="Mensaje"
               multiline={true}
               numberOfLines={4}
+
               value={mensaje}
               onChangeText={text => {
                 setMensaje(text);
-                if (text.trim()) setMensajeError('');
+                if (text.trim()) setMensajeError(''); // Limpia el error al escribir
               }}
             />
             {mensajeError ? <Text style={styles.errorText}>{mensajeError}</Text> : null}
 
+
             <TouchableOpacity
               style={styles.sendButton}
               onPress={handleSendMessage}
-              disabled={isSending}
+              disabled={isSending} // Deshabilita el botón mientras se envía
             >
               <Text style={styles.sendButtonText}>
                 {isSending ? 'Enviando...' : 'Enviar Mensaje'}
               </Text>
             </TouchableOpacity>
           </View>
+
 
           <View
             style={[
@@ -226,6 +239,7 @@ const ContactForm = () => {
                 maxWidth: IS_DESKTOP ? '55%' : '100%',
                 width: IS_TABLET ? '100%' : undefined,
                 alignItems: IS_DESKTOP ? 'flex-start' : 'center',
+
               },
             ]}
           >
@@ -236,6 +250,7 @@ const ContactForm = () => {
                   fontSize: IS_DESKTOP ? 32 : IS_TABLET ? 28 : 22,
                   lineHeight: IS_DESKTOP ? 40 : 30,
                   textAlign: IS_DESKTOP ? 'left' : 'center',
+
                 },
               ]}
             >
@@ -244,6 +259,7 @@ const ContactForm = () => {
             <View style={styles.locationDetail}>
               <Image
                 source={require('./styles/image.png')}
+
                 style={styles.locationIcon}
               />
               <Text style={styles.locationText}>
@@ -251,12 +267,14 @@ const ContactForm = () => {
               </Text>
             </View>
             <View style={styles.divider} />
+
             <MapComponent
               latitude={gymInfo.latitude}
               longitude={gymInfo.longitude}
               name={gymInfo.name}
               address={gymInfo.address}
               height={280}
+
             />
           </View>
         </View>
@@ -264,6 +282,7 @@ const ContactForm = () => {
     </ScrollView>
   );
 };
+
 
 const styles = StyleSheet.create({
   scrollViewContent: {
@@ -306,6 +325,7 @@ const styles = StyleSheet.create({
   messageInput: {
     height: 180,
     textAlignVertical: 'top',
+
   },
   sendButton: {
     backgroundColor: '#222',
@@ -344,6 +364,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#555',
     flexShrink: 1,
+
     lineHeight: 22,
   },
   divider: {
