@@ -1,6 +1,7 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -19,9 +20,7 @@ interface LoginScreenProps {
   onLogin: () => void;
 }
 
-const LoginScreen: React.FC<LoginScreenProps> = ({
-  onLogin,
-}) => {
+const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [rememberMe, setRememberMe] = useState<boolean>(false);
@@ -33,12 +32,25 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
       setIsLargeScreen(Dimensions.get('window').width >= 768);
     };
 
-    Dimensions.addEventListener('change', updateDimension);
+    const dimensionListener = Dimensions.addEventListener('change', updateDimension);
 
     return () => {
-      Dimensions.removeEventListener('change', updateDimension);
+      dimensionListener.remove();
     };
   }, []);
+
+  const clearForm = () => {
+    setEmail('');
+    setPassword('');
+    setRememberMe(false);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      clearForm();
+      return () => {};
+    }, [])
+  );
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -51,6 +63,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
       await new Promise(resolve => setTimeout(resolve, 2000));
       if (email === 'usuario@ejemplo.com' && password === 'password123') {
         Alert.alert('Inicio de Sesión Exitoso', '¡Bienvenido!');
+        clearForm();
         onLogin();
         router.replace('/Store');
       } else {
@@ -119,14 +132,16 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
               />
 
               <View style={styles.checkboxContainer}>
-                <TouchableOpacity
-                  style={styles.checkboxTouchArea}
-                  onPress={() => setRememberMe(!rememberMe)}
-                  disabled={loading}
-                >
-                  <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]} />
-                </TouchableOpacity>
-                <Text style={styles.checkboxLabel}>Recordar</Text>
+                <View style={styles.rememberMeGroup}>
+                  <TouchableOpacity
+                    style={styles.checkboxTouchArea}
+                    onPress={() => setRememberMe(!rememberMe)}
+                    disabled={loading}
+                  >
+                    <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]} />
+                  </TouchableOpacity>
+                  <Text style={styles.checkboxLabel}>Recordar</Text>
+                </View>
                 <TouchableOpacity
                   onPress={navigateToForgotPassword}
                   disabled={loading}
@@ -186,7 +201,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     width: '100%',
-    maxWidth: 900,
+    maxWidth: 800, 
+    minHeight: 550,
     backgroundColor: '#fff',
     borderRadius: 8,
     overflow: 'hidden',
@@ -199,11 +215,13 @@ const styles = StyleSheet.create({
   loginCardSmallScreen: {
     flexDirection: 'column',
     maxWidth: '95%',
+    minHeight: 'auto',
   },
   formSection: {
     flex: 1,
-    minWidth: 395,
+    minWidth: 350,
     padding: 20,
+    paddingVertical: 50,
     justifyContent: 'center',
   },
   formSectionSmallScreen: {
@@ -245,7 +263,12 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 20,
+  },
+  rememberMeGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   checkboxTouchArea: {
     padding: 5,
@@ -265,7 +288,6 @@ const styles = StyleSheet.create({
   checkboxLabel: {
     fontSize: 14,
     color: '#555',
-    marginRight: 'auto',
   },
   forgotPassword: {
     fontSize: 14,
@@ -297,7 +319,7 @@ const styles = StyleSheet.create({
   imageSection: {
     flex: 1,
     minWidth: 300,
-    minHeight: 300,
+    minHeight: 550,
     backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',

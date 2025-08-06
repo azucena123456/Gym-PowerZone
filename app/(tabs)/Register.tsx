@@ -4,7 +4,6 @@ import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Dimensions,
   Image,
   KeyboardAvoidingView,
@@ -24,6 +23,8 @@ const RegisterScreen: React.FC = () => {
   const [lastNameMaternal, setLastNameMaternal] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [formError, setFormError] = useState(''); // Nuevo estado para los errores generales del formulario
 
   const [phoneNumber, setPhoneNumber] = useState('');
   const [addressType, setAddressType] = useState('');
@@ -54,28 +55,51 @@ const RegisterScreen: React.FC = () => {
   const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
   const validatePhoneNumber = (phone: string) => /^\d{10}$/.test(phone);
 
+  const clearForm = () => {
+    setName('');
+    setLastNamePaternal('');
+    setLastNameMaternal('');
+    setEmail('');
+    setPassword('');
+    setPasswordError('');
+    setFormError('');
+    setPhoneNumber('');
+    setAddressType('');
+    setStreet('');
+    setCity('');
+    setState('');
+    setZipCode('');
+    setReferences('');
+    setCurrentStep(1);
+    setShowPassword(false);
+  };
+
   const handleNextStep = () => {
+    setFormError('');
     if (currentStep === 1) {
       if (!name || !lastNamePaternal || !lastNameMaternal || !email || !password) {
-        Alert.alert('Campos incompletos', 'Por favor, completa todos los campos de información personal.');
+        setFormError('Por favor, completa todos los campos de información personal.');
         return;
       }
       if (!validateEmail(email)) {
-        Alert.alert('Email inválido', 'Por favor, introduce un correo electrónico válido.');
+        setFormError('Por favor, introduce un correo electrónico válido.');
         return;
       }
-      if (password.length < 6 || password.length > 8) {
-        Alert.alert('Contraseña inválida', 'La contraseña debe tener entre 6 y 8 caracteres.');
+      // **AQUÍ ESTÁ EL CAMBIO**
+      if (password.length < 8 || password.length > 10) {
+        setPasswordError('La contraseña debe tener entre 8 y 10 caracteres.');
+        setFormError('La contraseña no cumple los requisitos.');
         return;
       }
+      setPasswordError('');
       setCurrentStep(2);
     } else if (currentStep === 2) {
       if (!phoneNumber || !addressType || !street) {
-        Alert.alert('Campos incompletos', 'Por favor, completa todos los campos de contacto y dirección básica.');
+        setFormError('Por favor, completa todos los campos de contacto y dirección básica.');
         return;
       }
       if (!validatePhoneNumber(phoneNumber)) {
-        Alert.alert('Número de teléfono inválido', 'Introduce un número de 10 dígitos válido.');
+        setFormError('Introduce un número de 10 dígitos válido.');
         return;
       }
       setCurrentStep(3);
@@ -83,28 +107,31 @@ const RegisterScreen: React.FC = () => {
   };
 
   const handlePreviousStep = () => {
+    setFormError('');
     setCurrentStep(prevStep => prevStep - 1);
   };
 
   const handleRegister = async () => {
-    if (!/^\d{5}$/.test(zipCode)) {
-      Alert.alert('Código Postal inválido', 'El Código Postal debe ser numérico y tener 5 dígitos.');
-      return;
-    }
+    setFormError(''); 
 
     if (!city || !state || !zipCode || !references) {
-      Alert.alert('Campos incompletos', 'Por favor, completa todos los campos de detalles de dirección y referencias.');
+      setFormError('Por favor, completa todos los campos de detalles de dirección y referencias.');
+      return;
+    }
+    if (!/^\d{5}$/.test(zipCode)) {
+      setFormError('El Código Postal debe ser numérico y tener 5 dígitos.');
       return;
     }
 
     setLoading(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
-      Alert.alert('Registro Exitoso', '¡Tu cuenta ha sido creada con éxito!');
+      setFormError('');
+      clearForm();
       router.replace('/Login');
     } catch (error) {
       console.error('Error durante el registro:', error);
-      Alert.alert('Error', 'Ocurrió un error inesperado durante el registro.');
+      setFormError('Ocurrió un error inesperado durante el registro.');
     } finally {
       setLoading(false);
     }
@@ -123,7 +150,8 @@ const RegisterScreen: React.FC = () => {
       >
         <View style={[
           styles.registerCard,
-          !isLargeScreen && styles.registerCardSmallScreen
+          !isLargeScreen && styles.registerCardSmallScreen,
+          isLargeScreen && styles.registerCardLargeScreen 
         ]}>
           {isLargeScreen && (
             <View style={styles.imageSection}>
@@ -135,195 +163,217 @@ const RegisterScreen: React.FC = () => {
             styles.formSection,
             !isLargeScreen && styles.formSectionSmallScreen
           ]}>
-            <Text style={styles.title}>Bienvenido</Text>
-            <Text style={styles.subtitle}>Bienvenido a Gym-powerZone, ingresa tus datos por favor</Text>
+            <View style={styles.formContentContainer}>
+              <Text style={styles.title}>Bienvenido</Text>
+              <Text style={styles.subtitle}>Bienvenido a Gym-powerZone, ingresa tus datos por favor</Text>
 
-            {currentStep === 1 ? (
-              <View style={[styles.formStepContent, styles.staticFormContentLargeScreen]}>
-                <Text style={[styles.sectionTitle, !isLargeScreen && styles.sectionTitleSmallScreen]}>Información Personal</Text>
-                <Text style={styles.label}>Nombre(s)</Text>
-                <TextInput
-                  style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
-                  value={name}
-                  onChangeText={setName}
-                  placeholder="Tu nombre(s)"
-                  placeholderTextColor="#aaa"
-                />
-
-                <Text style={styles.label}>Apellido Paterno</Text>
-                <TextInput
-                  style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
-                  value={lastNamePaternal}
-                  onChangeText={setLastNamePaternal}
-                  placeholder="Tu apellido paterno"
-                  placeholderTextColor="#aaa"
-                />
-
-                <Text style={styles.label}>Apellido Materno</Text>
-                <TextInput
-                  style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
-                  value={lastNameMaternal}
-                  onChangeText={setLastNameMaternal}
-                  placeholder="Tu apellido materno"
-                  placeholderTextColor="#aaa"
-                />
-
-                <Text style={styles.label}>Email</Text>
-                <TextInput
-                  style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
-                  value={email}
-                  onChangeText={setEmail}
-                  placeholder="tu@email.com"
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  placeholderTextColor="#aaa"
-                />
-
-                <Text style={styles.label}>Contraseña</Text>
-                <View style={[styles.passwordInputContainer, !isLargeScreen && styles.inputSmallScreen]}>
+              {currentStep === 1 && (
+                <View style={[styles.formStepContent, styles.formStepContentFixedSize]}>
+                  <Text style={[styles.sectionTitle, !isLargeScreen && styles.sectionTitleSmallScreen]}>Información Personal</Text>
+                  <Text style={styles.label}>Nombre(s)</Text>
                   <TextInput
-                    style={styles.passwordInput}
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={!showPassword}
-                    placeholder="********"
+                    style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
+                    value={name}
+                    onChangeText={setName}
+                    placeholder="Tu nombre(s)"
                     placeholderTextColor="#aaa"
                   />
-                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIconContainer}>
-                    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      {showPassword ? (
-                        <Path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 9a3 3 0 1 0 0 6 3 3 0 1 0 0-6z" />
-                      ) : (
-                        <>
-                          <Path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                          <Path d="M1 1l22 22" />
-                        </>
-                      )}
-                    </Svg>
-                  </TouchableOpacity>
+
+                  <Text style={styles.label}>Apellido Paterno</Text>
+                  <TextInput
+                    style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
+                    value={lastNamePaternal}
+                    onChangeText={setLastNamePaternal}
+                    placeholder="Tu apellido paterno"
+                    placeholderTextColor="#aaa"
+                  />
+
+                  <Text style={styles.label}>Apellido Materno</Text>
+                  <TextInput
+                    style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
+                    value={lastNameMaternal}
+                    onChangeText={setLastNameMaternal}
+                    placeholder="Tu apellido materno"
+                    placeholderTextColor="#aaa"
+                  />
+
+                  <Text style={styles.label}>Email</Text>
+                  <TextInput
+                    style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
+                    value={email}
+                    onChangeText={setEmail}
+                    placeholder="tu@email.com"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    placeholderTextColor="#aaa"
+                  />
+
+                  <Text style={styles.label}>Contraseña</Text>
+                  <View style={[styles.passwordInputContainer, !isLargeScreen && styles.inputSmallScreen]}>
+                    <TextInput
+                      style={styles.passwordInput}
+                      value={password}
+                      onChangeText={(text) => {
+                        setPassword(text);
+                        if (passwordError) setPasswordError('');
+                        if (formError) setFormError('');
+                      }}
+                      secureTextEntry={!showPassword}
+                      placeholder="********"
+                      placeholderTextColor="#aaa"
+                    />
+                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIconContainer}>
+                      <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        {showPassword ? (
+                          <Path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 9a3 3 0 1 0 0 6 3 3 0 1 0 0-6z" />
+                        ) : (
+                          <>
+                            <Path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                            <Path d="M1 1l22 22" />
+                          </>
+                        )}
+                      </Svg>
+                    </TouchableOpacity>
+                  </View>
+                  {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
                 </View>
-              </View>
-            ) : (
-              <ScrollView
-                style={styles.formScrollView}
-                contentContainerStyle={styles.formScrollViewContent}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-              >
-                <View style={styles.formStepContent}>
-                  {currentStep === 2 && (
-                    <>
-                      <Text style={[styles.sectionTitle, !isLargeScreen && styles.sectionTitleSmallScreen]}>Información de Contacto y Dirección Básica</Text>
+              )}
 
-                      <Text style={styles.label}>Teléfono</Text>
-                      <TextInput
-                        style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
-                        value={phoneNumber}
-                        onChangeText={(text) => {
-                          const cleaned = text.replace(/[^0-9]/g, '');
-                          setPhoneNumber(cleaned.slice(0, 10));
-                        }}
-                        keyboardType="phone-pad"
-                        maxLength={10}
-                        placeholder="Ej. 5512345678"
-                        placeholderTextColor="#aaa"
-                      />
+              {currentStep === 2 && (
+                <View style={[styles.formStepContent, styles.formStepContentFixedSize]}>
+                  <Text style={[styles.sectionTitle, !isLargeScreen && styles.sectionTitleSmallScreen]}>Información de Contacto y Dirección Básica</Text>
+                  <Text style={styles.label}>Teléfono</Text>
+                  <TextInput
+                    style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
+                    value={phoneNumber}
+                    onChangeText={(text) => {
+                      const cleaned = text.replace(/[^0-9]/g, '');
+                      setPhoneNumber(cleaned.slice(0, 10));
+                      if (formError) setFormError('');
+                    }}
+                    keyboardType="phone-pad"
+                    maxLength={10}
+                    placeholder="Ej. 5512345678"
+                    placeholderTextColor="#aaa"
+                  />
 
-                      <Text style={styles.label}>Tipo de Dirección</Text>
-                      <View style={[styles.pickerContainer, !isLargeScreen && styles.inputSmallScreen]}>
-                        <Picker
-                          selectedValue={addressType}
-                          onValueChange={(itemValue) => setAddressType(itemValue)}
-                          style={[styles.picker, !isLargeScreen && styles.pickerSmallScreen]}
-                          dropdownIconColor="#333"
-                          itemStyle={!isLargeScreen ? styles.pickerItemSmallScreen : null}
-                        >
-                          <Picker.Item label="Seleccione una opción" value="" />
-                          <Picker.Item label="Casa" value="Casa" />
-                          <Picker.Item label="Oficina" value="Oficina" />
-                          <Picker.Item label="Departamento" value="Departamento" />
-                          <Picker.Item label="Bodega" value="Bodega" />
-                          <Picker.Item label="Local Comercial" value="Local Comercial" />
-                          <Picker.Item label="Consultorio" value="Consultorio" />
-                          <Picker.Item label="Sucursal" value="Sucursal" />
-                          <Picker.Item label="Otro" value="Otro" />
-                        </Picker>
-                      </View>
+                  <Text style={styles.label}>Tipo de Dirección</Text>
+                  <View style={[styles.pickerContainer, !isLargeScreen && styles.inputSmallScreen]}>
+                    <Picker
+                      selectedValue={addressType}
+                      onValueChange={(itemValue) => {
+                        setAddressType(itemValue);
+                        if (formError) setFormError('');
+                      }}
+                      style={[styles.picker, !isLargeScreen && styles.pickerSmallScreen]}
+                      dropdownIconColor="#333"
+                      itemStyle={!isLargeScreen ? styles.pickerItemSmallScreen : null}
+                    >
+                      <Picker.Item label="Seleccione una opción" value="" />
+                      <Picker.Item label="Casa" value="Casa" />
+                      <Picker.Item label="Oficina" value="Oficina" />
+                      <Picker.Item label="Departamento" value="Departamento" />
+                      <Picker.Item label="Bodega" value="Bodega" />
+                      <Picker.Item label="Local Comercial" value="Local Comercial" />
+                      <Picker.Item label="Consultorio" value="Consultorio" />
+                      <Picker.Item label="Sucursal" value="Sucursal" />
+                      <Picker.Item label="Otro" value="Otro" />
+                    </Picker>
+                  </View>
 
-                      <Text style={styles.label}>Calle y Número</Text>
-                      <TextInput
-                        style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
-                        value={street}
-                        onChangeText={setStreet}
-                        placeholder="Ej. Av. Siempre Viva 742"
-                        placeholderTextColor="#aaa"
-                      />
-                    </>
-                  )}
-
-                  {currentStep === 3 && (
-                    <>
-                      <Text style={[styles.sectionTitle, !isLargeScreen && styles.sectionTitleSmallScreen]}>Detalles de Dirección y Referencias</Text>
-
-                      <View style={[styles.twoColumnRow, !isLargeScreen && styles.twoColumnRowSmallScreen]}>
-                        <View style={[styles.columnField, !isLargeScreen && styles.columnFieldSmallScreen]}>
-                          <Text style={styles.label}>Ciudad</Text>
-                          <TextInput
-                            style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
-                            value={city}
-                            onChangeText={setCity}
-                            placeholder="Ej. Springfield"
-                            placeholderTextColor="#aaa"
-                          />
-                        </View>
-                        <View style={[styles.columnFieldLast, !isLargeScreen && styles.columnFieldSmallScreen]}>
-                          <Text style={styles.label}>Estado</Text>
-                          <TextInput
-                            style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
-                            value={state}
-                            onChangeText={setState}
-                            placeholder="Ej. Oaxaca"
-                            placeholderTextColor="#aaa"
-                          />
-                        </View>
-                      </View>
-
-                      <View style={[styles.twoColumnRow, !isLargeScreen && styles.twoColumnRowSmallScreen]}>
-                        <View style={[styles.columnField, !isLargeScreen && styles.columnFieldSmallScreen]}>
-                          <Text style={styles.label}>Código Postal</Text>
-                          <TextInput
-                            style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
-                            value={zipCode}
-                            onChangeText={(text) => {
-                              const cleaned = text.replace(/[^0-9]/g, '');
-                              setZipCode(cleaned.slice(0, 5));
-                            }}
-                            keyboardType="numeric"
-                            maxLength={5}
-                            placeholder="Ej. 12345"
-                            placeholderTextColor="#aaa"
-                          />
-                        </View>
-                        <View style={[styles.columnFieldLast, !isLargeScreen && styles.columnFieldSmallScreen]}>
-                          {/* Empty column */}
-                        </View>
-                      </View>
-
-                      <Text style={styles.label}>Referencias de Dirección</Text>
-                      <TextInput
-                        style={[styles.input, !isLargeScreen && styles.inputSmallScreen, styles.multilineInput]}
-                        value={references}
-                        onChangeText={setReferences}
-                        placeholder="Casa con portón rojo, a lado de la farmacia"
-                        multiline
-                        numberOfLines={3}
-                        placeholderTextColor="#aaa"
-                      />
-                    </>
-                  )}
+                  <Text style={styles.label}>Calle y Número</Text>
+                  <TextInput
+                    style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
+                    value={street}
+                    onChangeText={(text) => {
+                      setStreet(text);
+                      if (formError) setFormError('');
+                    }}
+                    placeholder="Ej. Av. Siempre Viva 742"
+                    placeholderTextColor="#aaa"
+                  />
                 </View>
-              </ScrollView>
-            )}
+              )}
+
+              {currentStep === 3 && (
+                <ScrollView
+                  style={styles.formScrollView}
+                  contentContainerStyle={styles.formScrollViewContent}
+                  showsVerticalScrollIndicator={false}
+                  keyboardShouldPersistTaps="handled"
+                >
+                  <View style={[styles.formStepContent, styles.formStepContentFixedSize]}>
+                    <Text style={[styles.sectionTitle, !isLargeScreen && styles.sectionTitleSmallScreen]}>Detalles de Dirección y Referencias</Text>
+
+                    <View style={[styles.twoColumnRow, !isLargeScreen && styles.twoColumnRowSmallScreen]}>
+                      <View style={[styles.columnField, !isLargeScreen && styles.columnFieldSmallScreen]}>
+                        <Text style={styles.label}>Ciudad</Text>
+                        <TextInput
+                          style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
+                          value={city}
+                          onChangeText={(text) => {
+                            setCity(text);
+                            if (formError) setFormError('');
+                          }}
+                          placeholder="Ej. Springfield"
+                          placeholderTextColor="#aaa"
+                        />
+                      </View>
+                      <View style={[styles.columnFieldLast, !isLargeScreen && styles.columnFieldSmallScreen]}>
+                        <Text style={styles.label}>Estado</Text>
+                        <TextInput
+                          style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
+                          value={state}
+                          onChangeText={(text) => {
+                            setState(text);
+                            if (formError) setFormError('');
+                          }}
+                          placeholder="Ej. Oaxaca"
+                          placeholderTextColor="#aaa"
+                        />
+                      </View>
+                    </View>
+
+                    <View style={[styles.twoColumnRow, !isLargeScreen && styles.twoColumnRowSmallScreen]}>
+                      <View style={[styles.columnField, !isLargeScreen && styles.columnFieldSmallScreen]}>
+                        <Text style={styles.label}>Código Postal</Text>
+                        <TextInput
+                          style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
+                          value={zipCode}
+                          onChangeText={(text) => {
+                            const cleaned = text.replace(/[^0-9]/g, '');
+                            setZipCode(cleaned.slice(0, 5));
+                            if (formError) setFormError('');
+                          }}
+                          keyboardType="numeric"
+                          maxLength={5}
+                          placeholder="Ej. 12345"
+                          placeholderTextColor="#aaa"
+                        />
+                      </View>
+                      <View style={[styles.columnFieldLast, !isLargeScreen && styles.columnFieldSmallScreen]}>
+                      </View>
+                    </View>
+
+                    <Text style={styles.label}>Referencias de Dirección</Text>
+                    <TextInput
+                      style={[styles.input, !isLargeScreen && styles.inputSmallScreen, styles.multilineInput]}
+                      value={references}
+                      onChangeText={(text) => {
+                        setReferences(text);
+                        if (formError) setFormError('');
+                      }}
+                      placeholder="Casa con portón rojo, a lado de la farmacia"
+                      multiline
+                      numberOfLines={3}
+                      placeholderTextColor="#aaa"
+                    />
+                  </View>
+                </ScrollView>
+              )}
+            </View>
+
+            {formError ? <Text style={styles.formErrorText}>{formError}</Text> : null}
 
             <View style={[
               styles.navigationButtonsContainer,
@@ -356,6 +406,7 @@ const RegisterScreen: React.FC = () => {
                 <TouchableOpacity
                   style={[
                     styles.registerButton,
+                    styles.registerButtonFixed,
                     currentStep > 1 ? styles.marginLeft : {}
                   ]}
                   onPress={handleRegister}
@@ -407,8 +458,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 15,
-    flex: 1,
-    minHeight: 600,
+    minHeight: 500,
+  },
+  registerCardLargeScreen: {
+    width: 900,
+    height: 600,
   },
   registerCardSmallScreen: {
     flexDirection: 'column',
@@ -421,7 +475,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#eee',
     marginVertical: 0,
-    minHeight: 550,
+    minHeight: 500,
   },
   imageSection: {
     flex: 1,
@@ -436,39 +490,38 @@ const styles = StyleSheet.create({
   },
   formSection: {
     flex: 1,
-    padding: 25,
+    padding: 20,
     justifyContent: 'space-between',
+    minHeight: 450,
   },
   formSectionSmallScreen: {
     paddingHorizontal: 0,
     paddingVertical: 0,
     justifyContent: 'flex-start',
   },
-  staticFormContentLargeScreen: {
-    flexGrow: 0,
-    marginBottom: 15,
-  },
-  formScrollView: {
+  formContentContainer: {
     flex: 1,
-    marginBottom: 15,
-  },
-  formScrollViewContent: {
-    flexGrow: 1,
     justifyContent: 'center',
-    paddingBottom: 0,
   },
   formStepContent: {
+    flex: 1,
+    minHeight: 300,
+  },
+
+  formStepContentFixedSize: {
+    height: 350,
+    minHeight: undefined,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 2,
     color: '#333',
   },
   subtitle: {
     fontSize: 17,
     color: '#666',
-    marginBottom: 15,
+    marginBottom: 10,
   },
   label: {
     marginBottom: 3,
@@ -478,7 +531,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     marginTop: 2,
-    marginBottom: 3,
+    marginBottom: 5,
     fontSize: 17,
     color: '#666',
   },
@@ -489,7 +542,7 @@ const styles = StyleSheet.create({
   input: {
     paddingVertical: 10,
     paddingHorizontal: 15,
-    marginBottom: 9,
+    marginBottom: 10,
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 8,
@@ -505,7 +558,7 @@ const styles = StyleSheet.create({
   inputSmallScreen: {
     paddingVertical: 10,
     fontSize: 16,
-    marginBottom: 12,
+    marginBottom: 10,
   },
   multilineInput: {
     minHeight: 80,
@@ -517,7 +570,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 8,
-    marginBottom: 12,
+    marginBottom: 5,
     backgroundColor: '#f9f9f9',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -537,7 +590,7 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     paddingVertical: 0,
-    marginBottom: 12,
+    marginBottom: 10,
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 8,
@@ -563,7 +616,7 @@ const styles = StyleSheet.create({
   twoColumnRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 12,
+    marginBottom: 10,
   },
   twoColumnRowSmallScreen: {
     flexDirection: 'column',
@@ -579,7 +632,7 @@ const styles = StyleSheet.create({
   columnFieldSmallScreen: {
     width: '100%',
     marginRight: 0,
-    marginBottom: 12,
+    marginBottom: 10,
   },
   navigationButtonsContainer: {
     flexDirection: 'row',
@@ -612,6 +665,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
   },
+  registerButtonFixed: {
+    width: 150,
+    flex: undefined,
+  },
   smallNavButton: {
     backgroundColor: '#ff4500',
     paddingVertical: 10,
@@ -642,5 +699,18 @@ const styles = StyleSheet.create({
     color: '#ff4500',
     fontWeight: 'bold',
     textDecorationLine: 'underline',
+  },
+  errorText: {
+    color: '#ff4500',
+    fontSize: 12,
+    marginTop: -5,
+    marginBottom: 10,
+  },
+  formErrorText: {
+    color: '#ff4500',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 10,
+    fontWeight: 'bold',
   },
 });
