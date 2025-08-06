@@ -1,7 +1,7 @@
 import { Picker } from '@react-native-picker/picker';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -24,7 +24,8 @@ const RegisterScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [formError, setFormError] = useState(''); // Nuevo estado para los errores generales del formulario
+  const [formError, setFormError] = useState('');
+  const [passwordButtonError, setPasswordButtonError] = useState('');
 
   const [phoneNumber, setPhoneNumber] = useState('');
   const [addressType, setAddressType] = useState('');
@@ -52,6 +53,13 @@ const RegisterScreen: React.FC = () => {
     };
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      clearForm();
+      return () => {};
+    }, [])
+  );
+
   const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
   const validatePhoneNumber = (phone: string) => /^\d{10}$/.test(phone);
 
@@ -63,6 +71,7 @@ const RegisterScreen: React.FC = () => {
     setPassword('');
     setPasswordError('');
     setFormError('');
+    setPasswordButtonError('');
     setPhoneNumber('');
     setAddressType('');
     setStreet('');
@@ -76,6 +85,7 @@ const RegisterScreen: React.FC = () => {
 
   const handleNextStep = () => {
     setFormError('');
+    setPasswordButtonError('');
     if (currentStep === 1) {
       if (!name || !lastNamePaternal || !lastNameMaternal || !email || !password) {
         setFormError('Por favor, completa todos los campos de información personal.');
@@ -85,10 +95,9 @@ const RegisterScreen: React.FC = () => {
         setFormError('Por favor, introduce un correo electrónico válido.');
         return;
       }
-      // **AQUÍ ESTÁ EL CAMBIO**
       if (password.length < 8 || password.length > 10) {
-        setPasswordError('La contraseña debe tener entre 8 y 10 caracteres.');
-        setFormError('La contraseña no cumple los requisitos.');
+        setPasswordError('La contraseña debe tener entre 8 a 10 caracteres.');
+        setPasswordButtonError('La contraseña no cumple los requisitos.');
         return;
       }
       setPasswordError('');
@@ -108,11 +117,13 @@ const RegisterScreen: React.FC = () => {
 
   const handlePreviousStep = () => {
     setFormError('');
+    setPasswordButtonError('');
     setCurrentStep(prevStep => prevStep - 1);
   };
 
   const handleRegister = async () => {
-    setFormError(''); 
+    setFormError('');
+    setPasswordButtonError('');
 
     if (!city || !state || !zipCode || !references) {
       setFormError('Por favor, completa todos los campos de detalles de dirección y referencias.');
@@ -151,7 +162,7 @@ const RegisterScreen: React.FC = () => {
         <View style={[
           styles.registerCard,
           !isLargeScreen && styles.registerCardSmallScreen,
-          isLargeScreen && styles.registerCardLargeScreen 
+          isLargeScreen && styles.registerCardLargeScreen
         ]}>
           {isLargeScreen && (
             <View style={styles.imageSection}>
@@ -217,6 +228,7 @@ const RegisterScreen: React.FC = () => {
                         setPassword(text);
                         if (passwordError) setPasswordError('');
                         if (formError) setFormError('');
+                        if (passwordButtonError) setPasswordButtonError('');
                       }}
                       secureTextEntry={!showPassword}
                       placeholder="********"
@@ -352,6 +364,7 @@ const RegisterScreen: React.FC = () => {
                         />
                       </View>
                       <View style={[styles.columnFieldLast, !isLargeScreen && styles.columnFieldSmallScreen]}>
+                        {/* Empty column */}
                       </View>
                     </View>
 
@@ -373,12 +386,16 @@ const RegisterScreen: React.FC = () => {
               )}
             </View>
 
-            {formError ? <Text style={styles.formErrorText}>{formError}</Text> : null}
+            {formError && !passwordButtonError ? <Text style={styles.formErrorText}>{formError}</Text> : null}
 
             <View style={[
               styles.navigationButtonsContainer,
               currentStep === 1 ? styles.justifyEnd : styles.justifyBetween
             ]}>
+              {currentStep === 1 && passwordButtonError ? (
+                <Text style={styles.passwordButtonErrorText}>{passwordButtonError}</Text>
+              ) : null}
+
               {currentStep > 1 && (
                 <TouchableOpacity style={styles.smallNavButton} onPress={handlePreviousStep} disabled={loading}>
                   <Svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -507,7 +524,6 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 300,
   },
-
   formStepContentFixedSize: {
     height: 350,
     minHeight: undefined,
@@ -519,7 +535,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   subtitle: {
-    fontSize: 17,
+    fontSize: 15,
     color: '#666',
     marginBottom: 10,
   },
@@ -532,7 +548,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     marginTop: 2,
     marginBottom: 5,
-    fontSize: 17,
+    fontSize: 15,
     color: '#666',
   },
   sectionTitleSmallScreen: {
@@ -712,5 +728,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
     fontWeight: 'bold',
+  },
+  passwordButtonErrorText: {
+    color: '#ff4500',
+    fontSize: 12,
+    fontWeight: 'bold',
+    flex: 1,
+    textAlign: 'right',
+    marginRight: 10,
   },
 });
