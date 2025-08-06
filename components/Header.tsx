@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet, Text, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -33,8 +32,8 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
           </TouchableOpacity>
         </View>
 
-        
-        <TouchableOpacity onPress={() => router.push('/store')} style={styles.iconButton}>
+        {/* Icono del carrito modificado para redirigir a /Cart */}
+        <TouchableOpacity onPress={() => router.push('/Cart')} style={styles.iconButton}>
           <Icon name="cart-outline" size={24} color="#FFF" />
         </TouchableOpacity>
         
@@ -49,7 +48,6 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
 const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: '#000',
-    
     paddingHorizontal: 100,
     paddingBottom: 15,
     borderBottomWidth: 1,

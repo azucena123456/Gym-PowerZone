@@ -97,13 +97,13 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginBottom: 15,
   },
-    slideDescription: {
+  slideDescription: {
     fontSize: 13,
     color: '#666',
     lineHeight: 18,
     marginBottom: 65, // NO CAMBIADO como pediste
-  },
 
+  },
   ctaCircle: {
     backgroundColor: '#F13a11',
     width: 50,

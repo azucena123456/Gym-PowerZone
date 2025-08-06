@@ -6,16 +6,17 @@ import React, {
   useRef,
   useState,
 } from 'react';
+
 import {
   Image,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   ScrollView,
   StyleSheet,
   Text,
   View,
   findNodeHandle,
   useWindowDimensions,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
@@ -41,6 +42,7 @@ const WeAreGymso = forwardRef<{scrollToAboutUs: () => void}, WeAreGymsoProps>((p
   const [aboutUsHeight, setAboutUsHeight] = useState(0);
   const [entrenadores, setEntrenadores] = useState<Trainer[]>([]);
 
+
   const isDesktop = width >= 1024;
   const isTablet = width >= 600 && width < 1024;
   const isPhone = width < 600;
@@ -56,6 +58,7 @@ const WeAreGymso = forwardRef<{scrollToAboutUs: () => void}, WeAreGymsoProps>((p
           },
           (err) => console.error("scroll error:", err)
         );
+
       }
     },
   }));
@@ -75,6 +78,7 @@ const WeAreGymso = forwardRef<{scrollToAboutUs: () => void}, WeAreGymsoProps>((p
           console.warn('Error midiendo la sección aboutUs');
         }
       );
+
     }
   };
 
@@ -85,6 +89,7 @@ const WeAreGymso = forwardRef<{scrollToAboutUs: () => void}, WeAreGymsoProps>((p
         setEntrenadores(res.data);
       })
       .catch((error) => {
+
         console.error('Error al cargar entrenadores:', error);
       });
   }, []);
@@ -121,6 +126,7 @@ const WeAreGymso = forwardRef<{scrollToAboutUs: () => void}, WeAreGymsoProps>((p
             ]}
           >
             <Text style={[styles.title, { fontSize: isPhone ? 24 : 32 }]}>
+
               Hola, somos Gym-PowerZone
             </Text>
             <Text
@@ -160,11 +166,13 @@ const WeAreGymso = forwardRef<{scrollToAboutUs: () => void}, WeAreGymsoProps>((p
                     width: 280,
                     marginBottom: isPhone ? 20 : 0,
                     marginHorizontal: isDesktop || isTablet ? 15 : 0,
+
                   },
                 ]}
               >
                 <Image
                   source={{ uri: entrenador.foto_url }}
+
                   style={[styles.cardImage, { height: isPhone ? 200 : 280 }]}
                   defaultSource={fallbackImage}
                 />
@@ -184,10 +192,12 @@ const WeAreGymso = forwardRef<{scrollToAboutUs: () => void}, WeAreGymsoProps>((p
                       {entrenador.especialidad}
                     </Text>
                     <Icon name="facebook" size={18} color="#666" />
+
                   </View>
                 </View>
               </View>
             ))}
+
           </View>
         </View>
       </View>
