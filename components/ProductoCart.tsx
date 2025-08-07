@@ -116,7 +116,7 @@ productName: {
 },
 addToCartButton: {
     backgroundColor: '#FFF', 
-    paddingVertical: 0, 
+    paddingVertical: 10, 
     paddingHorizontal: 10, 
     borderRadius: 20, 
     borderWidth: 1, 

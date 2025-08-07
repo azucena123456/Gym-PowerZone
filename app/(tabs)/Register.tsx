@@ -231,7 +231,7 @@ const RegisterScreen: React.FC = () => {
                         if (passwordButtonError) setPasswordButtonError('');
                       }}
                       secureTextEntry={!showPassword}
-                      placeholder="********"
+                      placeholder=""
                       placeholderTextColor="#aaa"
                     />
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIconContainer}>
