@@ -1,4 +1,3 @@
-// app/store.tsx
 import React, { useState } from 'react';
 import { Dimensions, FlatList, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -53,6 +52,7 @@ const handleProductPress = (product: Product) => {
         contentContainerStyle={styles.productList}
         columnWrapperStyle={styles.columnWrapper}
         scrollEnabled={false} 
+        
         />
     </ScrollView>
     </SafeAreaView> 

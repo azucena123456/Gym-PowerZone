@@ -10,14 +10,24 @@ interface HeaderPropsWithoutCartPress extends Omit<HeaderProps, 'onCartPress'> {
 const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchChange, searchTerm }) => {
   const router = useRouter(); 
   const insets = useSafeAreaInsets(); 
+  const [hoveredItem, setHoveredItem] = React.useState<string | null>(null);
+
+  const handleLogout = () => {
+  
+    router.replace('/'); 
+  };
 
   return (
     <View style={[
       styles.headerContainer,
       { paddingTop: Platform.OS === 'ios' ? insets.top : 10 } 
     ]}>
+
+      
       <View style={styles.topRow}>
+        <TouchableOpacity onPress={()=> router.push('/')}>
         <Text style={styles.logoText}>Gym-PowerZone</Text>
+        </TouchableOpacity>
         
         <View style={styles.searchBar}>
           <TextInput
@@ -32,15 +42,30 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
           </TouchableOpacity>
         </View>
 
-        {/* Icono del carrito modificado para redirigir a /Cart */}
-        <TouchableOpacity onPress={() => router.push('/Cart')} style={styles.iconButton}>
-          <Icon name="cart-outline" size={24} color="#FFF" />
-        </TouchableOpacity>
         
-        <TouchableOpacity onPress={onMenuPress} style={styles.iconButton}>
-          <Icon name="menu-outline" size={24} color="#FFF" />
-        </TouchableOpacity>
+        <View style={styles.iconButtonsContainer}>
+          <TouchableOpacity onPress={() => router.push('/Cart')} style={styles.iconButton}>
+            <Icon name="cart-outline" size={28} color="#FFF" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleLogout}
+            style={[styles.menuItem, styles.logoutButtonMargin]} 
+            onMouseEnter={() => setHoveredItem('CerrarSesion')}
+            onMouseLeave={() => setHoveredItem(null)}
+          >
+            <Text style={[
+              styles.menuText, 
+              hoveredItem === 'CerrarSesion' && styles.menuTextHover, 
+            ]}>
+              CERRAR SESIÓN
+            </Text>
+          </TouchableOpacity>
+        </View>
+        
+        
+
       </View>
+
     </View>
   );
 };
@@ -48,7 +73,8 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
 const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: '#000',
-    paddingHorizontal: 100,
+    paddingHorizontal: 90,
+    
     paddingBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#555',
@@ -83,9 +109,29 @@ const styles = StyleSheet.create({
   searchIcon: {
     padding: 8,
   },
+  iconButtonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   iconButton: {
     marginLeft: 10,
   },
+  menuItem: {
+    marginLeft: 10,
+    paddingVertical: 10,
+  },
+  menuText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
+  menuTextHover: {
+    color: '#E44D26', 
+  },
+  logoutButtonMargin: {
+    marginLeft: 55, 
+  }
 });
 
 export default Header;
