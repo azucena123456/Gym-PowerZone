@@ -1,23 +1,23 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet, 
-  ScrollView, 
+import {
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
   TextInput,
-  Platform
+  TouchableOpacity,
+  View,
+  Image
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
 
 const Carrito = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [cartItemCount, setCartItemCount] = useState(1); // Inicia en 1
+  const [cartItemCount, setCartItemCount] = useState(1);
   const navigation = useNavigation();
 
-  // Componente HeaderCart integrado
   const HeaderCart = () => {
     const formatCartCount = (count: number) => {
       return count > 9 ? '9+' : count.toString();
@@ -66,7 +66,6 @@ const Carrito = () => {
   const handleQuantityChange = (newQuantity: number) => {
     if (newQuantity >= 1) {
       setQuantity(newQuantity);
-      // Actualiza el contador del carrito 1:1 con la cantidad
       setCartItemCount(newQuantity > 9 ? 10 : newQuantity);
     }
   };
@@ -76,62 +75,75 @@ const Carrito = () => {
       <HeaderCart />
       
       <ScrollView contentContainerStyle={styles.mainContent}>
-        <View style={styles.cartSection}>
-          <Text style={styles.sectionTitle}>Tu Carrito</Text>
+        <View style={styles.cartContainer}>
+          {/* Sección de productos del carrito */}
+          <View style={styles.productsSection}>
+            <Text style={styles.sectionTitle}>Tu Carrito</Text>
 
-          <View style={styles.cartItem}>
-            <Text style={styles.itemTitle}>Botella para Proteina con mezclador</Text>
-            <Text style={styles.itemDescription}>
-              Copa de cocteína de proteínas sin BPA y sin ftalatos, 100% material de grado alimenticio
-            </Text>
-            <Text style={styles.availability}>Disponible</Text>
+            <View style={styles.cartItem}>
+              <Text style={styles.itemTitle}>Botella para Proteina con mezclador</Text>
+              <Text style={styles.itemDescription}>
+                Copa de cocteína de proteínas sin BPA y sin ftalatos, 100% material de grado alimenticio
+              </Text>
+              <Text style={styles.availability}>Disponible</Text>
 
-            <View style={styles.itemControls}>
-              <View style={styles.quantityControls}>
-                <TouchableOpacity 
-                  style={styles.quantityButton} 
-                  onPress={() => handleQuantityChange(quantity - 1)}
-                >
-                  <Text style={styles.quantityButtonText}>-</Text>
-                </TouchableOpacity>
-                <Text style={styles.quantity}>{quantity}</Text>
-                <TouchableOpacity 
-                  style={styles.quantityButton} 
-                  onPress={() => handleQuantityChange(quantity + 1)}
-                >
-                  <Text style={styles.quantityButtonText}>+</Text>
-                </TouchableOpacity>
+              <View style={styles.itemControls}>
+                <View style={styles.quantityControls}>
+                  <TouchableOpacity 
+                    style={styles.quantityButton} 
+                    onPress={() => handleQuantityChange(quantity - 1)}
+                  >
+                    <Text style={styles.quantityButtonText}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.quantity}>{quantity}</Text>
+                  <TouchableOpacity 
+                    style={styles.quantityButton} 
+                    onPress={() => handleQuantityChange(quantity + 1)}
+                  >
+                    <Text style={styles.quantityButtonText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.actions}>
+                  <TouchableOpacity style={styles.actionButton}>
+                    <Text style={styles.actionButtonText}>Eliminar</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.actionSeparator}>|</Text>
+                  <TouchableOpacity style={styles.actionButton}>
+                    <Text style={styles.actionButtonText}>Guardar</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-              <View style={styles.actions}>
-                <TouchableOpacity style={styles.actionButton}>
-                  <Text style={styles.actionButtonText}>Eliminar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.actionButton}>
-                  <Text style={styles.actionButtonText}>Guardar</Text>
-                </TouchableOpacity>
-              </View>
+
+              <Text style={styles.itemPrice}>${(1456 * quantity).toLocaleString('es-MX')}</Text>
             </View>
-
-            <Text style={styles.itemPrice}>${(1456 * quantity).toLocaleString('es-MX')}</Text>
           </View>
 
-          <View style={styles.shippingInfo}>
-            <Text style={styles.shippingText}>Una parte de tu primer pedido califica para envío</Text>
-            <Text style={[styles.shippingText, styles.shippingOption]}>
-              GRATIS Selección esta opción al finalizar
-            </Text>
-          </View>
+          {/* Sección de resumen (derecha) */}
+          <View style={styles.summarySection}>
+            <View style={styles.summaryContainer}>
+              <Text style={styles.summaryText}>
+                Subtotal ({quantity} producto{quantity !== 1 ? 's' : ''}): 
+              </Text>
+              <Text style={styles.summaryTotal}>${(1456 * quantity).toLocaleString('es-MX')}</Text>
+              
+              <View style={styles.shippingInfo}>
+                <Image 
+                  source={require('../../assets/images/checkOrange.png')} 
+                  style={styles.shippingIcon}
+                />
+                <View style={styles.shippingTextContainer}>
+                  <Text style={styles.shippingText}>Una parte de tu primer pedido califica para envío</Text>
+                  <Text style={[styles.shippingText, styles.shippingOption]}>
+                    GRATIS Selecciona esta opción al finalizar tu compra Detalles
+                  </Text>
+                </View>
+              </View>
 
-          <View style={styles.summary}>
-            <Text style={styles.summaryText}>
-              Subtotal ({quantity} producto{quantity !== 1 ? 's' : ''}): 
-              <Text style={styles.summaryTotal}> ${(1456 * quantity).toLocaleString('es-MX')}</Text>
-            </Text>
+              <TouchableOpacity style={styles.checkoutButton}>
+                <Text style={styles.checkoutButtonText}>Proceder al pago</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-
-          <TouchableOpacity style={styles.checkoutButton}>
-            <Text style={styles.checkoutButtonText}>Proceder al pago</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
@@ -210,7 +222,26 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
   },
-  cartSection: {
+  cartContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  productsSection: {
+    flex: 2,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    marginRight: 15,
+  },
+  summarySection: {
+    flex: 1,
+  },
+  summaryContainer: {
     backgroundColor: '#fff',
     borderRadius: 8,
     padding: 20,
@@ -279,9 +310,14 @@ const styles = StyleSheet.create({
   },
   actions: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   actionButton: {
-    marginLeft: 15,
+    marginHorizontal: 5,
+  },
+  actionSeparator: {
+    color: '#ccc',
+    marginHorizontal: 5,
   },
   actionButtonText: {
     color: '#0066cc',
@@ -295,7 +331,18 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   shippingInfo: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
     marginVertical: 20,
+  },
+  shippingIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+    marginTop: 3,
+  },
+  shippingTextContainer: {
+    flex: 1,
   },
   shippingText: {
     fontSize: 14,
@@ -306,23 +353,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 5,
   },
-  summary: {
-    marginVertical: 20,
-  },
   summaryText: {
     fontSize: 16,
     color: '#333',
-    textAlign: 'right',
+    marginBottom: 5,
   },
   summaryTotal: {
     fontWeight: 'bold',
+    fontSize: 18,
+    marginBottom: 20,
   },
   checkoutButton: {
     backgroundColor: '#ff6b00',
     padding: 15,
     borderRadius: 4,
     alignItems: 'center',
-    marginTop: 10,
   },
   checkoutButtonText: {
     color: 'white',
