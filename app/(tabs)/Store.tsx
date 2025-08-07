@@ -1,4 +1,3 @@
-// app/store.tsx
 import React, { useState } from 'react';
 import { Dimensions, FlatList, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';

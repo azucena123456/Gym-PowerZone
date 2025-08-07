@@ -101,7 +101,7 @@ const RegisterScreen: React.FC = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
       Alert.alert('Registro Exitoso', '¡Tu cuenta ha sido creada con éxito!');
-      router.replace('/Login');
+      router.replace('/Store');
     } catch (error) {
       console.error('Error durante el registro:', error);
       Alert.alert('Error', 'Ocurrió un error inesperado durante el registro.');

@@ -35,13 +35,13 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
 
         
         <TouchableOpacity onPress={() => router.push('/store')} style={styles.iconButton}>
-          <Icon name="cart-outline" size={24} color="#FFF" />
+          <Icon name="cart-outline" size={28} color="#FFF" />
         </TouchableOpacity>
         
-        <TouchableOpacity onPress={onMenuPress} style={styles.iconButton}>
-          <Icon name="menu-outline" size={24} color="#FFF" />
-        </TouchableOpacity>
+
+ 
       </View>
+
     </View>
   );
 };
