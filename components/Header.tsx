@@ -17,9 +17,12 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
       styles.headerContainer,
       { paddingTop: Platform.OS === 'ios' ? insets.top : 10 } 
     ]}>
+
+      
       <View style={styles.topRow}>
+        <TouchableOpacity onPress={()=> router.push('/')}>
         <Text style={styles.logoText}>Gym-PowerZone</Text>
-        
+        </TouchableOpacity>
         <View style={styles.searchBar}>
           <TextInput
             style={styles.searchInput}
