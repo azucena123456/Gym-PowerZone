@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet, Text, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -11,6 +10,17 @@ interface HeaderPropsWithoutCartPress extends Omit<HeaderProps, 'onCartPress'> {
 const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchChange, searchTerm }) => {
   const router = useRouter(); 
   const insets = useSafeAreaInsets(); 
+  const [hoveredItem, setHoveredItem] = React.useState<string | null>(null);
+
+  const handleLogout = () => {
+    // Aquí puedes agregar la lógica para limpiar el token de sesión, etc.
+    // Por ejemplo, AsyncStorage.removeItem('userToken');
+    // ...
+    
+    // Después, navega a la página principal sin historial.
+    // Esto evita que el usuario pueda presionar "atrás" y regresar a la pantalla de la tienda.
+    router.replace('/'); 
+  };
 
   return (
     <View style={[
@@ -38,12 +48,26 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
         </View>
 
         
-        <TouchableOpacity onPress={() => router.push('/store')} style={styles.iconButton}>
-          <Icon name="cart-outline" size={28} color="#FFF" />
-        </TouchableOpacity>
+        <View style={styles.iconButtonsContainer}>
+          <TouchableOpacity onPress={() => router.push('/store')} style={styles.iconButton}>
+            <Icon name="cart-outline" size={28} color="#FFF" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleLogout}
+            style={[styles.menuItem, styles.logoutButtonMargin]} 
+            onMouseEnter={() => setHoveredItem('CerrarSesion')}
+            onMouseLeave={() => setHoveredItem(null)}
+          >
+            <Text style={[
+              styles.menuText, 
+              hoveredItem === 'CerrarSesion' && styles.menuTextHover, 
+            ]}>
+              CERRAR SESIÓN
+            </Text>
+          </TouchableOpacity>
+        </View>
         
 
- 
       </View>
 
     </View>
@@ -53,8 +77,7 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
 const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: '#000',
-    
-    paddingHorizontal: 100,
+    paddingHorizontal: 90,
     paddingBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#555',
@@ -89,9 +112,29 @@ const styles = StyleSheet.create({
   searchIcon: {
     padding: 8,
   },
+  iconButtonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   iconButton: {
     marginLeft: 10,
   },
+  menuItem: {
+    marginLeft: 10,
+    paddingVertical: 10,
+  },
+  menuText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
+  menuTextHover: {
+    color: '#E44D26', // El color que quieres al pasar el mouse
+  },
+  logoutButtonMargin: {
+    marginLeft: 55, 
+  }
 });
 
 export default Header;

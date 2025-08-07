@@ -52,6 +52,7 @@ const handleProductPress = (product: Product) => {
         contentContainerStyle={styles.productList}
         columnWrapperStyle={styles.columnWrapper}
         scrollEnabled={false} 
+        
         />
     </ScrollView>
     </SafeAreaView> 
