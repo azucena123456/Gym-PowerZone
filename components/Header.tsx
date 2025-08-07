@@ -23,6 +23,7 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
         <TouchableOpacity onPress={()=> router.push('/')}>
         <Text style={styles.logoText}>Gym-PowerZone</Text>
         </TouchableOpacity>
+        
         <View style={styles.searchBar}>
           <TextInput
             style={styles.searchInput}
