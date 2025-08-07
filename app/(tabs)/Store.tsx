@@ -27,8 +27,8 @@ export default function StoreScreen() {
 
 
     const renderRows = () => {
-        const rows = [];
-        let row = [];
+        const rows: React.JSX.Element[] = [];
+        let row: Product[] = [];
 
         filteredProducts.forEach((product, index) => {
             row.push(product);
@@ -73,13 +73,19 @@ export default function StoreScreen() {
             />
 
             <ScrollView contentContainerStyle={styles.scrollContent}>
-                <ImageCarousel />
+              
+
+              
+
+                {searchTerm.length === 0 && <ImageCarousel />}
 
                 {filteredProducts.length === 0 && (
                     <View style={styles.noResultsContainer}>
-                        <Text style={styles.noResultsText}>No se encontraron resultados para "{searchTerm}"</Text>
+                        <Text style={styles.noResultsText}>No se encontraron resultados para {searchTerm}</Text>
                     </View>
                 )}
+
+
 
                 <View style={styles.productListContainer}>
                     {renderRows()}
@@ -105,8 +111,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     noResultsText: {
-        fontSize: 16,
-        color: '#666',
+        fontSize: 20,
+        color: '#e91818ff',
         textAlign: 'center',
     },
     productListContainer: {
