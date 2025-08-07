@@ -44,7 +44,7 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
 
         
         <View style={styles.iconButtonsContainer}>
-          <TouchableOpacity onPress={() => router.push('/store')} style={styles.iconButton}>
+          <TouchableOpacity onPress={() => router.push('/Cart')} style={styles.iconButton}>
             <Icon name="cart-outline" size={28} color="#FFF" />
           </TouchableOpacity>
           <TouchableOpacity
@@ -61,10 +61,7 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
             </Text>
           </TouchableOpacity>
         </View>
-        {/* Icono del carrito modificado para redirigir a /Cart */}
-        <TouchableOpacity onPress={() => router.push('/Cart')} style={styles.iconButton}>
-          <Icon name="cart-outline" size={24} color="#FFF" />
-        </TouchableOpacity>
+        
         
 
       </View>
