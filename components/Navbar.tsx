@@ -75,15 +75,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onPressMenu, scrollToSection, ac
 
       {isMobileOrTablet ? (
         <>
-          
-          <TouchableOpacity
-            style={styles.cartButtonMobile} 
-            onPress={() => router.push('/store')} 
-            activeOpacity={0.7}
-          >
-            <FontAwesome name="shopping-cart" size={24} color="white" />
-          </TouchableOpacity>
-
           <TouchableOpacity
             style={styles.menuButton}
             onPress={toggleMenu}

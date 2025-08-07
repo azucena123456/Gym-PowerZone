@@ -1,6 +1,7 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -14,51 +15,77 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 
 interface LoginScreenProps {
   onLogin: () => void;
 }
 
-const LoginScreen: React.FC<LoginScreenProps> = ({
-  onLogin,
-}) => {
+const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [loginError, setLoginError] = useState<string>('');
   const [isLargeScreen, setIsLargeScreen] = useState(Dimensions.get('window').width >= 768);
+  const [showPassword, setShowPassword] = useState(false); 
 
   useEffect(() => {
     const updateDimension = () => {
       setIsLargeScreen(Dimensions.get('window').width >= 768);
     };
 
-    Dimensions.addEventListener('change', updateDimension);
+    const dimensionListener = Dimensions.addEventListener('change', updateDimension);
 
     return () => {
-      Dimensions.removeEventListener('change', updateDimension);
+      dimensionListener.remove();
     };
   }, []);
 
+  const clearForm = () => {
+    setEmail('');
+    setPassword('');
+    setRememberMe(false);
+    setLoginError('');
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      clearForm();
+      return () => {};
+    }, [])
+  );
+
+  const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
+
   const handleLogin = async () => {
+    setLoginError('');
+
     if (!email || !password) {
-      Alert.alert('Campos incompletos', 'Por favor, completa todos los campos.');
+      setLoginError('Por favor, completa todos los campos.');
+      return;
+    }
+    if (!validateEmail(email)) {
+      setLoginError('Por favor, ingresa un correo electrónico válido.');
       return;
     }
 
     setLoading(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
-      if (email === 'usuario@ejemplo.com' && password === 'password123') {
+      const isLoginSuccessful = email === 'usuario@ejemplo.com' && password === 'password123';
+
+      if (isLoginSuccessful) {
         Alert.alert('Inicio de Sesión Exitoso', '¡Bienvenido!');
+        clearForm();
         onLogin();
         router.replace('/Store');
       } else {
-        Alert.alert('Error de Inicio de Sesión', 'Credenciales incorrectas. Inténtalo de nuevo.');
+        setLoginError('El correo o la contraseña no son correctos.');
       }
     } catch (error) {
       console.error('Error durante el inicio de sesión:', error);
-      Alert.alert('Error', 'Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
+      setLoginError('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
     } finally {
       setLoading(false);
     }
@@ -99,7 +126,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
               <TextInput
                 style={styles.input}
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  setLoginError('');
+                }}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 placeholder="tu@email.com"
@@ -108,25 +138,46 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
               />
 
               <Text style={styles.label}>Contraseña</Text>
-              <TextInput
-                style={styles.input}
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                placeholder="********"
-                placeholderTextColor="#aaa"
-                editable={!loading}
-              />
+              <View style={styles.passwordInputContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  value={password}
+                  onChangeText={(text) => {
+                    setPassword(text);
+                    setLoginError('');
+                  }}
+                  secureTextEntry={!showPassword}
+                  placeholder="********"
+                  placeholderTextColor="#aaa"
+                  editable={!loading}
+                />
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIconContainer}>
+                  <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    {showPassword ? (
+                      <Path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 9a3 3 0 1 0 0 6 3 3 0 1 0 0-6z" />
+                    ) : (
+                      <>
+                        <Path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                        <Path d="M1 1l22 22" />
+                      </>
+                    )}
+                  </Svg>
+                </TouchableOpacity>
+              </View>
+
+              {loginError ? <Text style={styles.errorText}>{loginError}</Text> : null}
 
               <View style={styles.checkboxContainer}>
-                <TouchableOpacity
-                  style={styles.checkboxTouchArea}
-                  onPress={() => setRememberMe(!rememberMe)}
-                  disabled={loading}
-                >
-                  <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]} />
-                </TouchableOpacity>
-                <Text style={styles.checkboxLabel}>Recordar</Text>
+                <View style={styles.rememberMeGroup}>
+                  <TouchableOpacity
+                    style={styles.checkboxTouchArea}
+                    onPress={() => setRememberMe(!rememberMe)}
+                    disabled={loading}
+                  >
+                    <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]} />
+                  </TouchableOpacity>
+                  <Text style={styles.checkboxLabel}>Recordar</Text>
+                </View>
                 <TouchableOpacity
                   onPress={navigateToForgotPassword}
                   disabled={loading}
@@ -186,7 +237,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     width: '100%',
-    maxWidth: 900,
+    maxWidth: 800,
+    minHeight: 550,
     backgroundColor: '#fff',
     borderRadius: 8,
     overflow: 'hidden',
@@ -199,11 +251,13 @@ const styles = StyleSheet.create({
   loginCardSmallScreen: {
     flexDirection: 'column',
     maxWidth: '95%',
+    minHeight: 'auto',
   },
   formSection: {
     flex: 1,
-    minWidth: 395,
+    minWidth: 350,
     padding: 20,
+    paddingVertical: 50,
     justifyContent: 'center',
   },
   formSectionSmallScreen: {
@@ -232,6 +286,22 @@ const styles = StyleSheet.create({
     color: '#555',
     fontWeight: 'bold',
   },
+  passwordInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+    marginBottom: 18,
+  },
+  passwordInput: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    color: '#333',
+  },
+  
   input: {
     paddingVertical: 12,
     paddingHorizontal: 15,
@@ -242,10 +312,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
+  // Estilo del ícono de ojo
+  eyeIconContainer: {
+    padding: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 20,
+  },
+  rememberMeGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   checkboxTouchArea: {
     padding: 5,
@@ -265,7 +346,6 @@ const styles = StyleSheet.create({
   checkboxLabel: {
     fontSize: 14,
     color: '#555',
-    marginRight: 'auto',
   },
   forgotPassword: {
     fontSize: 14,
@@ -297,7 +377,7 @@ const styles = StyleSheet.create({
   imageSection: {
     flex: 1,
     minWidth: 300,
-    minHeight: 300,
+    minHeight: 550,
     backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
@@ -305,5 +385,13 @@ const styles = StyleSheet.create({
   gymImage: {
     width: '100%',
     height: '100%',
+  },
+  errorText: {
+    color: '#ff4500',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: -10,
+    marginBottom: 15,
+    fontWeight: 'bold',
   },
 });

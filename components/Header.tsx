@@ -61,6 +61,10 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
             </Text>
           </TouchableOpacity>
         </View>
+        {/* Icono del carrito modificado para redirigir a /Cart */}
+        <TouchableOpacity onPress={() => router.push('/Cart')} style={styles.iconButton}>
+          <Icon name="cart-outline" size={24} color="#FFF" />
+        </TouchableOpacity>
         
 
       </View>
@@ -73,6 +77,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: '#000',
     paddingHorizontal: 90,
+    
     paddingBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#555',
