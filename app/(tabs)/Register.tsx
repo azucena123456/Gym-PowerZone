@@ -62,6 +62,12 @@ const RegisterScreen: React.FC = () => {
 
   const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
   const validatePhoneNumber = (phone: string) => /^\d{10}$/.test(phone);
+  const validateTextOnly = (text: string) => /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/.test(text);
+
+  const trimAndCheckEmpty = (text: string) => text.trim().length === 0;
+
+  // Función para verificar si un string termina con un espacio
+  const hasTrailingSpace = (text: string) => text.endsWith(' ');
 
   const clearForm = () => {
     setName('');
@@ -87,28 +93,40 @@ const RegisterScreen: React.FC = () => {
     setFormError('');
     setPasswordButtonError('');
     if (currentStep === 1) {
-      if (!name || !lastNamePaternal || !lastNameMaternal || !email || !password) {
+      if (!name || !lastNamePaternal || !lastNameMaternal || !email || !password || trimAndCheckEmpty(name) || trimAndCheckEmpty(lastNamePaternal) || trimAndCheckEmpty(lastNameMaternal)) {
         setFormError('Por favor, completa todos los campos de información personal.');
         return;
       }
-      if (!validateEmail(email)) {
-        setFormError('Por favor, introduce un correo electrónico válido.');
+      if (hasTrailingSpace(name) || hasTrailingSpace(lastNamePaternal) || hasTrailingSpace(lastNameMaternal)) {
+        setFormError('Los campos de nombre y apellido no pueden tener espacios al final.');
         return;
       }
-      if (password.length < 8 || password.length > 10) {
-        setPasswordError('La contraseña debe tener entre 8 a 10 caracteres.');
+      if (!validateTextOnly(name) || !validateTextOnly(lastNamePaternal) || !validateTextOnly(lastNameMaternal)) {
+        setFormError('Los campos de nombre y apellido solo pueden contener letras.');
+        return;
+      }
+      if (!validateEmail(email) || hasTrailingSpace(email)) {
+        setFormError('Por favor, introduce un correo electrónico válido sin espacios al final.');
+        return;
+      }
+      if (password.length < 8 || password.length > 10 || hasTrailingSpace(password)) {
+        setPasswordError('La contraseña debe tener entre 8 a 10 caracteres y no puede tener espacios al final.');
         setPasswordButtonError('La contraseña no cumple los requisitos.');
         return;
       }
       setPasswordError('');
       setCurrentStep(2);
     } else if (currentStep === 2) {
-      if (!phoneNumber || !addressType || !street) {
+      if (!phoneNumber || !addressType || !street || trimAndCheckEmpty(phoneNumber) || trimAndCheckEmpty(addressType) || trimAndCheckEmpty(street)) {
         setFormError('Por favor, completa todos los campos de contacto y dirección básica.');
         return;
       }
-      if (!validatePhoneNumber(phoneNumber)) {
-        setFormError('Introduce un número de 10 dígitos válido.');
+      if (!validatePhoneNumber(phoneNumber) || hasTrailingSpace(phoneNumber)) {
+        setFormError('Introduce un número de 10 dígitos válido sin espacios al final.');
+        return;
+      }
+      if (hasTrailingSpace(street)) {
+        setFormError('La calle y número no pueden tener espacios al final.');
         return;
       }
       setCurrentStep(3);
@@ -125,8 +143,16 @@ const RegisterScreen: React.FC = () => {
     setFormError('');
     setPasswordButtonError('');
 
-    if (!city || !state || !zipCode || !references) {
+    if (!city || !state || !zipCode || !references || trimAndCheckEmpty(city) || trimAndCheckEmpty(state) || trimAndCheckEmpty(zipCode) || trimAndCheckEmpty(references)) {
       setFormError('Por favor, completa todos los campos de detalles de dirección y referencias.');
+      return;
+    }
+    if (hasTrailingSpace(city) || hasTrailingSpace(state) || hasTrailingSpace(zipCode) || hasTrailingSpace(references)) {
+      setFormError('Ningún campo puede tener espacios al final.');
+      return;
+    }
+    if (!validateTextOnly(city) || !validateTextOnly(state)) {
+      setFormError('Los campos de ciudad y estado solo pueden contener letras.');
       return;
     }
     if (!/^\d{5}$/.test(zipCode)) {
@@ -139,7 +165,7 @@ const RegisterScreen: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       setFormError('');
       clearForm();
-      router.replace('/Login');
+      router.replace('/Store');
     } catch (error) {
       console.error('Error durante el registro:', error);
       setFormError('Ocurrió un error inesperado durante el registro.');
@@ -185,7 +211,11 @@ const RegisterScreen: React.FC = () => {
                   <TextInput
                     style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
                     value={name}
-                    onChangeText={setName}
+                    onChangeText={(text) => {
+                      const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                      setName(cleaned);
+                      if (formError) setFormError('');
+                    }}
                     placeholder="Tu nombre(s)"
                     placeholderTextColor="#aaa"
                   />
@@ -194,7 +224,11 @@ const RegisterScreen: React.FC = () => {
                   <TextInput
                     style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
                     value={lastNamePaternal}
-                    onChangeText={setLastNamePaternal}
+                    onChangeText={(text) => {
+                      const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                      setLastNamePaternal(cleaned);
+                      if (formError) setFormError('');
+                    }}
                     placeholder="Tu apellido paterno"
                     placeholderTextColor="#aaa"
                   />
@@ -203,7 +237,11 @@ const RegisterScreen: React.FC = () => {
                   <TextInput
                     style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
                     value={lastNameMaternal}
-                    onChangeText={setLastNameMaternal}
+                    onChangeText={(text) => {
+                      const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                      setLastNameMaternal(cleaned);
+                      if (formError) setFormError('');
+                    }}
                     placeholder="Tu apellido materno"
                     placeholderTextColor="#aaa"
                   />
@@ -212,7 +250,10 @@ const RegisterScreen: React.FC = () => {
                   <TextInput
                     style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
                     value={email}
-                    onChangeText={setEmail}
+                    onChangeText={(text) => {
+                      setEmail(text);
+                      if (formError) setFormError('');
+                    }}
                     placeholder="tu@email.com"
                     keyboardType="email-address"
                     autoCapitalize="none"
@@ -324,7 +365,8 @@ const RegisterScreen: React.FC = () => {
                           style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
                           value={city}
                           onChangeText={(text) => {
-                            setCity(text);
+                            const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                            setCity(cleaned);
                             if (formError) setFormError('');
                           }}
                           placeholder="Ej. Springfield"
@@ -337,7 +379,8 @@ const RegisterScreen: React.FC = () => {
                           style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
                           value={state}
                           onChangeText={(text) => {
-                            setState(text);
+                            const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                            setState(cleaned);
                             if (formError) setFormError('');
                           }}
                           placeholder="Ej. Oaxaca"
