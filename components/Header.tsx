@@ -13,12 +13,7 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
   const [hoveredItem, setHoveredItem] = React.useState<string | null>(null);
 
   const handleLogout = () => {
-    // Aquí puedes agregar la lógica para limpiar el token de sesión, etc.
-    // Por ejemplo, AsyncStorage.removeItem('userToken');
-    // ...
-    
-    // Después, navega a la página principal sin historial.
-    // Esto evita que el usuario pueda presionar "atrás" y regresar a la pantalla de la tienda.
+  
     router.replace('/'); 
   };
 
@@ -130,7 +125,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   menuTextHover: {
-    color: '#E44D26', // El color que quieres al pasar el mouse
+    color: '#E44D26', 
   },
   logoutButtonMargin: {
     marginLeft: 55, 
