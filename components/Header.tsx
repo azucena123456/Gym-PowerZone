@@ -14,7 +14,7 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
 
   const handleLogout = () => {
   
-    router.replace('/'); 
+    router.replace('/Login'); 
   };
 
   return (
