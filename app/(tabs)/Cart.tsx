@@ -128,7 +128,7 @@ const Carrito = () => {
               
               <View style={styles.shippingInfo}>
                 <Image 
-                  source={require('../../assets/images/checkOrange.png')} 
+                  source={require('../../assets/images/CheckRed.png')} 
                   style={styles.shippingIcon}
                 />
                 <View style={styles.shippingTextContainer}>
@@ -195,7 +195,7 @@ const headerStyles = StyleSheet.create({
     position: 'absolute',
     right: -8,
     top: -8,
-    backgroundColor: '#FF6B00',
+    backgroundColor: '#ff0000',
     borderRadius: 10,
     width: 20,
     height: 20,
@@ -225,6 +225,8 @@ const styles = StyleSheet.create({
   cartContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingHorizontal: 20, // Padding a los lados del contenedor principal
+    paddingTop: 20, // Padding arriba del contenedor principal
   },
   productsSection: {
     flex: 2,
@@ -240,6 +242,7 @@ const styles = StyleSheet.create({
   },
   summarySection: {
     flex: 1,
+    paddingTop: 20, // Padding arriba para la sección de resumen
   },
   summaryContainer: {
     backgroundColor: '#fff',
@@ -364,7 +367,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   checkoutButton: {
-    backgroundColor: '#ff6b00',
+    backgroundColor: '#ff0000',
     padding: 15,
     borderRadius: 4,
     alignItems: 'center',
