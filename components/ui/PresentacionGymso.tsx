@@ -1,16 +1,6 @@
-import axios from 'axios';
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
-
+import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import {
   Image,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
   ScrollView,
   StyleSheet,
   Text,
@@ -20,28 +10,15 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
-const fallbackImage = require('../../assets/images/tarjeta1.png');
+const maryImage = require('../../assets/images/tarjeta1.png');
+const catherineImage = require('../../assets/images/tarjeta2.jpg');
 
-interface Trainer {
-  nombre_entrenador: string;
-  especialidad: string;
-  foto_url: string;
-}
-
-interface WeAreGymsoProps {
-  onSectionVisibilityChange?: (section: string, isVisible: boolean) => void;
-}
-
-const API_URL = 'https://tu-api.com/entrenadores';
-
-const WeAreGymso = forwardRef<{scrollToAboutUs: () => void}, WeAreGymsoProps>((props, ref) => {
+const WeAreGymso = forwardRef((props, ref) => {
   const { onSectionVisibilityChange } = props;
   const { width, height } = useWindowDimensions();
-  const scrollViewRef = useRef<ScrollView>(null);
-  const aboutUsSectionRef = useRef<View>(null);
+  const scrollViewRef = useRef(null);
+  const aboutUsSectionRef = useRef(null);
   const [aboutUsHeight, setAboutUsHeight] = useState(0);
-  const [entrenadores, setEntrenadores] = useState<Trainer[]>([]);
-
 
   const isDesktop = width >= 1024;
   const isTablet = width >= 600 && width < 1024;
@@ -54,45 +31,28 @@ const WeAreGymso = forwardRef<{scrollToAboutUs: () => void}, WeAreGymsoProps>((p
         aboutUsSectionRef.current.measureLayout(
           node,
           (x, y) => {
-            scrollViewRef.current?.scrollTo({ y, animated: true });
+            scrollViewRef.current.scrollTo({ y, animated: true });
           },
           (err) => console.error("scroll error:", err)
         );
-
       }
     },
   }));
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+  const handleScroll = (event) => {
     const scrollY = event.nativeEvent.contentOffset.y;
 
-    if (aboutUsSectionRef.current && aboutUsHeight > 0 && scrollViewRef.current) {
-      const node = findNodeHandle(scrollViewRef.current);
+    if (aboutUsSectionRef.current && aboutUsHeight > 0) {
       aboutUsSectionRef.current.measureLayout(
-        node,
+        findNodeHandle(scrollViewRef.current),
         (x, y) => {
           const isVisible = y < scrollY + height && y + aboutUsHeight > scrollY;
           onSectionVisibilityChange?.('aboutUs', isVisible);
         },
-        () => {
-          console.warn('Error midiendo la sección aboutUs');
-        }
+        (err) => console.log("layout error", err)
       );
-
     }
   };
-
-  useEffect(() => {
-    axios
-      .get<Trainer[]>(API_URL)
-      .then((res) => {
-        setEntrenadores(res.data);
-      })
-      .catch((error) => {
-
-        console.error('Error al cargar entrenadores:', error);
-      });
-  }, []);
 
   return (
     <ScrollView
@@ -126,23 +86,12 @@ const WeAreGymso = forwardRef<{scrollToAboutUs: () => void}, WeAreGymsoProps>((p
             ]}
           >
             <Text style={[styles.title, { fontSize: isPhone ? 24 : 32 }]}>
-
               Hola, somos Gym-PowerZone
             </Text>
-            <Text
-              style={[
-                styles.paragraph,
-                { fontSize: isPhone ? 14 : 17, lineHeight: isPhone ? 20 : 26 },
-              ]}
-            >
+            <Text style={[styles.paragraph, { fontSize: isPhone ? 14 : 17, lineHeight: isPhone ? 20 : 26 }]}>
               Tu centro de transformación física y mental integral. En Gym-PowerZone, no solo entrenamos tu cuerpo, sino que fortalecemos tu mente para enfrentar cualquier desafío.
             </Text>
-            <Text
-              style={[
-                styles.paragraph,
-                { fontSize: isPhone ? 14 : 17, lineHeight: isPhone ? 20 : 26 },
-              ]}
-            >
+            <Text style={[styles.paragraph, { fontSize: isPhone ? 14 : 17, lineHeight: isPhone ? 20 : 26 }]}>
               Contamos con un equipo de entrenadores certificados y altamente experimentados que diseñan programas personalizados para tus objetivos. Estamos listos para guiarte en cada paso de tu camino.
             </Text>
           </View>
@@ -151,59 +100,65 @@ const WeAreGymso = forwardRef<{scrollToAboutUs: () => void}, WeAreGymsoProps>((p
             style={[
               styles.cardsSection,
               {
-                flexDirection: isDesktop || isTablet ? 'row' : 'column',
-                justifyContent: isDesktop || isTablet ? 'flex-end' : 'center',
-                alignItems: isDesktop || isTablet ? 'flex-start' : 'center',
+                flexDirection: (isDesktop || isTablet) ? 'row' : 'column',
+                justifyContent: (isDesktop || isTablet) ? 'flex-end' : 'center',
+                alignItems: (isDesktop || isTablet) ? 'flex-start' : 'center',
               },
             ]}
           >
-            {entrenadores.map((entrenador, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.card,
-                  {
-                    width: 280,
-                    marginBottom: isPhone ? 20 : 0,
-                    marginHorizontal: isDesktop || isTablet ? 15 : 0,
-
-                  },
-                ]}
-              >
-                <Image
-                  source={{ uri: entrenador.foto_url }}
-
-                  style={[styles.cardImage, { height: isPhone ? 200 : 280 }]}
-                  defaultSource={fallbackImage}
-                />
-                <View style={styles.cardBody}>
-                  <View style={styles.textIconRow}>
-                    <Text
-                      style={[styles.cardName, { fontSize: isPhone ? 16 : 20 }]}
-                    >
-                      {entrenador.nombre_entrenador}
-                    </Text>
-                    <Icon name="instagram" size={18} color="#666" />
-                  </View>
-                  <View style={styles.textIconRow}>
-                    <Text
-                      style={[styles.cardRole, { fontSize: isPhone ? 12 : 15 }]}
-                    >
-                      {entrenador.especialidad}
-                    </Text>
-                    <Icon name="facebook" size={18} color="#666" />
-
-                  </View>
+            <View
+              style={[
+                styles.card,
+                {
+                  width: 280,
+                  marginBottom: isPhone ? 20 : 0,
+                  marginRight: (isDesktop || isTablet) ? 15 : 0,
+                },
+              ]}
+            >
+              <Image source={maryImage} style={[styles.cardImage, { height: isPhone ? 200 : 280 }]} />
+              <View style={styles.cardBody}>
+                <View style={styles.textIconRow}>
+                  <Text style={[styles.cardName, { fontSize: isPhone ? 16 : 20 }]}>Emma Torres</Text>
+                  <Icon name="x-twitter" size={18} color="#666" />
+                </View>
+                <View style={styles.textIconRow}>
+                  <Text style={[styles.cardRole, { fontSize: isPhone ? 12 : 15 }]}>Instructora de Pilates</Text>
+                  <Icon name="instagram" size={18} color="#666" />
                 </View>
               </View>
-            ))}
+            </View>
 
+            <View
+              style={[
+                styles.card,
+                {
+                  width: 280,
+                  marginBottom: isPhone ? 20 : 0,
+                  marginLeft: (isDesktop || isTablet) ? 15 : 0,
+                },
+              ]}
+            >
+              <Image source={catherineImage} style={[styles.cardImage, { height: isPhone ? 200 : 280 }]} />
+              <View style={styles.cardBody}>
+                <View style={styles.textIconRow}>
+                  <Text style={[styles.cardName, { fontSize: isPhone ? 16 : 20 }]}>Carla Méndez</Text>
+                  <Icon name="instagram" size={18} color="#666" />
+                </View>
+                <View style={styles.textIconRow}>
+                  <Text style={[styles.cardRole, { fontSize: isPhone ? 12 : 15 }]}>Entrenador Personal</Text>
+                  <Icon name="facebook" size={18} color="#666" />
+                </View>
+              </View>
+            </View>
           </View>
         </View>
       </View>
     </ScrollView>
   );
 });
+
+export default WeAreGymso;
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -281,5 +236,3 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
 });
-
-export default WeAreGymso;
