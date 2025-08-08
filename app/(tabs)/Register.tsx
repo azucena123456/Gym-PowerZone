@@ -65,7 +65,8 @@ const RegisterScreen: React.FC = () => {
   const validateTextOnly = (text: string) => /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/.test(text);
 
   const trimAndCheckEmpty = (text: string) => text.trim().length === 0;
-  const hasLeadingOrTrailingSpace = (text: string) => text.startsWith(' ') || text.endsWith(' ');
+
+  const validateNoLeadingOrTrailingSpaces = (text: string) => text.trim() === text;
 
   const clearForm = () => {
     setName('');
@@ -90,12 +91,13 @@ const RegisterScreen: React.FC = () => {
   const handleNextStep = () => {
     setFormError('');
     setPasswordButtonError('');
+
     if (currentStep === 1) {
       if (trimAndCheckEmpty(name) || trimAndCheckEmpty(lastNamePaternal) || trimAndCheckEmpty(lastNameMaternal) || trimAndCheckEmpty(email) || trimAndCheckEmpty(password)) {
         setFormError('Por favor, completa todos los campos de información personal.');
         return;
       }
-      if (hasLeadingOrTrailingSpace(name) || hasLeadingOrTrailingSpace(lastNamePaternal) || hasLeadingOrTrailingSpace(lastNameMaternal)) {
+      if (!validateNoLeadingOrTrailingSpaces(name) || !validateNoLeadingOrTrailingSpaces(lastNamePaternal) || !validateNoLeadingOrTrailingSpaces(lastNameMaternal)) {
         setFormError('Los campos de nombre y apellido no pueden tener espacios al principio o al final.');
         return;
       }
@@ -103,11 +105,11 @@ const RegisterScreen: React.FC = () => {
         setFormError('Los campos de nombre y apellido solo pueden contener letras.');
         return;
       }
-      if (!validateEmail(email) || hasLeadingOrTrailingSpace(email)) {
+      if (!validateEmail(email) || !validateNoLeadingOrTrailingSpaces(email)) {
         setFormError('Por favor, introduce un correo electrónico válido sin espacios al principio o al final.');
         return;
       }
-      if (password.length < 8 || password.length > 10 || hasLeadingOrTrailingSpace(password)) {
+      if (password.length < 8 || password.length > 10 || !validateNoLeadingOrTrailingSpaces(password)) {
         setPasswordError('La contraseña debe tener entre 8 a 10 caracteres y no puede tener espacios al principio o al final.');
         setPasswordButtonError('La contraseña no cumple los requisitos.');
         return;
@@ -119,11 +121,11 @@ const RegisterScreen: React.FC = () => {
         setFormError('Por favor, completa todos los campos de contacto y dirección básica.');
         return;
       }
-      if (!validatePhoneNumber(phoneNumber) || hasLeadingOrTrailingSpace(phoneNumber)) {
+      if (!validatePhoneNumber(phoneNumber) || !validateNoLeadingOrTrailingSpaces(phoneNumber)) {
         setFormError('Introduce un número de 10 dígitos válido sin espacios al principio o al final.');
         return;
       }
-      if (hasLeadingOrTrailingSpace(street)) {
+      if (!validateNoLeadingOrTrailingSpaces(street)) {
         setFormError('La calle y número no pueden tener espacios al principio o al final.');
         return;
       }
@@ -145,7 +147,7 @@ const RegisterScreen: React.FC = () => {
       setFormError('Por favor, completa todos los campos de detalles de dirección y referencias.');
       return;
     }
-    if (hasLeadingOrTrailingSpace(city) || hasLeadingOrTrailingSpace(state) || hasLeadingOrTrailingSpace(zipCode) || hasLeadingOrTrailingSpace(references)) {
+    if (!validateNoLeadingOrTrailingSpaces(city) || !validateNoLeadingOrTrailingSpaces(state) || !validateNoLeadingOrTrailingSpaces(zipCode) || !validateNoLeadingOrTrailingSpaces(references)) {
       setFormError('Ningún campo puede tener espacios al principio o al final.');
       return;
     }
@@ -163,7 +165,7 @@ const RegisterScreen: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       setFormError('');
       clearForm();
-      router.replace('/Login');
+      router.replace('/Store');
     } catch (error) {
       console.error('Error durante el registro:', error);
       setFormError('Ocurrió un error inesperado durante el registro.');
@@ -210,7 +212,7 @@ const RegisterScreen: React.FC = () => {
                     style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
                     value={name}
                     onChangeText={(text) => {
-                      const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                      const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '').replace(/^\s+/, '');
                       setName(cleaned);
                       if (formError) setFormError('');
                     }}
@@ -223,7 +225,7 @@ const RegisterScreen: React.FC = () => {
                     style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
                     value={lastNamePaternal}
                     onChangeText={(text) => {
-                      const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                      const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '').replace(/^\s+/, '');
                       setLastNamePaternal(cleaned);
                       if (formError) setFormError('');
                     }}
@@ -236,7 +238,7 @@ const RegisterScreen: React.FC = () => {
                     style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
                     value={lastNameMaternal}
                     onChangeText={(text) => {
-                      const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                      const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '').replace(/^\s+/, '');
                       setLastNameMaternal(cleaned);
                       if (formError) setFormError('');
                     }}
@@ -249,6 +251,9 @@ const RegisterScreen: React.FC = () => {
                     style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
                     value={email}
                     onChangeText={(text) => {
+                      if (text.startsWith(' ')) {
+                        return;
+                      }
                       setEmail(text);
                       if (formError) setFormError('');
                     }}
@@ -264,7 +269,7 @@ const RegisterScreen: React.FC = () => {
                       style={styles.passwordInput}
                       value={password}
                       onChangeText={(text) => {
-                        setPassword(text);
+                        setPassword(text.replace(/^\s+/, ''));
                         if (passwordError) setPasswordError('');
                         if (formError) setFormError('');
                         if (passwordButtonError) setPasswordButtonError('');
@@ -298,7 +303,7 @@ const RegisterScreen: React.FC = () => {
                     style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
                     value={phoneNumber}
                     onChangeText={(text) => {
-                      const cleaned = text.replace(/[^0-9]/g, '');
+                      const cleaned = text.replace(/[^0-9]/g, '').replace(/^\s+/, '');
                       setPhoneNumber(cleaned.slice(0, 10));
                       if (formError) setFormError('');
                     }}
@@ -337,7 +342,7 @@ const RegisterScreen: React.FC = () => {
                     style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
                     value={street}
                     onChangeText={(text) => {
-                      setStreet(text);
+                      setStreet(text.replace(/^\s+/, ''));
                       if (formError) setFormError('');
                     }}
                     placeholder="Ej. Av. Siempre Viva 742"
@@ -363,7 +368,7 @@ const RegisterScreen: React.FC = () => {
                           style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
                           value={city}
                           onChangeText={(text) => {
-                            const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                            const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '').replace(/^\s+/, '');
                             setCity(cleaned);
                             if (formError) setFormError('');
                           }}
@@ -377,7 +382,7 @@ const RegisterScreen: React.FC = () => {
                           style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
                           value={state}
                           onChangeText={(text) => {
-                            const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                            const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '').replace(/^\s+/, '');
                             setState(cleaned);
                             if (formError) setFormError('');
                           }}
@@ -394,7 +399,7 @@ const RegisterScreen: React.FC = () => {
                           style={[styles.input, !isLargeScreen && styles.inputSmallScreen]}
                           value={zipCode}
                           onChangeText={(text) => {
-                            const cleaned = text.replace(/[^0-9]/g, '');
+                            const cleaned = text.replace(/[^0-9]/g, '').replace(/^\s+/, '');
                             setZipCode(cleaned.slice(0, 5));
                             if (formError) setFormError('');
                           }}
@@ -414,7 +419,7 @@ const RegisterScreen: React.FC = () => {
                       style={[styles.input, !isLargeScreen && styles.inputSmallScreen, styles.multilineInput]}
                       value={references}
                       onChangeText={(text) => {
-                        setReferences(text);
+                        setReferences(text.replace(/^\s+/, ''));
                         if (formError) setFormError('');
                       }}
                       placeholder="Casa con portón rojo, a lado de la farmacia"
