@@ -81,7 +81,7 @@ export default function StoreScreen() {
 
                 {filteredProducts.length === 0 && (
                     <View style={styles.noResultsContainer}>
-                        <Text style={styles.noResultsText}>No se encontraron resultados para<Text style = {{ fontWeight: 'bold'}}> {searchTerm}</Text>
+                        <Text style={styles.noResultsText}>No se encontraron resultados de<Text style = {{ fontWeight: 'bold'}}> {searchTerm}</Text>
 
                         </Text>
                     </View>
