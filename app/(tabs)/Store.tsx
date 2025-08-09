@@ -12,7 +12,7 @@ const { width } = Dimensions.get('window');
 
 const numColumns = width > 1200 ? 5 : width > 900 ? 4 : width > 600 ? 3 : width > 400 ? 2 : 2;
 const listPaddingHorizontal = 52; 
-const cardMarginHorizontal = 15; 
+
 
 export default function StoreScreen() {
     const [searchTerm, setSearchTerm] = useState<string>('');
@@ -119,10 +119,12 @@ const styles = StyleSheet.create({
     },
     productListContainer: {
         paddingHorizontal: listPaddingHorizontal,
+         marginTop: 15,
     },
     productRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        
     },
     centeredRow: {
         justifyContent: 'center', 

@@ -148,9 +148,16 @@ const Carrito = () => {
           <View style={styles.summarySection}>
             <View style={styles.summaryContainer}>
               <View style={styles.shippingInfo}>
+<<<<<<< HEAD
                 <View style={styles.shippingIconContainer}>
                   <Icon name="checkmark-circle" size={24} color="#ff0000" />
                 </View>
+=======
+                <Image 
+                  source={require('../../assets/images/CheckRed.png')} 
+                  style={styles.shippingIcon}
+                />
+>>>>>>> ae1c34b169e5ff96da186c545fbc5831ad70dc9d
                 <View style={styles.shippingTextContainer}>
                   <Text style={styles.shippingTitle}>Una parte de tu primer pedido califica para envío</Text>
                   <Text style={styles.shippingText}>
@@ -258,7 +265,12 @@ const styles = StyleSheet.create({
   contentWrapper: {
     flexDirection: isMobile ? 'column' : 'row',
     justifyContent: 'space-between',
+<<<<<<< HEAD
     flex: 1,
+=======
+    paddingHorizontal: 20, // Padding a los lados del contenedor principal
+    paddingTop: 20, // Padding arriba del contenedor principal
+>>>>>>> ae1c34b169e5ff96da186c545fbc5831ad70dc9d
   },
   productsSection: {
     flex: isMobile ? 1 : 2,
@@ -270,6 +282,7 @@ const styles = StyleSheet.create({
   },
   summarySection: {
     flex: 1,
+    paddingTop: 20, // Padding arriba para la sección de resumen
   },
   summaryContainer: {
     backgroundColor: '#fff',
@@ -411,8 +424,13 @@ const styles = StyleSheet.create({
   },
   checkoutButton: {
     backgroundColor: '#ff0000',
+<<<<<<< HEAD
     padding: 12,
     borderRadius: 50,
+=======
+    padding: 15,
+    borderRadius: 4,
+>>>>>>> ae1c34b169e5ff96da186c545fbc5831ad70dc9d
     alignItems: 'center',
   },
   checkoutButtonText: {

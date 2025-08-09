@@ -165,7 +165,7 @@ const RegisterScreen: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       setFormError('');
       clearForm();
-      router.replace('/Store');
+      router.replace('/Login');
     } catch (error) {
       console.error('Error durante el registro:', error);
       setFormError('Ocurrió un error inesperado durante el registro.');
