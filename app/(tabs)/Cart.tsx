@@ -1,86 +1,117 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
-  Dimensions,
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
+  useWindowDimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const { width } = Dimensions.get('window');
-const isMobile = width < 768; // Punto de quiebre para pantallas pequeñas
+const TopBar = ({ totalItems, isMobile, headerStyles, onNavigateToStore }) => {
+  const formatCartCount = (count) => {
+    return count > 9 ? '9+' : count.toString();
+  };
+
+  return (
+    <View style={headerStyles.topBarContainer}>
+      {!isMobile && (
+        <View style={headerStyles.logoContainer}>
+          <Text style={headerStyles.logoText}>Gym-PowerZone</Text>
+        </View>
+      )}
+      <View style={headerStyles.searchBar}>
+        <TextInput
+          style={headerStyles.searchInput}
+          placeholder="Buscar"
+          placeholderTextColor="#888"
+        />
+        <TouchableOpacity style={headerStyles.searchIcon}>
+          <Icon name="search-outline" size={20} color="#333" />
+        </TouchableOpacity>
+      </View>
+      {!isMobile && (
+        <>
+          <TouchableOpacity style={headerStyles.cartButton}>
+            <Icon name="cart-outline" size={24} color="#FFF" />
+            {totalItems > 0 && (
+              <View style={headerStyles.badge}>
+                <Text style={headerStyles.badgeText}>
+                  {formatCartCount(totalItems)}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity style={headerStyles.menuButton} onPress={onNavigateToStore}>
+            <Icon name="home-outline" size={24} color="#FFF" />
+          </TouchableOpacity>
+        </>
+      )}
+    </View>
+  );
+};
+
+const BottomNavBar = ({ totalItems, footerStyles, onNavigateToStore }) => {
+  const formatCartCount = (count) => {
+    return count > 9 ? '9+' : count.toString();
+  };
+
+  return (
+    <View style={footerStyles.footerContainer}>
+      <TouchableOpacity style={footerStyles.footerButton} onPress={onNavigateToStore}>
+        <Icon name="home-outline" size={30} color="#FFF" />
+      </TouchableOpacity>
+      <TouchableOpacity style={footerStyles.footerButton}>
+        <Icon name="cart-outline" size={30} color="#FFF" />
+        {totalItems > 0 && (
+          <View style={footerStyles.badge}>
+            <Text style={footerStyles.badgeText}>
+              {formatCartCount(totalItems)}
+            </Text>
+          </View>
+        )}
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 const Carrito = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
+  const navigation = useNavigation();
+
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
       name: 'Botella para Proteina con mezclador',
-      description: 'Copa de coctelera de proteínas sin BPA y sin ftalatos, 100% material de grado alimenticio',
-      price: 1456,
-      quantity: 1,
-      image: require('../../assets/images/botella2.jpg'),
-    },
-    {
-      id: 2,
-      name: 'Banda de Resistencia de Látex',
-      description: 'Bandas elásticas para ejercicios de fuerza, pilates y yoga. Incluye 5 niveles de resistencia.',
-      price: 250,
+      description: 'Botella con rejilla mezcladora, capacidad 750ml, libre de BPA.',
+      price: 145,
       quantity: 1,
       image: require('../../assets/images/botellas.jpg'),
     },
+    {
+      id: 2,
+      name: 'Proteína de suero de leche WHEY Premium',
+      description: 'Suplemento de alta calidad para recuperación muscular.',
+      price: 850,
+      quantity: 1,
+      image: require('../../assets/images/proteina.jpg'),
+    },
   ]);
-  const navigation = useNavigation();
+  
+  const handleNavigateToStore = () => {
+    navigation.navigate('Store');
+  };
 
   const calculateSubtotal = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
   
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
-
-  const HeaderCart = ({ totalItems }) => {
-    const formatCartCount = (count) => {
-      return count > 9 ? '9+' : count.toString();
-    };
-
-    return (
-      <View style={headerStyles.headerContainer}>
-        <View style={headerStyles.logoContainer}>
-          <Text style={headerStyles.logoText}>Gym-PowerZone</Text>
-        </View>
-        <View style={headerStyles.searchBar}>
-          <TextInput
-            style={headerStyles.searchInput}
-            placeholder="Buscar"
-            placeholderTextColor="#888"
-            value={searchTerm}
-            onChangeText={setSearchTerm}
-          />
-          <TouchableOpacity style={headerStyles.searchIcon}>
-            <Icon name="search-outline" size={20} color="#333" />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={headerStyles.cartButton}>
-          <Icon name="cart-outline" size={24} color="#FFF" />
-          {totalItems > 0 && (
-            <View style={headerStyles.badge}>
-              <Text style={headerStyles.badgeText}>
-                {formatCartCount(totalItems)}
-              </Text>
-            </View>
-          )}
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => console.log('Menú presionado')} style={headerStyles.menuButton}>
-          <Icon name="menu-outline" size={24} color="#FFF" />
-        </TouchableOpacity>
-      </View>
-    );
-  };
 
   const handleQuantityChange = (itemId, newQuantity) => {
     if (newQuantity >= 1) {
@@ -92,103 +123,124 @@ const Carrito = () => {
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <HeaderCart totalItems={totalItems} />
+  const renderSummarySection = () => (
+    <View style={styles.summarySection}>
+      <View style={styles.shippingInfo}>
+        <View style={styles.shippingIconContainer}>
+          <Icon name="checkmark-circle" size={24} color="#ff0000" />
+        </View>
+        <View style={styles.shippingTextContainer}>
+          <Text style={styles.shippingTitle}>Una parte de tu primer pedido califica para envío</Text>
+          <Text style={styles.shippingText}>
+            <Text style={styles.shippingTextBold}>GRATIS</Text> Selecciona esta opción al finalizar tu compra <Text style={styles.shippingTextLink}>Detalles</Text>
+          </Text>
+        </View>
+      </View>
+      <View style={isMobile ? styles.subtotalContainerMobile : styles.subtotalContainer}>
+        <Text style={styles.subtotalText}>Subtotal ({totalItems} producto{totalItems !== 1 ? 's' : ''}):</Text>
+        <Text style={styles.subtotalPrice}>${calculateSubtotal().toLocaleString('es-MX')}</Text>
+      </View>
+      <TouchableOpacity style={styles.checkoutButton}>
+        <Text style={styles.checkoutButtonText}>Proceder al pago</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
-      <ScrollView contentContainerStyle={styles.mainContent}>
-        <View style={styles.contentWrapper}>
-          <View style={styles.productsSection}>
-            <Text style={styles.cartTitle}>Carrito</Text>
-            
-            {cartItems.map(item => (
-              <View key={item.id} style={styles.cartItem}>
-                <View style={styles.itemImageContainer}>
-                  <Image
-                    source={item.image}
-                    style={styles.productImage}
-                  />
-                </View>
-                <View style={styles.itemDetails}>
-                  <Text style={styles.itemTitle}>{item.name}</Text>
-                  <Text style={styles.itemDescription}>{item.description}</Text>
-                  <Text style={styles.availability}>Disponible</Text>
-                  <View style={styles.itemControls}>
-                    <View style={styles.quantityControls}>
-                      <TouchableOpacity
-                        style={styles.quantityButton}
-                        onPress={() => handleQuantityChange(item.id, item.quantity - 1)}
-                      >
-                        <Text style={styles.quantityButtonText}>-</Text>
-                      </TouchableOpacity>
-                      <Text style={styles.quantity}>{item.quantity}</Text>
-                      <TouchableOpacity
-                        style={styles.quantityButton}
-                        onPress={() => handleQuantityChange(item.id, item.quantity + 1)}
-                      >
-                        <Text style={styles.quantityButtonText}>+</Text>
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.actions}>
-                      <TouchableOpacity>
-                        <Text style={styles.actionButtonText}>Eliminar</Text>
-                      </TouchableOpacity>
-                      <Text style={styles.actionSeparator}>|</Text>
-                      <TouchableOpacity>
-                        <Text style={styles.actionButtonText}>Guardar para más tarde</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-                <Text style={styles.itemPrice}>${(item.price * item.quantity).toLocaleString('es-MX')}</Text>
-              </View>
-            ))}
+  const renderProductsSection = () => (
+    <View style={styles.productsSection}>
+      <View style={styles.cartHeader}>
+        <Text style={styles.cartTitle}>Carrito</Text>
+        {!isMobile && <Text style={styles.priceHeader}>Precio</Text>}
+      </View>
+      <View style={styles.headerSeparator} />
+      
+      {cartItems.map(item => (
+        <View key={item.id} style={styles.cartItem}>
+          <View style={styles.itemImageContainer}>
+            <Image
+              source={item.image}
+              style={styles.productImage}
+            />
           </View>
-
-          <View style={styles.summarySection}>
-            <View style={styles.summaryContainer}>
-              <View style={styles.shippingInfo}>
-                <View style={styles.shippingIconContainer}>
-                  <Icon name="checkmark-circle" size={24} color="#ff0000" />
+          <View style={styles.itemDetails}>
+            <View style={styles.itemInfo}>
+              <Text style={styles.itemTitle}>{item.name}</Text>
+              <Text style={styles.itemDescription}>{item.description}</Text>
+              <Text style={styles.availability}>Disponible</Text>
+              {isMobile && <Text style={styles.itemPriceMobile}>${(item.price * item.quantity).toLocaleString('es-MX')}</Text>}
+              <View style={styles.itemControls}>
+                <View style={styles.quantityControls}>
+                  <TouchableOpacity
+                    style={styles.quantityButton}
+                    onPress={() => handleQuantityChange(item.id, item.quantity - 1)}
+                  >
+                    <Text style={styles.quantityButtonText}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.quantity}>{item.quantity}</Text>
+                  <TouchableOpacity
+                    style={styles.quantityButton}
+                    onPress={() => handleQuantityChange(item.id, item.quantity + 1)}
+                  >
+                    <Text style={styles.quantityButtonText}>+</Text>
+                  </TouchableOpacity>
                 </View>
-                <View style={styles.shippingTextContainer}>
-                  <Text style={styles.shippingTitle}>Una parte de tu primer pedido califica para envío</Text>
-                  <Text style={styles.shippingText}>
-                    <Text style={styles.shippingTextBold}>GRATIS</Text> Selecciona esta opción al finalizar tu compra <Text style={styles.shippingTextLink}>Detalles</Text>
-                  </Text>
+                <View style={styles.actions}>
+                  <TouchableOpacity>
+                    <Text style={styles.actionButtonText}>Eliminar</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.actionSeparator}>|</Text>
+                  <TouchableOpacity>
+                    <Text style={styles.actionButtonText}>Guardar para más tarde</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
-              
-              <View style={styles.subtotalContainer}>
-                <Text style={styles.subtotalText}>Subtotal ({totalItems} producto{totalItems !== 1 ? 's' : ''}):</Text>
-                <Text style={styles.subtotalPrice}>${calculateSubtotal().toLocaleString('es-MX')}</Text>
-              </View>
-              
-              <TouchableOpacity style={styles.checkoutButton}>
-                <Text style={styles.checkoutButtonText}>Proceder al pago</Text>
-              </TouchableOpacity>
             </View>
+            {!isMobile && <Text style={styles.itemPriceDesktop}>${(item.price * item.quantity).toLocaleString('es-MX')}</Text>}
           </View>
         </View>
+      ))}
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      <TopBar totalItems={totalItems} isMobile={isMobile} headerStyles={headerStyles} onNavigateToStore={handleNavigateToStore} />
+
+      <ScrollView contentContainerStyle={styles.mainContent}>
+        {isMobile ? (
+          <>
+            {renderSummarySection()}
+            {renderProductsSection()}
+          </>
+        ) : (
+          <View style={styles.contentWrapper}>
+            {renderProductsSection()}
+            {renderSummarySection()}
+          </View>
+        )}
       </ScrollView>
+      
+      {isMobile && <BottomNavBar totalItems={totalItems} footerStyles={footerStyles} onNavigateToStore={handleNavigateToStore} />}
     </View>
   );
 };
 
+export default Carrito;
+
 const headerStyles = StyleSheet.create({
-  headerContainer: {
+  topBarContainer: {
     backgroundColor: '#000',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: isMobile ? 10 : 15,
+    paddingHorizontal: 15,
     paddingVertical: 10,
   },
   logoContainer: {
-    paddingRight: isMobile ? 5 : 10,
+    paddingRight: 10,
   },
   logoText: {
     color: '#FFF',
-    fontSize: isMobile ? 16 : 18,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   searchBar: {
@@ -197,17 +249,17 @@ const headerStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF',
     borderRadius: 4,
-    marginHorizontal: isMobile ? 5 : 15,
+    marginHorizontal: 15,
   },
   searchInput: {
     flex: 1,
-    paddingVertical: isMobile ? 6 : 8,
+    paddingVertical: 8,
     paddingHorizontal: 10,
     color: '#333',
-    fontSize: isMobile ? 12 : 14,
+    fontSize: 14,
   },
   searchIcon: {
-    padding: isMobile ? 6 : 8,
+    padding: 8,
     backgroundColor: '#FFF',
     borderTopRightRadius: 4,
     borderBottomRightRadius: 4,
@@ -237,6 +289,35 @@ const headerStyles = StyleSheet.create({
   },
 });
 
+const footerStyles = StyleSheet.create({
+  footerContainer: {
+    backgroundColor: '#333',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  footerButton: {
+    position: 'relative',
+  },
+  badge: {
+    position: 'absolute',
+    right: -8,
+    top: -8,
+    backgroundColor: '#ff0000',
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  badgeText: {
+    color: '#FFF',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+});
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -246,48 +327,51 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
   },
-  cartHeader: {
+  contentWrapper: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  productsSection: {
+    backgroundColor: '#fff',
+    borderRadius: 4,
+    padding: 20,
+    flex: 2,
+    marginRight: 20,
     marginBottom: 20,
+  },
+  cartHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   cartTitle: {
     fontSize: 24,
     fontWeight: 'normal',
     color: '#333',
+  },
+  priceHeader: {
+    fontSize: 14,
+    color: '#666',
+  },
+  headerSeparator: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
     marginBottom: 20,
-  },
-  contentWrapper: {
-    flexDirection: isMobile ? 'column' : 'row',
-    justifyContent: 'space-between',
-    flex: 1,
-  },
-  productsSection: {
-    flex: isMobile ? 1 : 2,
-    backgroundColor: '#fff',
-    borderRadius: 4,
-    padding: 20,
-    marginRight: isMobile ? 0 : 20,
-    marginBottom: isMobile ? 20 : 0,
-  },
-  summarySection: {
-    flex: 1,
-  },
-  summaryContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 4,
-    padding: 20,
   },
   cartItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'flex-start',
     paddingBottom: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
-    position: 'relative',
     marginBottom: 20,
   },
   itemImageContainer: {
-    width: isMobile ? 80 : 100,
-    height: isMobile ? 80 : 100,
+    width: 100,
+    height: 100,
     marginRight: 20,
   },
   productImage: {
@@ -297,25 +381,45 @@ const styles = StyleSheet.create({
   },
   itemDetails: {
     flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  itemInfo: {
+    flex: 1,
+    marginRight: 20,
   },
   itemTitle: {
-    fontSize: isMobile ? 14 : 16,
+    fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
   },
   itemDescription: {
-    fontSize: isMobile ? 12 : 14,
+    fontSize: 14,
     color: '#666',
     marginBottom: 5,
   },
   availability: {
-    fontSize: isMobile ? 12 : 14,
+    fontSize: 14,
     color: '#388e3c',
     marginBottom: 10,
   },
+  itemPriceDesktop: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    minWidth: 80,
+    textAlign: 'right',
+  },
+  itemPriceMobile: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 5,
+  },
   itemControls: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 10,
   },
   quantityControls: {
@@ -324,7 +428,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 4,
-    marginBottom: 10,
+    marginRight: 10,
   },
   quantityButton: {
     paddingHorizontal: 12,
@@ -344,24 +448,22 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 0,
   },
   actionButtonText: {
     color: '#ff0000',
-    fontSize: isMobile ? 12 : 14,
+    fontSize: 14,
+    whiteSpace: 'nowrap',
   },
   actionSeparator: {
     color: '#ccc',
     marginHorizontal: 10,
   },
-  itemPrice: {
-    fontSize: isMobile ? 16 : 18,
-    fontWeight: 'bold',
-    color: '#333',
-    position: 'absolute',
-    top: 0,
-    right: 0,
+  summarySection: {
+    backgroundColor: '#fff',
+    borderRadius: 4,
+    padding: 20,
+    flex: 1,
+    marginBottom: 20,
   },
   shippingInfo: {
     padding: 10,
@@ -378,7 +480,8 @@ const styles = StyleSheet.create({
   },
   shippingTitle: {
     fontSize: 14,
-    color: '#333',
+    color: '#ff0000',
+    fontWeight: 'bold',
   },
   shippingText: {
     fontSize: 12,
@@ -397,9 +500,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    paddingBottom: 10,
+  },
+  subtotalContainerMobile: {
+    flexDirection: 'column',
+    marginBottom: 20,
   },
   subtotalText: {
     fontSize: 16,
@@ -421,5 +525,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
-export default Carrito;
