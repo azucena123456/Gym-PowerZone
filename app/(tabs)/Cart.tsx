@@ -123,6 +123,15 @@ const Carrito = () => {
     }
   };
 
+  const removeItem = (itemId) => {
+    setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
+  };
+
+  const saveForLater = (itemId) => {
+    // Lógica para guardar el artículo para después
+    console.log('Guardar para más tarde:', itemId);
+  };
+
   const renderSummarySection = () => (
     <View style={styles.summarySection}>
       <View style={styles.shippingInfo}>
@@ -184,15 +193,33 @@ const Carrito = () => {
                     <Text style={styles.quantityButtonText}>+</Text>
                   </TouchableOpacity>
                 </View>
-                <View style={styles.actions}>
-                  <TouchableOpacity>
-                    <Text style={styles.actionButtonText}>Eliminar</Text>
-                  </TouchableOpacity>
-                  <Text style={styles.actionSeparator}>|</Text>
-                  <TouchableOpacity>
-                    <Text style={styles.actionButtonText}>Guardar para más tarde</Text>
-                  </TouchableOpacity>
-                </View>
+
+                {isMobile ? (
+                  <View style={styles.actionButtonsMobile}>
+                    <TouchableOpacity 
+                      style={styles.actionButtonMobile}
+                      onPress={() => removeItem(item.id)}
+                    >
+                      <Text style={styles.actionButtonText}>Eliminar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                      style={styles.actionButtonMobile}
+                      onPress={() => saveForLater(item.id)}
+                    >
+                      <Text style={styles.actionButtonText}>Guardar</Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View style={styles.actions}>
+                    <TouchableOpacity onPress={() => removeItem(item.id)}>
+                      <Text style={styles.actionButtonText}>Eliminar</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.actionSeparator}>|</Text>
+                    <TouchableOpacity onPress={() => saveForLater(item.id)}>
+                      <Text style={styles.actionButtonText}>Guardar para más tarde</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
               </View>
             </View>
             {!isMobile && <Text style={styles.itemPriceDesktop}>${(item.price * item.quantity).toLocaleString('es-MX')}</Text>}
@@ -329,7 +356,6 @@ const styles = StyleSheet.create({
   },
   contentWrapper: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
   },
@@ -383,7 +409,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
   },
   itemInfo: {
     flex: 1,
@@ -418,8 +443,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   itemControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'column',
+    width: '100%',
     marginTop: 10,
   },
   quantityControls: {
@@ -428,7 +453,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 4,
-    marginRight: 10,
+    marginBottom: 10,
+    alignSelf: 'flex-start',
   },
   quantityButton: {
     paddingHorizontal: 12,
@@ -452,11 +478,23 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: '#ff0000',
     fontSize: 14,
-    whiteSpace: 'nowrap',
   },
   actionSeparator: {
     color: '#ccc',
     marginHorizontal: 10,
+  },
+  actionButtonsMobile: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  actionButtonMobile: {
+    backgroundColor: '#f8f8f8',
+    padding: 10,
+    borderRadius: 4,
+    flex: 1,
+    marginHorizontal: 5,
+    alignItems: 'center',
   },
   summarySection: {
     backgroundColor: '#fff',
