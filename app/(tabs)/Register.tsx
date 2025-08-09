@@ -410,7 +410,6 @@ const RegisterScreen: React.FC = () => {
                         />
                       </View>
                       <View style={[styles.columnFieldLast, !isLargeScreen && styles.columnFieldSmallScreen]}>
-                        {/* Empty column */}
                       </View>
                     </View>
 
