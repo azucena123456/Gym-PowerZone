@@ -102,7 +102,7 @@ const Carrito = () => {
       image: require('../../assets/images/proteina.jpg'),
     },
   ]);
-  
+
   const handleNavigateToStore = () => {
     navigation.navigate('Store');
   };
@@ -110,7 +110,7 @@ const Carrito = () => {
   const calculateSubtotal = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
-  
+
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const handleQuantityChange = (itemId, newQuantity) => {
@@ -121,15 +121,6 @@ const Carrito = () => {
         )
       );
     }
-  };
-
-  const removeItem = (itemId) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
-  };
-
-  const saveForLater = (itemId) => {
-    // Lógica para guardar el artículo para después
-    console.log('Guardar para más tarde:', itemId);
   };
 
   const renderSummarySection = () => (
@@ -171,13 +162,14 @@ const Carrito = () => {
               style={styles.productImage}
             />
           </View>
-          <View style={styles.itemDetails}>
+          <View style={isMobile ? styles.itemDetailsMobile : styles.itemDetails}>
             <View style={styles.itemInfo}>
-              <Text style={styles.itemTitle}>{item.name}</Text>
-              <Text style={styles.itemDescription}>{item.description}</Text>
+              <Text style={isMobile ? styles.itemTitleMobile : styles.itemTitle}>{item.name}</Text>
+              <Text style={isMobile ? styles.itemDescriptionMobile : styles.itemDescription}>{item.description}</Text>
               <Text style={styles.availability}>Disponible</Text>
               {isMobile && <Text style={styles.itemPriceMobile}>${(item.price * item.quantity).toLocaleString('es-MX')}</Text>}
-              <View style={styles.itemControls}>
+              
+              <View style={isMobile ? styles.itemControlsMobile : styles.itemControls}>
                 <View style={styles.quantityControls}>
                   <TouchableOpacity
                     style={styles.quantityButton}
@@ -195,27 +187,22 @@ const Carrito = () => {
                 </View>
 
                 {isMobile ? (
-                  <View style={styles.actionButtonsMobile}>
-                    <TouchableOpacity 
-                      style={styles.actionButtonMobile}
-                      onPress={() => removeItem(item.id)}
-                    >
+                  <View style={styles.actionsMobile}>
+                    <TouchableOpacity style={styles.actionButtonMobile}>
                       <Text style={styles.actionButtonText}>Eliminar</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity 
-                      style={styles.actionButtonMobile}
-                      onPress={() => saveForLater(item.id)}
-                    >
+                    <Text style={styles.actionSeparator}>|</Text>
+                    <TouchableOpacity style={styles.actionButtonMobile}>
                       <Text style={styles.actionButtonText}>Guardar</Text>
                     </TouchableOpacity>
                   </View>
                 ) : (
                   <View style={styles.actions}>
-                    <TouchableOpacity onPress={() => removeItem(item.id)}>
+                    <TouchableOpacity>
                       <Text style={styles.actionButtonText}>Eliminar</Text>
                     </TouchableOpacity>
                     <Text style={styles.actionSeparator}>|</Text>
-                    <TouchableOpacity onPress={() => saveForLater(item.id)}>
+                    <TouchableOpacity>
                       <Text style={styles.actionButtonText}>Guardar para más tarde</Text>
                     </TouchableOpacity>
                   </View>
@@ -356,6 +343,7 @@ const styles = StyleSheet.create({
   },
   contentWrapper: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
   },
@@ -409,18 +397,33 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  itemDetailsMobile: {
+    flex: 1,
+    flexDirection: 'column',
   },
   itemInfo: {
     flex: 1,
     marginRight: 20,
   },
   itemTitle: {
-    fontSize: 16,
+    fontSize: 10,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  itemTitleMobile: {
+    fontSize: 12, 
     fontWeight: 'bold',
     marginBottom: 5,
   },
   itemDescription: {
     fontSize: 14,
+    color: '#666',
+    marginBottom: 5,
+  },
+  itemDescriptionMobile: {
+    fontSize: 9,
     color: '#666',
     marginBottom: 5,
   },
@@ -443,9 +446,13 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   itemControls: {
-    flexDirection: 'column',
-    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 10,
+  },
+  itemControlsMobile: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
   },
   quantityControls: {
     flexDirection: 'row',
@@ -453,8 +460,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 4,
+    marginRight: 10,
     marginBottom: 10,
-    alignSelf: 'flex-start',
   },
   quantityButton: {
     paddingHorizontal: 12,
@@ -475,26 +482,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  actionsMobile: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   actionButtonText: {
     color: '#ff0000',
     fontSize: 14,
+    whiteSpace: 'nowrap',
+  },
+  actionButtonMobile: {
+    paddingVertical: 5,
   },
   actionSeparator: {
     color: '#ccc',
     marginHorizontal: 10,
-  },
-  actionButtonsMobile: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  actionButtonMobile: {
-    backgroundColor: '#f8f8f8',
-    padding: 10,
-    borderRadius: 4,
-    flex: 1,
-    marginHorizontal: 5,
-    alignItems: 'center',
   },
   summarySection: {
     backgroundColor: '#fff',
