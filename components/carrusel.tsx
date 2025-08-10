@@ -2,13 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 interface CaruselItem {
-  id: number;
-  title: string;
-  image: any;
-  entrenadora?: string;
-  nombreEntrenador?: string;
-  description?: string;
-  ctaText?: string;
+  clase_id: number;
+  nombre_clase: string;
+  descripcion: string;
+  precio_clase: string;
+  imagen_url: string;
 }
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -22,18 +20,14 @@ const styles = StyleSheet.create({
   fullWidthContainer: {
     width: '100%',
     backgroundColor: '#EEEEEE',
-    paddingVertical: isMobile ? 40 : 60, // REDUCIDO
+    paddingVertical: isMobile ? 40 : 60,
     paddingHorizontal: isMobile ? 20 : 90,
-  },
-  nombreEntrenador: {
-    color: '#333333',
-    fontWeight: 'bold',
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 8, // REDUCIDO
+    marginBottom: 8,
     color: '#818181',
   },
   headerTitle1: {
@@ -41,13 +35,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
-    marginTop: 0, // REMOVIDO ESPACIO EXTRA
+    marginTop: 0,
     color: '#121212',
   },
   carouselContent: {
     alignItems: 'center',
     paddingHorizontal: isMobile ? 10 : 40,
-    paddingBottom: 10, // REDUCIDO
+    paddingBottom: 10,
   },
   slide: {
     width: CARD_WIDTH,
@@ -91,18 +85,11 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 15,
   },
-  entrenadoraText: {
-    fontSize: 14,
-    color: '#555',
-    fontWeight: '500',
-    marginBottom: 15,
-  },
   slideDescription: {
     fontSize: 13,
     color: '#666',
     lineHeight: 18,
-    marginBottom: 65, // NO CAMBIADO como pediste
-
+    marginBottom: 65,
   },
   ctaCircle: {
     backgroundColor: '#F13a11',
@@ -119,94 +106,39 @@ const styles = StyleSheet.create({
   },
 });
 
+const fallbackImage = require('../assets/images/adaptive-icon.png');
+
 const Carusel: React.FC = () => {
   const scrollViewRef = useRef<ScrollView>(null);
+  const [data, setData] = useState<CaruselItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const [data] = useState<CaruselItem[]>([
-    {
-      id: 1,
-      title: 'Aerobic',
-      image: require('../assets/images/Aerobic.png'),
-      entrenadora: 'Entrenador',
-      nombreEntrenador:'Luis',
-      description: 'Sesiones dinámicas que combinan música y movimiento para fortalecer el sistema cardiovascular.',
-      ctaText: '$90',
-    },
-    {
-      id: 2,
-      title: 'Cardio',
-      image: require('../assets/images/cardio.jpg'),
-      entrenadora: 'Entrenadora ',
-      nombreEntrenador:'Sofia',
-      description: 'Entrenamientos intensos por intervalos para quemar calorías rápidamente.',
-      ctaText: '$90',
-    },
-    {
-      id: 3,
-      title: 'Crossfit',
-      image: require('../assets/images/Crossfit.png'),
-      entrenadora: 'Entrenador',
-      nombreEntrenador:'Javier',
-      description: 'Programa de alta intensidad que trabaja fuerza, velocidad y técnica.',
-      ctaText: '$90',
-    },
-    {
-      id: 4,
-      title: 'Yoga',
-      image: require('../assets/images/yoga.jpg'),
-      entrenadora: 'Entrenadora',
-      nombreEntrenador:'Emma',
-      description: 'Relajación profunda y mejora de la flexibilidad para equilibrar cuerpo y mente.',
-      ctaText: '$90',
-    },
-    {
-      id: 5,
-      title: 'Pilates',
-      image: require('../assets/images/pilates.jpg'),
-      entrenadora: 'Entrenadora',
-      nombreEntrenador:'Emma',
-      description: 'Fortalece el core y mejora la postura mediante ejercicios controlados.',
-      ctaText: '$90',
-    },
-    {
-      id: 6,
-      title: 'Zumba',
-      image: require('../assets/images/Zumba.jpg'),
-      entrenadora: 'Entrenador',
-      nombreEntrenador:'Diego',
-      description: 'Clases llenas de ritmo y energía con movimientos de baile.',
-      ctaText: '$90',
-    },
-  ]);
+  useEffect(() => {
+    fetch('https://gym-powerzone-back-production.up.railway.app/api/clases')
+      .then(res => res.json())
+      .then((json: CaruselItem[]) => {
+        setData(json);
+        setTimeout(() => {
+          scrollViewRef.current?.scrollTo({
+            x: json.length * ITEM_WIDTH,
+            animated: false,
+          });
+          setCurrentIndex(json.length);
+        }, 100);
+      })
+      .catch(err => {
+        console.error('Error cargando las clases:', err);
+      });
+  }, []);
 
   const infiniteData = [...data, ...data, ...data];
   const dataLength = data.length;
-
-  useEffect(() => {
-    scrollViewRef.current?.scrollTo({
-      x: dataLength * ITEM_WIDTH,
-      animated: false,
-    });
-  }, []);
 
   const handleScroll = (event: any) => {
     const contentOffset = event.nativeEvent.contentOffset.x;
     const newIndex = Math.floor((contentOffset + ITEM_WIDTH / 2) / ITEM_WIDTH);
 
-    if (newIndex < currentIndex) {
-      scrollViewRef.current?.scrollTo({
-        x: currentIndex * ITEM_WIDTH,
-        animated: true,
-      });
-      return;
-    }
-
     if (newIndex !== currentIndex) {
-      scrollViewRef.current?.scrollTo({
-        x: newIndex * ITEM_WIDTH,
-        animated: true,
-      });
       setCurrentIndex(newIndex);
     }
 
@@ -217,7 +149,20 @@ const Carusel: React.FC = () => {
         animated: false,
       });
       setCurrentIndex(dataLength + resetIndex);
+    } else if (newIndex < dataLength) {
+      const resetIndex = newIndex % dataLength + dataLength;
+      scrollViewRef.current?.scrollTo({
+        x: resetIndex * ITEM_WIDTH,
+        animated: false,
+      });
+      setCurrentIndex(resetIndex);
     }
+  };
+
+  const [erroredImages, setErroredImages] = useState<Set<number>>(new Set());
+
+  const onErrorImage = (id: number) => {
+    setErroredImages(prev => new Set(prev).add(id));
   };
 
   return (
@@ -238,35 +183,30 @@ const Carusel: React.FC = () => {
         disableIntervalMomentum
       >
         {infiniteData.map((item, index) => (
-          <View key={`${item.id}-${index}`} style={styles.slide}>
-            <Image source={item.image} style={styles.image} resizeMode="cover" />
+          <View key={`${item.clase_id}-${index}`} style={styles.slide}>
+            <Image
+              source={
+                erroredImages.has(index)
+                  ? fallbackImage
+                  : { uri: item.imagen_url }
+              }
+              style={styles.image}
+              resizeMode="cover"
+              onError={() => onErrorImage(index)}
+            />
 
             <View style={styles.textContainer}>
               <View style={styles.titleContainer}>
-                <Text style={styles.slideTitle}>{item.title}</Text>
+                <Text style={styles.slideTitle}>{item.nombre_clase}</Text>
               </View>
 
               <View style={styles.contentWrapper}>
                 <View style={styles.textContent}>
-
-                {item.entrenadora && item.nombreEntrenador && (
-  <Text style={styles.entrenadoraText}>
-    {item.entrenadora} ~{' '}
-    <Text style={styles.nombreEntrenador}>
-      {item.nombreEntrenador}
-    </Text>
-  </Text>
-)}
-
-
-
-
-                 
-                  <Text style={styles.slideDescription}>{item.description}</Text>
+                  <Text style={styles.slideDescription}>{item.descripcion}</Text>
                 </View>
 
                 <View style={styles.ctaCircle}>
-                  <Text style={styles.ctaText}>{item.ctaText}</Text>
+                  <Text style={styles.ctaText}>${item.precio_clase}</Text>
                 </View>
               </View>
             </View>
