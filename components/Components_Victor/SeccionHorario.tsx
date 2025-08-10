@@ -81,9 +81,6 @@ const SeccionHorario: React.FC = () => {
       claseIdANombre[clase_id] = nombre_clase;
     });
 
-    console.log('Mapeo claseIdANombre:', claseIdANombre);
-    console.log('Horarios recibidos:', horarios);
-
     // Obtener horas únicas ordenadas
     const horasUnicasSet = new Set<string>();
     horarios.forEach(({ hora_inicio }) => {
