@@ -1,5 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -9,45 +10,113 @@ import {
 } from 'react-native';
 import createStyles from './styles/SecciónHorario.styles';
 
-const WorkoutTimetable: React.FC = () => {
+interface Horario {
+  horario_id: number;
+  clase_id: number;
+  dia_semana: string;
+  hora_inicio: string;
+  hora_fin: string;
+}
+
+interface Clase {
+  clase_id: number;
+  nombre_clase: string;
+  descripcion: string;
+  precio_clase: string;
+  imagen_url: string;
+}
+
+const dias = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'];
+const diasMap: Record<string, string> = {
+  Lunes: 'LUN',
+  Martes: 'MAR',
+  Miércoles: 'MIÉ',
+  Jueves: 'JUE',
+  Viernes: 'VIE',
+  Sábado: 'SÁB',
+  Domingo: 'DOM',
+};
+
+const esDiaSemana = (dia: string) => Object.keys(diasMap).includes(dia);
+
+const SeccionHorario: React.FC = () => {
   const { width: screenWidth } = useWindowDimensions();
   const styles = createStyles(screenWidth);
 
-  const dias = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'];
-  const schedule = {
-    '7:00 AM': {
-      LUN: { activity: 'Cardio', time: '7:00 AM - 9:00 AM' },
-      MAR: { activity: 'Power Fitness', time: '7:00 AM - 9:00 AM' },
-      MIÉ: null,
-      JUE: null,
-      VIE: { activity: 'Sección de Yoga', time: '7:00 AM - 9:00 AM' },
-      SÁB: { activity: 'Cardio', time: '8:00 AM - 9:00 AM' },
-    },
-    '9:00 AM': {
-      LUN: null,
-      MAR: null,
-      MIÉ: { activity: 'Boxeo', time: '8:00 AM - 9:00 AM' },
-      JUE: { activity: 'Aeróbicos', time: '8:00 AM - 9:00 AM' },
-      VIE: null,
-      SÁB: null,
-    },
-    '11:00 AM': {
-      LUN: null,
-      MAR: { activity: 'Boxeo', time: '11:00 AM - 2:00 PM' },
-      MIÉ: { activity: 'Aeróbicos', time: '11:30 AM - 3:30 PM' },
-      JUE: null,
-      VIE: { activity: 'Trabajo Corporal', time: '11:50 AM - 5:20 PM' },
-      SÁB: null,
-    },
-    '2:00 PM': {
-      LUN: { activity: 'Boxeo', time: '2:00 PM - 4:00 PM' },
-      MAR: { activity: 'Levantamiento de Pesas', time: '3:00 PM - 6:00 PM' },
-      MIÉ: null,
-      JUE: { activity: 'Cardio', time: '6:00 PM - 9:00 PM' },
-      VIE: null,
-      SÁB: { activity: 'Crossfit', time: '5:00 PM - 7:00 PM' },
-    },
-  };
+  const [horarios, setHorarios] = useState<Horario[]>([]);
+  const [clases, setClases] = useState<Clase[]>([]);
+  const [schedule, setSchedule] = useState<
+    Record<string, Record<string, { activity: string; time: string } | null>>
+  >({});
+
+  useEffect(() => {
+    const fetchHorarios = async () => {
+      try {
+        const res = await axios.get<Horario[]>('https://gym-powerzone-back-production.up.railway.app/api/horarios');
+        setHorarios(res.data);
+      } catch (error) {
+        console.error('Error fetching horarios:', error);
+      }
+    };
+
+    const fetchClases = async () => {
+      try {
+        const res = await axios.get<Clase[]>('https://gym-powerzone-back-production.up.railway.app/api/clases');
+        setClases(res.data);
+      } catch (error) {
+        console.error('Error fetching clases:', error);
+      }
+    };
+
+    fetchHorarios();
+    fetchClases();
+  }, []);
+
+  useEffect(() => {
+    if (!horarios.length || !clases.length) return;
+
+    // Mapeo clase_id -> nombre_clase
+    const claseIdANombre: Record<number, string> = {};
+    clases.forEach(({ clase_id, nombre_clase }) => {
+      claseIdANombre[clase_id] = nombre_clase;
+    });
+
+    console.log('Mapeo claseIdANombre:', claseIdANombre);
+    console.log('Horarios recibidos:', horarios);
+
+    // Obtener horas únicas ordenadas
+    const horasUnicasSet = new Set<string>();
+    horarios.forEach(({ hora_inicio }) => {
+      horasUnicasSet.add(hora_inicio);
+    });
+    const horasUnicas = Array.from(horasUnicasSet).sort();
+
+    // Inicializar schedule con nulls
+    const newSchedule: Record<string, Record<string, { activity: string; time: string } | null>> = {};
+    horasUnicas.forEach((hora) => {
+      newSchedule[hora] = {};
+      dias.forEach((diaAbrev) => {
+        newSchedule[hora][diaAbrev] = null;
+      });
+    });
+
+    // Llenar schedule con datos correctos
+    horarios.forEach(({ clase_id, dia_semana, hora_inicio, hora_fin }) => {
+      if (!esDiaSemana(dia_semana)) return;
+
+      const diaAbrev = diasMap[dia_semana];
+      if (!dias.includes(diaAbrev)) return;
+
+      const nombreClase = claseIdANombre[clase_id] ?? `Clase ${clase_id}`;
+
+      newSchedule[hora_inicio][diaAbrev] = {
+        activity: nombreClase,
+        time: `${hora_inicio.substring(0, 5)} - ${hora_fin.substring(0, 5)}`,
+      };
+    });
+
+    setSchedule(newSchedule);
+  }, [horarios, clases]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -72,7 +141,7 @@ const WorkoutTimetable: React.FC = () => {
           {Object.keys(schedule).map((timeSlot) => (
             <View key={timeSlot} style={styles.row}>
               <View style={styles.timeCell}>
-                <Text style={styles.timeText}>{timeSlot}</Text>
+                <Text style={styles.timeText}>{timeSlot.substring(0, 5)}</Text>
               </View>
               {dias.map((dia) => {
                 const activity = schedule[timeSlot][dia];
@@ -95,4 +164,4 @@ const WorkoutTimetable: React.FC = () => {
   );
 };
 
-export default WorkoutTimetable;
+export default SeccionHorario;
