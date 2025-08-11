@@ -416,7 +416,7 @@ const RegisterScreen: React.FC = () => {
               const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '').replace(/^\s+/, '');
               updateField('ciudad', cleaned);
             }}
-            placeholder="Ej. Springfield"
+            placeholder="Ej. México"
             placeholderTextColor="#aaa"
             autoCapitalize="words"
           />
@@ -430,7 +430,7 @@ const RegisterScreen: React.FC = () => {
               const cleaned = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '').replace(/^\s+/, '');
               updateField('estado', cleaned);
             }}
-            placeholder="Ej. Oaxaca"
+            placeholder="Ej. Hidalgo"
             placeholderTextColor="#aaa"
             autoCapitalize="words"
           />
