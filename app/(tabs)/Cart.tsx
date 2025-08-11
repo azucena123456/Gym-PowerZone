@@ -16,8 +16,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Header = ({ totalItems, isMobile, onNavigateToStore }) => {
   const insets = useSafeAreaInsets();
+  const [searchQuery, setSearchQuery] = useState('');
   const formatCartCount = (count) => {
     return count > 9 ? '9+' : count.toString();
+  };
+
+  const handleSearch = () => {
+    // Implementar lógica de búsqueda aquí
+    console.log('Buscando:', searchQuery);
   };
 
   return (
@@ -39,8 +45,15 @@ const Header = ({ totalItems, isMobile, onNavigateToStore }) => {
               style={styles.searchInput}
               placeholder="Buscar"
               placeholderTextColor="#888"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              onSubmitEditing={handleSearch}
+              returnKeyType="search"
             />
-            <TouchableOpacity style={styles.searchIcon}>
+            <TouchableOpacity 
+              style={styles.searchIcon} 
+              onPress={handleSearch}
+            >
               <Icon name="search-outline" size={20} color="#333" />
             </TouchableOpacity>
           </View>
@@ -308,6 +321,7 @@ const styles = StyleSheet.create({
   searchBarContainer: {
     flex: 1,
     marginHorizontal: 10,
+    minWidth: 150, // Ancho mínimo para la barra de búsqueda
   },
   searchBarContainerDesktop: {
     maxWidth: 590,
@@ -315,6 +329,7 @@ const styles = StyleSheet.create({
   searchBarContainerMobile: {
     width: '100%',
     marginVertical: 10,
+    order: 1, // Forzar que aparezca debajo en móvil
   },
   searchBar: {
     flexDirection: 'row',
@@ -322,20 +337,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderRadius: 5,
     height: 40,
+    paddingHorizontal: 10,
   },
   searchInput: {
     flex: 1,
     paddingVertical: 8,
-    paddingHorizontal: 10,
     color: '#333',
     fontSize: 14,
-    backgroundColor: '#FFF',
   },
   searchIcon: {
     padding: 8,
-    backgroundColor: '#FFF',
-    borderTopRightRadius: 5,
-    borderBottomRightRadius: 5,
   },
   iconButtonsContainer: {
     flexDirection: 'row',
