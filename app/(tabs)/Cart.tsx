@@ -161,7 +161,10 @@ const Carrito = () => {
   };
 
   const renderSummarySection = () => (
-    <View style={styles.summarySection}>
+    <View style={[
+      styles.summarySection,
+      isMobile && styles.summarySectionMobile
+    ]}>
       <View style={styles.shippingInfo}>
         <View style={styles.shippingIconContainer}>
           <Icon name="checkmark-circle" size={24} color="#ff0000" />
@@ -184,7 +187,10 @@ const Carrito = () => {
   );
 
   const renderProductsSection = () => (
-    <View style={styles.productsSection}>
+    <View style={[
+      styles.productsSection,
+      isMobile && styles.productsSectionMobile
+    ]}>
       <View style={styles.cartHeader}>
         <Text style={styles.cartTitle}>Carrito</Text>
         {!isMobile && <Text style={styles.priceHeader}>Precio</Text>}
@@ -271,10 +277,10 @@ const Carrito = () => {
         ]}
       >
         {isMobile ? (
-          <>
+          <View style={styles.mobileContentContainer}>
             {renderSummarySection()}
             {renderProductsSection()}
-          </>
+          </View>
         ) : (
           <View style={styles.contentWrapper}>
             {renderProductsSection()}
@@ -411,6 +417,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
   },
+  mobileContentContainer: {
+    width: '100%',
+  },
   contentWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -422,6 +431,10 @@ const styles = StyleSheet.create({
     flex: 2,
     marginRight: 20,
     marginBottom: 20,
+  },
+  productsSectionMobile: {
+    width: '100%',
+    marginRight: 0,
   },
   cartHeader: {
     flexDirection: 'row',
@@ -569,6 +582,10 @@ const styles = StyleSheet.create({
     padding: 20,
     width: 350,
     marginBottom: 20,
+  },
+  summarySectionMobile: {
+    width: '100%',
+    marginRight: 0,
   },
   shippingInfo: {
     padding: 10,
