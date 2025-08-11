@@ -22,7 +22,6 @@ const Header = ({ totalItems, isMobile, onNavigateToStore }) => {
   };
 
   const handleSearch = () => {
-    // Implementar lógica de búsqueda aquí
     console.log('Buscando:', searchQuery);
   };
 
@@ -32,13 +31,16 @@ const Header = ({ totalItems, isMobile, onNavigateToStore }) => {
       { paddingTop: Platform.OS === 'ios' ? insets.top : 10 }
     ]}>
       <View style={styles.topRow}>
-        <TouchableOpacity onPress={onNavigateToStore}>
-          <Text style={styles.logoText}>Gym-PowerZone</Text>
-        </TouchableOpacity>
+        {!isMobile && (
+          <TouchableOpacity onPress={onNavigateToStore}>
+            <Text style={styles.logoText}>Gym-PowerZone</Text>
+          </TouchableOpacity>
+        )}
         
         <View style={[
           styles.searchBarContainer, 
-          isMobile ? styles.searchBarContainerMobile : styles.searchBarContainerDesktop
+          isMobile ? styles.searchBarContainerMobile : styles.searchBarContainerDesktop,
+          isMobile && { flex: 1, marginLeft: 0, marginRight: 0 }
         ]}>
           <View style={styles.searchBar}>
             <TextInput
@@ -144,7 +146,6 @@ const Carrito = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  // Contamos productos diferentes (no sumamos cantidades)
   const totalItems = cartItems.length;
 
   const handleQuantityChange = (itemId, newQuantity) => {
@@ -155,7 +156,6 @@ const Carrito = () => {
         )
       );
     } else {
-      // Si la cantidad llega a 0, eliminamos el producto
       setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
     }
   };
@@ -289,7 +289,6 @@ const Carrito = () => {
 };
 
 const styles = StyleSheet.create({
-  // Header styles
   headerContainer: {
     backgroundColor: '#000',
     paddingHorizontal: Platform.select({
@@ -321,7 +320,7 @@ const styles = StyleSheet.create({
   searchBarContainer: {
     flex: 1,
     marginHorizontal: 10,
-    minWidth: 150, // Ancho mínimo para la barra de búsqueda
+    minWidth: 150,
   },
   searchBarContainerDesktop: {
     maxWidth: 590,
@@ -329,7 +328,6 @@ const styles = StyleSheet.create({
   searchBarContainerMobile: {
     width: '100%',
     marginVertical: 10,
-    order: 1, // Forzar que aparezca debajo en móvil
   },
   searchBar: {
     flexDirection: 'row',
@@ -372,8 +370,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: 'bold',
   },
-  
-  // Footer styles
   footerContainer: {
     backgroundColor: '#333',
     flexDirection: 'row',
@@ -407,8 +403,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: 'bold',
   },
-  
-  // Main content styles
   container: {
     flex: 1,
     backgroundColor: '#f4f4f4',
