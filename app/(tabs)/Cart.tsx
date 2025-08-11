@@ -46,18 +46,27 @@ const Header = ({ totalItems, isMobile, onNavigateToStore }) => {
           </View>
         </View>
 
-        <View style={styles.iconButtonsContainer}>
-          <TouchableOpacity style={[styles.iconButton, { position: 'relative' }]}>
-            <Icon name="cart-outline" size={28} color="#FFF" />
-            {totalItems > 0 && (
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>
-                  {formatCartCount(totalItems)}
-                </Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        </View>
+        {!isMobile && (
+          <View style={styles.iconButtonsContainer}>
+            <TouchableOpacity 
+              style={styles.iconButton} 
+              onPress={onNavigateToStore}
+            >
+              <Icon name="home-outline" size={28} color="#FFF" />
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={[styles.iconButton, { position: 'relative' }]}>
+              <Icon name="cart-outline" size={28} color="#FFF" />
+              {totalItems > 0 && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>
+                    {formatCartCount(totalItems)}
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -70,14 +79,17 @@ const BottomNavBar = ({ totalItems, onNavigateToStore }) => {
 
   return (
     <View style={styles.footerContainer}>
-      <TouchableOpacity style={styles.footerButton} onPress={onNavigateToStore}>
+      <TouchableOpacity 
+        style={styles.footerButton} 
+        onPress={onNavigateToStore}
+      >
         <Icon name="home-outline" size={30} color="#FFF" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.footerButton}>
+      <TouchableOpacity style={[styles.footerButton, { position: 'relative' }]}>
         <Icon name="cart-outline" size={30} color="#FFF" />
         {totalItems > 0 && (
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>
+          <View style={styles.footerBadge}>
+            <Text style={styles.footerBadgeText}>
               {formatCartCount(totalItems)}
             </Text>
           </View>
@@ -119,7 +131,8 @@ const Carrito = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+  // Contamos productos diferentes (no sumamos cantidades)
+  const totalItems = cartItems.length;
 
   const handleQuantityChange = (itemId, newQuantity) => {
     if (newQuantity >= 1) {
@@ -128,6 +141,9 @@ const Carrito = () => {
           item.id === itemId ? { ...item, quantity: newQuantity } : item
         )
       );
+    } else {
+      // Si la cantidad llega a 0, eliminamos el producto
+      setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
     }
   };
 
@@ -145,7 +161,7 @@ const Carrito = () => {
         </View>
       </View>
       <View style={isMobile ? styles.subtotalContainerMobile : styles.subtotalContainer}>
-        <Text style={styles.subtotalText}>Subtotal ({totalItems} producto{totalItems !== 1 ? 's' : ''}):</Text>
+        <Text style={styles.subtotalText}>Subtotal ({cartItems.reduce((total, item) => total + item.quantity, 0)} producto{cartItems.reduce((total, item) => total + item.quantity, 0) !== 1 ? 's' : ''}):</Text>
         <Text style={styles.subtotalPrice}>${calculateSubtotal().toLocaleString('es-MX')}</Text>
       </View>
       <TouchableOpacity style={styles.checkoutButton}>
@@ -196,7 +212,10 @@ const Carrito = () => {
 
                 {isMobile ? (
                   <View style={styles.actionsMobile}>
-                    <TouchableOpacity style={styles.actionButtonMobile}>
+                    <TouchableOpacity 
+                      style={styles.actionButtonMobile}
+                      onPress={() => setCartItems(prevItems => prevItems.filter(i => i.id !== item.id))}
+                    >
                       <Text style={styles.actionButtonText}>Eliminar</Text>
                     </TouchableOpacity>
                     <Text style={styles.actionSeparator}>|</Text>
@@ -206,7 +225,7 @@ const Carrito = () => {
                   </View>
                 ) : (
                   <View style={styles.actions}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => setCartItems(prevItems => prevItems.filter(i => i.id !== item.id))}>
                       <Text style={styles.actionButtonText}>Eliminar</Text>
                     </TouchableOpacity>
                     <Text style={styles.actionSeparator}>|</Text>
@@ -232,7 +251,12 @@ const Carrito = () => {
         onNavigateToStore={handleNavigateToStore} 
       />
 
-      <ScrollView contentContainerStyle={styles.mainContent}>
+      <ScrollView 
+        contentContainerStyle={[
+          styles.mainContent,
+          { paddingBottom: isMobile ? 70 : 20 }
+        ]}
+      >
         {isMobile ? (
           <>
             {renderSummarySection()}
@@ -286,7 +310,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   searchBarContainerDesktop: {
-    maxWidth: 590, // Aumentado a 290px (40px más que antes)
+    maxWidth: 590,
   },
   searchBarContainerMobile: {
     width: '100%',
@@ -319,7 +343,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
   },
   iconButton: {
-    marginLeft: 10,
+    marginLeft: 15,
   },
   badge: {
     position: 'absolute',
@@ -345,9 +369,32 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     paddingVertical: 10,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    borderTopWidth: 1,
+    borderTopColor: '#555',
   },
   footerButton: {
     position: 'relative',
+    padding: 10,
+  },
+  footerBadge: {
+    position: 'absolute',
+    right: 2,
+    top: 2,
+    backgroundColor: '#ff0000',
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  footerBadgeText: {
+    color: '#FFF',
+    fontSize: 10,
+    fontWeight: 'bold',
   },
   
   // Main content styles
