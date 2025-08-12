@@ -16,19 +16,21 @@ import {
   View,
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { useAuth } from './AuthContext'; // 👈 Importa el hook useAuth
 
-interface LoginScreenProps {
-  onLogin: () => void;
-}
+// --- ÚNICO CAMBIO: URL BASE DE LA API ---
+const API_BASE_URL = 'https://gym-powerzone-back-production.up.railway.app/api';
 
-const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
+// Elimina la prop `onLogin` del componente
+const LoginScreen: React.FC = () => {
+  const { login } = useAuth(); // 👈 Llama al hook para obtener la función `login`
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [loginError, setLoginError] = useState<string>('');
   const [isLargeScreen, setIsLargeScreen] = useState(Dimensions.get('window').width >= 768);
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const updateDimension = () => {
@@ -72,20 +74,35 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      const isLoginSuccessful = email === 'usuario@ejemplo.com' && password === 'password123';
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+      });
 
-      if (isLoginSuccessful) {
-        Alert.alert('Inicio de Sesión Exitoso', '¡Bienvenido!');
-        clearForm();
-        onLogin();
-        router.replace('/Store');
-      } else {
-        setLoginError('El correo o la contraseña no son correctos.');
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Credenciales inválidas. Por favor, revisa tu email y contraseña.');
+        }
+        throw new Error(data.message || 'Error en el servidor. Inténtalo de nuevo.');
       }
+
+      console.log('✅ Inicio de sesión exitoso:', data);
+      
+      Alert.alert('Inicio de Sesión Exitoso', '¡Bienvenido!');
+      
+      clearForm();
+      login(); // 👈 Llama a la función `login` del contexto para cambiar el estado global
+      router.replace('/Store');
+      
     } catch (error) {
-      console.error('Error durante el inicio de sesión:', error);
-      setLoginError('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
+      console.error('❌ Error durante el inicio de sesión:', error);
+      setLoginError(error instanceof Error ? error.message : 'Ocurrió un error inesperado. Inténtalo de nuevo.');
     } finally {
       setLoading(false);
     }
@@ -312,7 +329,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
-  // Estilo del ícono de ojo
   eyeIconContainer: {
     padding: 12,
     justifyContent: 'center',

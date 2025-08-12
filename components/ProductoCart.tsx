@@ -1,7 +1,7 @@
+import { ProductCardProps } from '@/types';
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { ProductCardProps, Product } from '@/types';
 
 
 interface ExtendedProductCardProps extends ProductCardProps {

@@ -2,17 +2,17 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  useWindowDimensions,
-  Platform
+  useWindowDimensions
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const Header = ({ totalItems, isMobile, onNavigateToStore }) => {
   const insets = useSafeAreaInsets();
