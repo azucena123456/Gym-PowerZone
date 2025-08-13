@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 import Header from '@/components/Header';
 import ImageCarousel from '@/components/ImageCarousel';
 import ProductCard from '@/components/ProductoCart';
-import BottomBar from '@/components/BottomBar'; 
+import BottomBar from '@/components/BottomBar';
 import ProductListScreen from '@/components/ProductListScreen';
 import { Product } from '@/types';
-
+import { useCart } from '@/app/(tabs)/CartContext';
 
 const { width, height } = Dimensions.get('window');
-const isMobile = width < 768; 
+const isMobile = width < 768;
 const numColumns = width > 1200 ? 5 : width > 900 ? 4 : width > 600 ? 3 : width > 400 ? 2 : 2;
-const listPaddingHorizontal = isMobile ? 15 : 52; 
+const listPaddingHorizontal = isMobile ? 15 : 52;
 
 export default function StoreScreen() {
     const [products, setProducts] = useState<Product[]>([]);
@@ -22,6 +21,7 @@ export default function StoreScreen() {
     const [searchTerm, setSearchTerm] = useState('');
     const [numColumns, setNumColumns] = useState(2);
     const [windowWidth, setWindowWidth] = useState(Dimensions.get('window').width);
+    const { cartItemCount } = useCart();
 
     useEffect(() => {
         const updateLayout = () => {
@@ -56,7 +56,7 @@ export default function StoreScreen() {
                 
                 const rowStyle = [
                     styles.productRow,
-                    (isLastRow && isPartialRow) && styles.centeredRow 
+                    (isLastRow && isPartialRow) && styles.centeredRow
                 ];
                 
                 rows.push(
@@ -72,42 +72,41 @@ export default function StoreScreen() {
                         ))}
                     </View>
                 );
-                row = []; 
+                row = [];
             }
         });
         return rows;
     };
     
-    // Muestra los estados de carga, error y no resultados aquí
     if (loading) {
-      return (
-        <SafeAreaView style={styles.safeAreaContainer}>
-          <ProductListScreen
-              onProductsLoaded={setProducts}
-              onLoading={setLoading}
-              onError={setError}
-          />
-          <View style={styles.centered}>
-            <ActivityIndicator size="large" color="#E44D26" />
-            <Text style={styles.loadingText}>Cargando productos...</Text>
-          </View>
-        </SafeAreaView>
-      );
+        return (
+            <SafeAreaView style={styles.safeAreaContainer}>
+                <ProductListScreen
+                    onProductsLoaded={setProducts}
+                    onLoading={setLoading}
+                    onError={setError}
+                />
+                <View style={styles.centered}>
+                    <ActivityIndicator size="large" color="#E44D26" />
+                    <Text style={styles.loadingText}>Cargando productos...</Text>
+                </View>
+            </SafeAreaView>
+        );
     }
     
     if (error) {
-      return (
-        <SafeAreaView style={styles.safeAreaContainer}>
-          <ProductListScreen
-              onProductsLoaded={setProducts}
-              onLoading={setLoading}
-              onError={setError}
-          />
-          <View style={styles.centered}>
-            <Text style={styles.errorText}>{error}</Text>
-          </View>
-        </SafeAreaView>
-      );
+        return (
+            <SafeAreaView style={styles.safeAreaContainer}>
+                <ProductListScreen
+                    onProductsLoaded={setProducts}
+                    onLoading={setLoading}
+                    onError={setError}
+                />
+                <View style={styles.centered}>
+                    <Text style={styles.errorText}>{error}</Text>
+                </View>
+            </SafeAreaView>
+        );
     }
 
     return (
@@ -115,7 +114,6 @@ export default function StoreScreen() {
             <Header
                 searchTerm={searchTerm}
                 onSearchChange={setSearchTerm}
-                onMenuPress={() => console.log('Menú Presionado')}
             />
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 {searchTerm.length === 0 && <ImageCarousel />}
@@ -133,9 +131,8 @@ export default function StoreScreen() {
                     </View>
                 )}
             </ScrollView>
-
             
-            {isMobile && <BottomBar />} 
+            {isMobile && <BottomBar />}
         </SafeAreaView>
     );
 }
@@ -169,7 +166,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     centeredRow: {
-        justifyContent: 'center', 
+        justifyContent: 'center',
     },
     centered: {
         flex: 1,
@@ -177,13 +174,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     loadingText: {
-      marginTop: 10,
-      fontSize: 16,
-      color: '#666',
+        marginTop: 10,
+        fontSize: 16,
+        color: '#666',
     },
     errorText: {
-      fontSize: 16,
-      color: 'red',
-      textAlign: 'center',
+        fontSize: 16,
+        color: 'red',
+        textAlign: 'center',
     },
 });
