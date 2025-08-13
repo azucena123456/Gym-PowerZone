@@ -1,64 +1,88 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Dimensions,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    Dimensions,
+    Image,
+    KeyboardAvoidingView,
+    Platform,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 
+// URL base de tu API, la misma que en otros componentes
 const API_URL_BASE = 'https://gym-powerzone-back-production.up.railway.app/api';
 
-const ForgotPasswordScreen: React.FC = () => {
-  const [email, setEmail] = useState<string>('');
+const ResetPasswordScreen: React.FC = () => {
+  // ✅ Obtiene los parámetros de la URL, incluyendo el 'token'
+  const { token } = useLocalSearchParams();
+
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [isLargeScreen, setIsLargeScreen] = useState(Dimensions.get('window').width >= 768);
-  const [error, setError] = useState<string>('');
+
+  useEffect(() => {
+    // Si el token no está presente, redirige al usuario a la pantalla de login
+    if (!token) {
+      Alert.alert('Error', 'Token de recuperación no encontrado. Por favor, solicita un nuevo enlace.');
+      router.push('/Login');
+    }
+  }, [token]);
 
   useEffect(() => {
     const updateDimension = () => {
       setIsLargeScreen(Dimensions.get('window').width >= 768);
     };
+
     const dimensionListener = Dimensions.addEventListener('change', updateDimension);
+
     return () => {
       dimensionListener.remove();
     };
   }, []);
 
-  const validateEmail = (email: string): boolean => {
-    const re = /\S+@\S+\.\S+/;
-    return re.test(email);
-  };
-
   const handleResetPassword = async () => {
-    try {
-      setError('');
-      if (!email.trim()) {
-        throw new Error('Por favor, ingresa tu dirección de email.');
-      }
-      if (!validateEmail(email)) {
-        throw new Error('Por favor, introduce un correo electrónico válido.');
-      }
+    if (!newPassword || !confirmPassword) {
+      Alert.alert('Campos incompletos', 'Por favor, ingresa y confirma tu nueva contraseña.');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      Alert.alert('Contraseñas no coinciden', 'Las contraseñas ingresadas no son iguales.');
+      return;
+    }
 
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      Alert.alert(
-        'Instrucciones Enviadas',
-        'Si tu email está registrado, recibirás un correo para restablecer tu contraseña.'
-      );
-      router.push('/Login'); 
-    } catch (error) {
+      // ✅ Envía la solicitud al endpoint de restablecimiento de contraseña en el backend
+      const response = await fetch(`${API_URL_BASE}/auth/restablecer-contrasena`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ token, nuevaContrasena: newPassword }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error en el servidor. Inténtalo de nuevo.');
+      }
+
+      Alert.alert('Éxito', 'Tu contraseña ha sido actualizada correctamente.');
+      
+      // ✅ Redirige al usuario a la pantalla de login tras el éxito
+      router.push('/Login');
+    } catch (error: any) {
       console.error('Error durante el restablecimiento de contraseña:', error);
-      Alert.alert('Error', 'Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
+      Alert.alert('Error', error.message || 'Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
     } finally {
       setLoading(false);
     }
@@ -93,20 +117,32 @@ const ForgotPasswordScreen: React.FC = () => {
             styles.formSection,
             !isLargeScreen && styles.formSectionSmallScreen
           ]}>
-            <Text style={styles.title}>¿Olvidaste tu contraseña?</Text>
+            <Text style={styles.title}>Restablecer Contraseña</Text>
             <Text style={styles.subtitle}>
-              Ingresa tu dirección de email y te enviaremos instrucciones para restablecerla.
+              Ingresa tu nueva contraseña y confírmala para continuar.
             </Text>
 
             <View style={styles.form}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={styles.label}>Nueva Contraseña</Text>
               <TextInput
                 style={styles.input}
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
+                value={newPassword}
+                onChangeText={setNewPassword}
+                secureTextEntry
                 autoCapitalize="none"
-                placeholder="tu@email.com"
+                placeholder="Ingresa tu nueva contraseña"
+                placeholderTextColor="#aaa"
+                editable={!loading}
+              />
+
+              <Text style={styles.label}>Confirmar Contraseña</Text>
+              <TextInput
+                style={styles.input}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                secureTextEntry
+                autoCapitalize="none"
+                placeholder="Confirma tu nueva contraseña"
                 placeholderTextColor="#aaa"
                 editable={!loading}
               />
@@ -115,19 +151,10 @@ const ForgotPasswordScreen: React.FC = () => {
                 {loading ? (
                   <ActivityIndicator color="#fff" />
                 ) : (
-                  <Text style={styles.buttonText}>Enviar instrucciones</Text>
+                  <Text style={styles.buttonText}>Restablecer Contraseña</Text>
                 )}
               </TouchableOpacity>
             </View>
-
-            <Text style={styles.backToLoginText}>
-              ¿Recordaste tu contraseña?{' '}
-              <TouchableOpacity onPress={() => router.push('/Login')} disabled={loading}>
-                <Text style={styles.loginLink}>
-                  Inicia sesión
-                </Text>
-              </TouchableOpacity>
-            </Text>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -135,7 +162,7 @@ const ForgotPasswordScreen: React.FC = () => {
   );
 };
 
-export default ForgotPasswordScreen;
+export default ResetPasswordScreen;
 
 const styles = StyleSheet.create({
   container: {
