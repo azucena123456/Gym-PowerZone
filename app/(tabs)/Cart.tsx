@@ -2,22 +2,27 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  useWindowDimensions,
-  Platform
+  useWindowDimensions
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const Header = ({ totalItems, isMobile, onNavigateToStore }) => {
   const insets = useSafeAreaInsets();
+  const [searchQuery, setSearchQuery] = useState('');
   const formatCartCount = (count) => {
     return count > 9 ? '9+' : count.toString();
+  };
+
+  const handleSearch = () => {
+    console.log('Buscando:', searchQuery);
   };
 
   return (
@@ -26,38 +31,57 @@ const Header = ({ totalItems, isMobile, onNavigateToStore }) => {
       { paddingTop: Platform.OS === 'ios' ? insets.top : 10 }
     ]}>
       <View style={styles.topRow}>
-        <TouchableOpacity onPress={onNavigateToStore}>
-          <Text style={styles.logoText}>Gym-PowerZone</Text>
-        </TouchableOpacity>
+        {!isMobile && (
+          <TouchableOpacity onPress={onNavigateToStore}>
+            <Text style={styles.logoText}>Gym-PowerZone</Text>
+          </TouchableOpacity>
+        )}
         
         <View style={[
           styles.searchBarContainer, 
-          isMobile ? styles.searchBarContainerMobile : styles.searchBarContainerDesktop
+          isMobile ? styles.searchBarContainerMobile : styles.searchBarContainerDesktop,
+          isMobile && { flex: 1, marginLeft: 0, marginRight: 0 }
         ]}>
           <View style={styles.searchBar}>
             <TextInput
               style={styles.searchInput}
               placeholder="Buscar"
               placeholderTextColor="#888"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              onSubmitEditing={handleSearch}
+              returnKeyType="search"
             />
-            <TouchableOpacity style={styles.searchIcon}>
+            <TouchableOpacity 
+              style={styles.searchIcon} 
+              onPress={handleSearch}
+            >
               <Icon name="search-outline" size={20} color="#333" />
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={styles.iconButtonsContainer}>
-          <TouchableOpacity style={[styles.iconButton, { position: 'relative' }]}>
-            <Icon name="cart-outline" size={28} color="#FFF" />
-            {totalItems > 0 && (
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>
-                  {formatCartCount(totalItems)}
-                </Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        </View>
+        {!isMobile && (
+          <View style={styles.iconButtonsContainer}>
+            <TouchableOpacity 
+              style={styles.iconButton} 
+              onPress={onNavigateToStore}
+            >
+              <Icon name="home-outline" size={28} color="#FFF" />
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={[styles.iconButton, { position: 'relative' }]}>
+              <Icon name="cart-outline" size={28} color="#FFF" />
+              {totalItems > 0 && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>
+                    {formatCartCount(totalItems)}
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -70,14 +94,17 @@ const BottomNavBar = ({ totalItems, onNavigateToStore }) => {
 
   return (
     <View style={styles.footerContainer}>
-      <TouchableOpacity style={styles.footerButton} onPress={onNavigateToStore}>
+      <TouchableOpacity 
+        style={styles.footerButton} 
+        onPress={onNavigateToStore}
+      >
         <Icon name="home-outline" size={30} color="#FFF" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.footerButton}>
+      <TouchableOpacity style={[styles.footerButton, { position: 'relative' }]}>
         <Icon name="cart-outline" size={30} color="#FFF" />
         {totalItems > 0 && (
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>
+          <View style={styles.footerBadge}>
+            <Text style={styles.footerBadgeText}>
               {formatCartCount(totalItems)}
             </Text>
           </View>
@@ -119,7 +146,7 @@ const Carrito = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const totalItems = cartItems.length;
 
   const handleQuantityChange = (itemId, newQuantity) => {
     if (newQuantity >= 1) {
@@ -128,11 +155,16 @@ const Carrito = () => {
           item.id === itemId ? { ...item, quantity: newQuantity } : item
         )
       );
+    } else {
+      setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
     }
   };
 
   const renderSummarySection = () => (
-    <View style={styles.summarySection}>
+    <View style={[
+      styles.summarySection,
+      isMobile && styles.summarySectionMobile
+    ]}>
       <View style={styles.shippingInfo}>
         <View style={styles.shippingIconContainer}>
           <Icon name="checkmark-circle" size={24} color="#ff0000" />
@@ -145,7 +177,7 @@ const Carrito = () => {
         </View>
       </View>
       <View style={isMobile ? styles.subtotalContainerMobile : styles.subtotalContainer}>
-        <Text style={styles.subtotalText}>Subtotal ({totalItems} producto{totalItems !== 1 ? 's' : ''}):</Text>
+        <Text style={styles.subtotalText}>Subtotal ({cartItems.reduce((total, item) => total + item.quantity, 0)} producto{cartItems.reduce((total, item) => total + item.quantity, 0) !== 1 ? 's' : ''}):</Text>
         <Text style={styles.subtotalPrice}>${calculateSubtotal().toLocaleString('es-MX')}</Text>
       </View>
       <TouchableOpacity style={styles.checkoutButton}>
@@ -155,7 +187,10 @@ const Carrito = () => {
   );
 
   const renderProductsSection = () => (
-    <View style={styles.productsSection}>
+    <View style={[
+      styles.productsSection,
+      isMobile && styles.productsSectionMobile
+    ]}>
       <View style={styles.cartHeader}>
         <Text style={styles.cartTitle}>Carrito</Text>
         {!isMobile && <Text style={styles.priceHeader}>Precio</Text>}
@@ -196,7 +231,10 @@ const Carrito = () => {
 
                 {isMobile ? (
                   <View style={styles.actionsMobile}>
-                    <TouchableOpacity style={styles.actionButtonMobile}>
+                    <TouchableOpacity 
+                      style={styles.actionButtonMobile}
+                      onPress={() => setCartItems(prevItems => prevItems.filter(i => i.id !== item.id))}
+                    >
                       <Text style={styles.actionButtonText}>Eliminar</Text>
                     </TouchableOpacity>
                     <Text style={styles.actionSeparator}>|</Text>
@@ -206,7 +244,7 @@ const Carrito = () => {
                   </View>
                 ) : (
                   <View style={styles.actions}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => setCartItems(prevItems => prevItems.filter(i => i.id !== item.id))}>
                       <Text style={styles.actionButtonText}>Eliminar</Text>
                     </TouchableOpacity>
                     <Text style={styles.actionSeparator}>|</Text>
@@ -232,12 +270,17 @@ const Carrito = () => {
         onNavigateToStore={handleNavigateToStore} 
       />
 
-      <ScrollView contentContainerStyle={styles.mainContent}>
+      <ScrollView 
+        contentContainerStyle={[
+          styles.mainContent,
+          { paddingBottom: isMobile ? 70 : 20 }
+        ]}
+      >
         {isMobile ? (
-          <>
+          <View style={styles.mobileContentContainer}>
             {renderSummarySection()}
             {renderProductsSection()}
-          </>
+          </View>
         ) : (
           <View style={styles.contentWrapper}>
             {renderProductsSection()}
@@ -252,7 +295,6 @@ const Carrito = () => {
 };
 
 const styles = StyleSheet.create({
-  // Header styles
   headerContainer: {
     backgroundColor: '#000',
     paddingHorizontal: Platform.select({
@@ -284,9 +326,10 @@ const styles = StyleSheet.create({
   searchBarContainer: {
     flex: 1,
     marginHorizontal: 10,
+    minWidth: 150,
   },
   searchBarContainerDesktop: {
-    maxWidth: 590, // Aumentado a 290px (40px más que antes)
+    maxWidth: 590,
   },
   searchBarContainerMobile: {
     width: '100%',
@@ -298,20 +341,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderRadius: 5,
     height: 40,
+    paddingHorizontal: 10,
   },
   searchInput: {
     flex: 1,
     paddingVertical: 8,
-    paddingHorizontal: 10,
     color: '#333',
     fontSize: 14,
-    backgroundColor: '#FFF',
   },
   searchIcon: {
     padding: 8,
-    backgroundColor: '#FFF',
-    borderTopRightRadius: 5,
-    borderBottomRightRadius: 5,
   },
   iconButtonsContainer: {
     flexDirection: 'row',
@@ -319,7 +358,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
   },
   iconButton: {
-    marginLeft: 10,
+    marginLeft: 15,
   },
   badge: {
     position: 'absolute',
@@ -337,20 +376,39 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: 'bold',
   },
-  
-  // Footer styles
   footerContainer: {
     backgroundColor: '#333',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
     paddingVertical: 10,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    borderTopWidth: 1,
+    borderTopColor: '#555',
   },
   footerButton: {
     position: 'relative',
+    padding: 10,
   },
-  
-  // Main content styles
+  footerBadge: {
+    position: 'absolute',
+    right: 2,
+    top: 2,
+    backgroundColor: '#ff0000',
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  footerBadgeText: {
+    color: '#FFF',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
   container: {
     flex: 1,
     backgroundColor: '#f4f4f4',
@@ -358,6 +416,9 @@ const styles = StyleSheet.create({
   mainContent: {
     flexGrow: 1,
     padding: 20,
+  },
+  mobileContentContainer: {
+    width: '100%',
   },
   contentWrapper: {
     flexDirection: 'row',
@@ -370,6 +431,10 @@ const styles = StyleSheet.create({
     flex: 2,
     marginRight: 20,
     marginBottom: 20,
+  },
+  productsSectionMobile: {
+    width: '100%',
+    marginRight: 0,
   },
   cartHeader: {
     flexDirection: 'row',
@@ -517,6 +582,10 @@ const styles = StyleSheet.create({
     padding: 20,
     width: 350,
     marginBottom: 20,
+  },
+  summarySectionMobile: {
+    width: '100%',
+    marginRight: 0,
   },
   shippingInfo: {
     padding: 10,

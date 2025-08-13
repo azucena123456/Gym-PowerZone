@@ -1,27 +1,45 @@
-import React, { useState } from 'react';
-import { Dimensions, ScrollView, StyleSheet, View, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Dimensions, ScrollView, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import Header from '@/components/Header';
 import ImageCarousel from '@/components/ImageCarousel';
 import ProductCard from '@/components/ProductoCart';
 import BottomBar from '@/components/BottomBar'; 
-import { products } from '@/data/products';
+import ProductListScreen from '@/components/ProductListScreen';
 import { Product } from '@/types';
 
+const listPaddingHorizontal = 52; 
 const { width, height } = Dimensions.get('window');
 const isMobile = width < 768; 
 const numColumns = width > 1200 ? 5 : width > 900 ? 4 : width > 600 ? 3 : width > 400 ? 2 : 2;
 const listPaddingHorizontal = isMobile ? 15 : 52; 
 
 export default function StoreScreen() {
-    const [searchTerm, setSearchTerm] = useState<string>('');
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [numColumns, setNumColumns] = useState(2);
+    const [windowWidth, setWindowWidth] = useState(Dimensions.get('window').width);
 
-    const filteredProducts: Product[] = products.filter(product =>
+    useEffect(() => {
+        const updateLayout = () => {
+            const newWidth = Dimensions.get('window').width;
+            setWindowWidth(newWidth);
+            const newNumColumns = newWidth > 1200 ? 5 : newWidth > 900 ? 4 : newWidth > 600 ? 3 : newWidth > 400 ? 2 : 2;
+            setNumColumns(newNumColumns);
+        };
+        const subscription = Dimensions.addEventListener('change', updateLayout);
+        updateLayout();
+        return () => subscription.remove();
+    }, []);
+
+    const filteredProducts = products.filter(product =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleProductPress = (product: Product) => {
+    const handleProductPress = (product: any) => {
         console.log('Producto presionado:', product.name);
     };
 
@@ -33,7 +51,6 @@ export default function StoreScreen() {
             row.push(product);
             
             if (row.length === numColumns || index === filteredProducts.length - 1) {
-                
                 const isLastRow = index === filteredProducts.length - 1;
                 const isPartialRow = row.length < numColumns;
                 
@@ -60,7 +77,39 @@ export default function StoreScreen() {
         });
         return rows;
     };
-  
+    
+    // Muestra los estados de carga, error y no resultados aquí
+    if (loading) {
+      return (
+        <SafeAreaView style={styles.safeAreaContainer}>
+          <ProductListScreen
+              onProductsLoaded={setProducts}
+              onLoading={setLoading}
+              onError={setError}
+          />
+          <View style={styles.centered}>
+            <ActivityIndicator size="large" color="#E44D26" />
+            <Text style={styles.loadingText}>Cargando productos...</Text>
+          </View>
+        </SafeAreaView>
+      );
+    }
+    
+    if (error) {
+      return (
+        <SafeAreaView style={styles.safeAreaContainer}>
+          <ProductListScreen
+              onProductsLoaded={setProducts}
+              onLoading={setLoading}
+              onError={setError}
+          />
+          <View style={styles.centered}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        </SafeAreaView>
+      );
+    }
+
     return (
         <SafeAreaView style={styles.safeAreaContainer} edges={['bottom']}>
             <Header
@@ -68,25 +117,21 @@ export default function StoreScreen() {
                 onSearchChange={setSearchTerm}
                 onMenuPress={() => console.log('Menú Presionado')}
             />
-
-            <ScrollView 
-                contentContainerStyle={[
-                    styles.scrollContent, 
-                    isMobile && { paddingBottom: 60 } // Ajusta el padding para que el contenido no quede oculto
-                ]}
-            >
+            <ScrollView contentContainerStyle={styles.scrollContent}>
                 {searchTerm.length === 0 && <ImageCarousel />}
-
-                {filteredProducts.length === 0 && (
+                
+                {filteredProducts.length === 0 ? (
                     <View style={styles.noResultsContainer}>
-                        <Text style={styles.noResultsText}>No se encontraron resultados de<Text style = {{ fontWeight: 'bold'}}> {searchTerm}</Text>
+                        <Text style={styles.noResultsText}>
+                            No se encontraron resultados para
+                            <Text style={{ fontWeight: 'bold' }}> {searchTerm}</Text>
                         </Text>
                     </View>
+                ) : (
+                    <View style={styles.productListContainer}>
+                        {renderRows()}
+                    </View>
                 )}
-
-                <View style={[styles.productListContainer, {paddingHorizontal: listPaddingHorizontal}]}>
-                    {renderRows()}
-                </View>
             </ScrollView>
 
             
@@ -116,14 +161,29 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     productListContainer: {
+        paddingHorizontal: listPaddingHorizontal,
         marginTop: 15,
     },
     productRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        
     },
     centeredRow: {
         justifyContent: 'center', 
+    },
+    centered: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loadingText: {
+      marginTop: 10,
+      fontSize: 16,
+      color: '#666',
+    },
+    errorText: {
+      fontSize: 16,
+      color: 'red',
+      textAlign: 'center',
     },
 });

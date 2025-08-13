@@ -1,9 +1,9 @@
+import { HeaderProps } from '@/types';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, Text, Platform, Dimensions } from 'react-native';
+import { Platform, StyleSheet, Text, TextInput, TouchableOpacity, View, Dimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useRouter } from 'expo-router'; 
-import { useSafeAreaInsets } from 'react-native-safe-area-context'; 
-import { HeaderProps } from '@/types'; 
 
 interface HeaderPropsWithoutCartPress extends Omit<HeaderProps, 'onCartPress'> {}
 
