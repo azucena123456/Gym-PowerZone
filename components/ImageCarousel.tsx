@@ -1,8 +1,7 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import { View, ImageBackground, StyleSheet, Dimensions } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient'; 
+import { Dimensions, ImageBackground, StyleSheet, View } from 'react-native';
 import { carouselImages } from '../data/carouselImages';
-import { CarouselImage } from '@/types'; 
 
 const { width } = Dimensions.get('window');
 const CAROUSEL_HEIGHT = 350; 
