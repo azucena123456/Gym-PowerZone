@@ -5,14 +5,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '@/components/Header';
 import ImageCarousel from '@/components/ImageCarousel';
 import ProductCard from '@/components/ProductoCart';
+import BottomBar from '@/components/BottomBar'; 
 import { products } from '@/data/products';
 import { Product } from '@/types';
 
-const { width } = Dimensions.get('window');
-
+const { width, height } = Dimensions.get('window');
+const isMobile = width < 768; 
 const numColumns = width > 1200 ? 5 : width > 900 ? 4 : width > 600 ? 3 : width > 400 ? 2 : 2;
-const listPaddingHorizontal = 52; 
-
+const listPaddingHorizontal = isMobile ? 15 : 52; 
 
 export default function StoreScreen() {
     const [searchTerm, setSearchTerm] = useState<string>('');
@@ -25,7 +25,6 @@ export default function StoreScreen() {
         console.log('Producto presionado:', product.name);
     };
 
-
     const renderRows = () => {
         const rows: React.JSX.Element[] = [];
         let row: Product[] = [];
@@ -37,7 +36,6 @@ export default function StoreScreen() {
                 
                 const isLastRow = index === filteredProducts.length - 1;
                 const isPartialRow = row.length < numColumns;
-
                 
                 const rowStyle = [
                     styles.productRow,
@@ -63,7 +61,6 @@ export default function StoreScreen() {
         return rows;
     };
   
-
     return (
         <SafeAreaView style={styles.safeAreaContainer} edges={['bottom']}>
             <Header
@@ -72,27 +69,28 @@ export default function StoreScreen() {
                 onMenuPress={() => console.log('Menú Presionado')}
             />
 
-            <ScrollView contentContainerStyle={styles.scrollContent}>
-              
-
-              
-
+            <ScrollView 
+                contentContainerStyle={[
+                    styles.scrollContent, 
+                    isMobile && { paddingBottom: 60 } // Ajusta el padding para que el contenido no quede oculto
+                ]}
+            >
                 {searchTerm.length === 0 && <ImageCarousel />}
 
                 {filteredProducts.length === 0 && (
                     <View style={styles.noResultsContainer}>
                         <Text style={styles.noResultsText}>No se encontraron resultados de<Text style = {{ fontWeight: 'bold'}}> {searchTerm}</Text>
-
                         </Text>
                     </View>
                 )}
 
-
-
-                <View style={styles.productListContainer}>
+                <View style={[styles.productListContainer, {paddingHorizontal: listPaddingHorizontal}]}>
                     {renderRows()}
                 </View>
             </ScrollView>
+
+            
+            {isMobile && <BottomBar />} 
         </SafeAreaView>
     );
 }
@@ -118,8 +116,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     productListContainer: {
-        paddingHorizontal: listPaddingHorizontal,
-         marginTop: 15,
+        marginTop: 15,
     },
     productRow: {
         flexDirection: 'row',

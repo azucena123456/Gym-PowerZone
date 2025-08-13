@@ -1,35 +1,45 @@
-import React from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, Text, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { View, TextInput, TouchableOpacity, StyleSheet, Text, Platform, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router'; 
-import { HeaderProps } from '@/types'; 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'; 
+import { HeaderProps } from '@/types'; 
 
 interface HeaderPropsWithoutCartPress extends Omit<HeaderProps, 'onCartPress'> {}
 
-const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchChange, searchTerm }) => {
+const { width } = Dimensions.get('window');
+const isMobile = width < 768;
+
+const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onSearchChange, searchTerm }) => {
   const router = useRouter(); 
   const insets = useSafeAreaInsets(); 
-  const [hoveredItem, setHoveredItem] = React.useState<string | null>(null);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   const handleLogout = () => {
-  
     router.replace('/Login'); 
   };
-
+  
   return (
     <View style={[
       styles.headerContainer,
-      { paddingTop: Platform.OS === 'ios' ? insets.top : 10 } 
+      { 
+        paddingTop: Platform.OS === 'ios' ? insets.top : 10,
+        paddingHorizontal: isMobile ? 15 : 90
+      } 
     ]}>
-
       
-      <View style={styles.topRow}>
-        <TouchableOpacity onPress={()=> router.push('/')}>
-        <Text style={styles.logoText}>Gym-PowerZone</Text>
-        </TouchableOpacity>
+      {/* Diseño de escritorio y móvil */}
+      <View style={isMobile ? styles.mobileTopBar : styles.topRow}>
+
+        {/* Logo (solo se muestra en escritorio) */}
+        {!isMobile && (
+          <TouchableOpacity onPress={() => router.push('/')} style={styles.logoContainer}>
+            <Text style={styles.logoText}>Gym-PowerZone</Text>
+          </TouchableOpacity>
+        )}
         
-        <View style={styles.searchBar}>
+        {/* Barra de búsqueda (siempre se muestra) */}
+        <View style={isMobile ? styles.searchBarMobile : styles.searchBar}>
           <TextInput
             style={styles.searchInput}
             placeholder="Buscar"
@@ -42,30 +52,28 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
           </TouchableOpacity>
         </View>
 
-        
-        <View style={styles.iconButtonsContainer}>
-          <TouchableOpacity onPress={() => router.push('/Cart')} style={styles.iconButton}>
-            <Icon name="cart-outline" size={28} color="#FFF" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleLogout}
-            style={[styles.menuItem, styles.logoutButtonMargin]} 
-            onMouseEnter={() => setHoveredItem('CerrarSesion')}
-            onMouseLeave={() => setHoveredItem(null)}
-          >
-            <Text style={[
-              styles.menuText, 
-              hoveredItem === 'CerrarSesion' && styles.menuTextHover, 
-            ]}>
-              CERRAR SESIÓN
-            </Text>
-          </TouchableOpacity>
-        </View>
-        
-        
-
+        {/* Contenedor de botones (solo se muestra en escritorio) */}
+        {!isMobile && (
+          <View style={styles.iconButtonsContainer}>
+            <TouchableOpacity onPress={() => router.push('/Cart')} style={styles.iconButton}>
+              <Icon name="cart-outline" size={28} color="#FFF" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleLogout}
+              style={styles.logoutButton}
+              onMouseEnter={() => setHoveredItem('CerrarSesion')}
+              onMouseLeave={() => setHoveredItem(null)}
+            >
+              <Text style={[
+                styles.menuText, 
+                hoveredItem === 'CerrarSesion' && styles.menuTextHover, 
+              ]}>
+                CERRAR SESIÓN
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
-
     </View>
   );
 };
@@ -73,8 +81,6 @@ const Header: React.FC<HeaderPropsWithoutCartPress> = ({ onMenuPress, onSearchCh
 const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: '#000',
-    paddingHorizontal: 90,
-    
     paddingBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#555',
@@ -84,12 +90,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  mobileTopBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoContainer: {
+    flexShrink: 0,
+    marginRight: 20,
+  },
   logoText: {
     color: '#FFF',
     fontSize: 18,
     fontWeight: 'bold',
-    marginRight: 100,
-    flexShrink: 0,
   },
   searchBar: {
     flexDirection: 'row',
@@ -97,7 +110,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderRadius: 5,
     flex: 1,
-    marginRight: 109,
+    maxWidth: 700,
+  },
+  searchBarMobile: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 5,
+    width: '100%',
   },
   searchInput: {
     flex: 1,
@@ -112,11 +132,12 @@ const styles = StyleSheet.create({
   iconButtonsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginLeft: 20,
   },
   iconButton: {
     marginLeft: 10,
   },
-  menuItem: {
+  logoutButton: {
     marginLeft: 10,
     paddingVertical: 10,
   },
@@ -129,9 +150,6 @@ const styles = StyleSheet.create({
   menuTextHover: {
     color: '#E44D26', 
   },
-  logoutButtonMargin: {
-    marginLeft: 55, 
-  }
 });
 
 export default Header;
