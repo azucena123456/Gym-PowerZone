@@ -256,6 +256,10 @@ const RegisterScreen: React.FC = () => {
       );
       */
 
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setFormError('');
+      clearForm();
+      router.replace('/Store');
     } catch (error) {
       console.error('❌ Error durante el registro:', error);
       setErrors(prev => ({ 

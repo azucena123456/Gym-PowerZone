@@ -9,10 +9,12 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  useWindowDimensions
+  useWindowDimensions,
+  ActivityIndicator
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useCart } from '@/app/(tabs)/CartContext';
 
 const Header = ({ totalItems, isMobile, onNavigateToStore }) => {
   const insets = useSafeAreaInsets();
@@ -70,7 +72,10 @@ const Header = ({ totalItems, isMobile, onNavigateToStore }) => {
               <Icon name="home-outline" size={28} color="#FFF" />
             </TouchableOpacity>
             
-            <TouchableOpacity style={[styles.iconButton, { position: 'relative' }]}>
+            <TouchableOpacity 
+              style={[styles.iconButton, { position: 'relative' }]}
+              onPress={onNavigateToStore}
+            >
               <Icon name="cart-outline" size={28} color="#FFF" />
               {totalItems > 0 && (
                 <View style={styles.badge}>
@@ -100,7 +105,10 @@ const BottomNavBar = ({ totalItems, onNavigateToStore }) => {
       >
         <Icon name="home-outline" size={30} color="#FFF" />
       </TouchableOpacity>
-      <TouchableOpacity style={[styles.footerButton, { position: 'relative' }]}>
+      <TouchableOpacity 
+        style={[styles.footerButton, { position: 'relative' }]}
+        onPress={onNavigateToStore}
+      >
         <Icon name="cart-outline" size={30} color="#FFF" />
         {totalItems > 0 && (
           <View style={styles.footerBadge}>
@@ -118,25 +126,14 @@ const Carrito = () => {
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
   const navigation = useNavigation();
-
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: 'Botella para Proteina con mezclador',
-      description: 'Botella con rejilla mezcladora, capacidad 750ml, libre de BPA.',
-      price: 145,
-      quantity: 1,
-      image: require('../../assets/images/botellas.jpg'),
-    },
-    {
-      id: 2,
-      name: 'Proteína de suero de leche WHEY Premium',
-      description: 'Suplemento de alta calidad para recuperación muscular.',
-      price: 850,
-      quantity: 1,
-      image: require('../../assets/images/proteina.jpg'),
-    },
-  ]);
+  const { 
+    cartItems, 
+    totalItems, 
+    updateQuantity, 
+    removeFromCart, 
+    clearCart, 
+    loading 
+  } = useCart();
 
   const handleNavigateToStore = () => {
     navigation.navigate('Store');
@@ -146,19 +143,21 @@ const Carrito = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  const totalItems = cartItems.length;
-
   const handleQuantityChange = (itemId, newQuantity) => {
     if (newQuantity >= 1) {
-      setCartItems(prevItems =>
-        prevItems.map(item =>
-          item.id === itemId ? { ...item, quantity: newQuantity } : item
-        )
-      );
+      updateQuantity(itemId, newQuantity);
     } else {
-      setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
+      removeFromCart(itemId);
     }
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#E44D26" />
+      </View>
+    );
+  }
 
   const renderSummarySection = () => (
     <View style={[
@@ -180,7 +179,13 @@ const Carrito = () => {
         <Text style={styles.subtotalText}>Subtotal ({cartItems.reduce((total, item) => total + item.quantity, 0)} producto{cartItems.reduce((total, item) => total + item.quantity, 0) !== 1 ? 's' : ''}):</Text>
         <Text style={styles.subtotalPrice}>${calculateSubtotal().toLocaleString('es-MX')}</Text>
       </View>
-      <TouchableOpacity style={styles.checkoutButton}>
+      <TouchableOpacity 
+        style={styles.checkoutButton}
+        onPress={() => {
+          clearCart();
+          // Navegar a pantalla de pago si es necesario
+        }}
+      >
         <Text style={styles.checkoutButtonText}>Proceder al pago</Text>
       </TouchableOpacity>
     </View>
@@ -197,68 +202,75 @@ const Carrito = () => {
       </View>
       <View style={styles.headerSeparator} />
       
-      {cartItems.map(item => (
-        <View key={item.id} style={styles.cartItem}>
-          <View style={styles.itemImageContainer}>
-            <Image
-              source={item.image}
-              style={styles.productImage}
-            />
-          </View>
-          <View style={isMobile ? styles.itemDetailsMobile : styles.itemDetails}>
-            <View style={styles.itemInfo}>
-              <Text style={isMobile ? styles.itemTitleMobile : styles.itemTitle}>{item.name}</Text>
-              <Text style={isMobile ? styles.itemDescriptionMobile : styles.itemDescription}>{item.description}</Text>
-              <Text style={styles.availability}>Disponible</Text>
-              {isMobile && <Text style={styles.itemPriceMobile}>${(item.price * item.quantity).toLocaleString('es-MX')}</Text>}
-              
-              <View style={isMobile ? styles.itemControlsMobile : styles.itemControls}>
-                <View style={styles.quantityControls}>
-                  <TouchableOpacity
-                    style={styles.quantityButton}
-                    onPress={() => handleQuantityChange(item.id, item.quantity - 1)}
-                  >
-                    <Text style={styles.quantityButtonText}>-</Text>
-                  </TouchableOpacity>
-                  <Text style={styles.quantity}>{item.quantity}</Text>
-                  <TouchableOpacity
-                    style={styles.quantityButton}
-                    onPress={() => handleQuantityChange(item.id, item.quantity + 1)}
-                  >
-                    <Text style={styles.quantityButtonText}>+</Text>
-                  </TouchableOpacity>
-                </View>
-
-                {isMobile ? (
-                  <View style={styles.actionsMobile}>
-                    <TouchableOpacity 
-                      style={styles.actionButtonMobile}
-                      onPress={() => setCartItems(prevItems => prevItems.filter(i => i.id !== item.id))}
-                    >
-                      <Text style={styles.actionButtonText}>Eliminar</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.actionSeparator}>|</Text>
-                    <TouchableOpacity style={styles.actionButtonMobile}>
-                      <Text style={styles.actionButtonText}>Guardar</Text>
-                    </TouchableOpacity>
-                  </View>
-                ) : (
-                  <View style={styles.actions}>
-                    <TouchableOpacity onPress={() => setCartItems(prevItems => prevItems.filter(i => i.id !== item.id))}>
-                      <Text style={styles.actionButtonText}>Eliminar</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.actionSeparator}>|</Text>
-                    <TouchableOpacity>
-                      <Text style={styles.actionButtonText}>Guardar para más tarde</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-              </View>
-            </View>
-            {!isMobile && <Text style={styles.itemPriceDesktop}>${(item.price * item.quantity).toLocaleString('es-MX')}</Text>}
-          </View>
+      {cartItems.length === 0 ? (
+        <View style={styles.emptyCart}>
+          <Icon name="cart-outline" size={50} color="#CCC" />
+          <Text style={styles.emptyText}>Tu carrito está vacío</Text>
         </View>
-      ))}
+      ) : (
+        cartItems.map(item => (
+          <View key={item.id} style={styles.cartItem}>
+            <View style={styles.itemImageContainer}>
+              <Image
+                source={item.imageUrl}
+                style={styles.productImage}
+              />
+            </View>
+            <View style={isMobile ? styles.itemDetailsMobile : styles.itemDetails}>
+              <View style={styles.itemInfo}>
+                <Text style={isMobile ? styles.itemTitleMobile : styles.itemTitle}>{item.name}</Text>
+                <Text style={isMobile ? styles.itemDescriptionMobile : styles.itemDescription}>{item.description}</Text>
+                <Text style={styles.availability}>Disponible</Text>
+                {isMobile && <Text style={styles.itemPriceMobile}>${(item.price * item.quantity).toLocaleString('es-MX')}</Text>}
+                
+                <View style={isMobile ? styles.itemControlsMobile : styles.itemControls}>
+                  <View style={styles.quantityControls}>
+                    <TouchableOpacity
+                      style={styles.quantityButton}
+                      onPress={() => handleQuantityChange(item.id, item.quantity - 1)}
+                    >
+                      <Text style={styles.quantityButtonText}>-</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.quantity}>{item.quantity}</Text>
+                    <TouchableOpacity
+                      style={styles.quantityButton}
+                      onPress={() => handleQuantityChange(item.id, item.quantity + 1)}
+                    >
+                      <Text style={styles.quantityButtonText}>+</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {isMobile ? (
+                    <View style={styles.actionsMobile}>
+                      <TouchableOpacity 
+                        style={styles.actionButtonMobile}
+                        onPress={() => removeFromCart(item.id)}
+                      >
+                        <Text style={styles.actionButtonText}>Eliminar</Text>
+                      </TouchableOpacity>
+                      <Text style={styles.actionSeparator}>|</Text>
+                      <TouchableOpacity style={styles.actionButtonMobile}>
+                        <Text style={styles.actionButtonText}>Guardar</Text>
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    <View style={styles.actions}>
+                      <TouchableOpacity onPress={() => removeFromCart(item.id)}>
+                        <Text style={styles.actionButtonText}>Eliminar</Text>
+                      </TouchableOpacity>
+                      <Text style={styles.actionSeparator}>|</Text>
+                      <TouchableOpacity>
+                        <Text style={styles.actionButtonText}>Guardar para más tarde</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+              </View>
+              {!isMobile && <Text style={styles.itemPriceDesktop}>${(item.price * item.quantity).toLocaleString('es-MX')}</Text>}
+            </View>
+          </View>
+        ))
+      )}
     </View>
   );
 
@@ -645,6 +657,23 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f4f4f4',
+  },
+  emptyCart: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 50,
+  },
+  emptyText: {
+    fontSize: 18,
+    color: '#666',
+    marginTop: 20,
   },
 });
 
