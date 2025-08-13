@@ -15,51 +15,60 @@ import {
   View,
 } from 'react-native';
 
-
 const ForgotPasswordScreen: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [isLargeScreen, setIsLargeScreen] = useState(Dimensions.get('window').width >= 768);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     const updateDimension = () => {
       setIsLargeScreen(Dimensions.get('window').width >= 768);
     };
-
     const dimensionListener = Dimensions.addEventListener('change', updateDimension);
-
     return () => {
       dimensionListener.remove();
     };
   }, []);
 
-  const validateEmail = (email: string) => {
+  const validateEmail = (email: string): boolean => {
     const re = /\S+@\S+\.\S+/;
     return re.test(email);
   };
 
   const handleResetPassword = async () => {
-    if (!email.trim()) {
-      Alert.alert('Campo incompleto', 'Por favor, ingresa tu dirección de email.');
-      return;
-    }
-
-    if (!validateEmail(email)) {
-      Alert.alert('Email inválido', 'Por favor, introduce un correo electrónico válido.');
-      return;
-    }
-
-    setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      setError('');
+      if (!email.trim()) {
+        throw new Error('Por favor, ingresa tu dirección de email.');
+      }
+      if (!validateEmail(email)) {
+        throw new Error('Por favor, introduce un correo electrónico válido.');
+      }
+
+      setLoading(true);
+      const response = await fetch(`${process.env.API_URL}/api/recuperar-contrasena`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Error al enviar el correo');
+      }
+
       Alert.alert(
         'Instrucciones Enviadas',
         'Si tu email está registrado, recibirás instrucciones para restablecer tu contraseña.'
       );
-      router.push('/Login'); 
-    } catch (error) {
-      console.error('Error durante el restablecimiento de contraseña:', error);
-      Alert.alert('Error', 'Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
+      router.push('/Login');
+
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al enviar el correo');
+      Alert.alert('Error', error);
     } finally {
       setLoading(false);
     }
