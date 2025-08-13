@@ -15,8 +15,6 @@ import {
   View,
 } from 'react-native';
 
-const API_URL_BASE = 'https://gym-powerzone-back-production.up.railway.app/api';
-
 const ForgotPasswordScreen: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -48,17 +46,29 @@ const ForgotPasswordScreen: React.FC = () => {
         throw new Error('Por favor, introduce un correo electrónico válido.');
       }
 
-    setLoading(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      setLoading(true);
+      const response = await fetch(`${process.env.API_URL}/api/recuperar-contrasena`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Error al enviar el correo');
+      }
+
       Alert.alert(
         'Instrucciones Enviadas',
         'Si tu email está registrado, recibirás un correo para restablecer tu contraseña.'
       );
-      router.push('/Login'); 
-    } catch (error) {
-      console.error('Error durante el restablecimiento de contraseña:', error);
-      Alert.alert('Error', 'Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
+      router.push('/Login');
+
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al enviar el correo');
+      Alert.alert('Error', error);
     } finally {
       setLoading(false);
     }
