@@ -5,10 +5,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '@/components/Header';
 import ImageCarousel from '@/components/ImageCarousel';
 import ProductCard from '@/components/ProductoCart';
+import BottomBar from '@/components/BottomBar'; 
 import ProductListScreen from '@/components/ProductListScreen';
 import { Product } from '@/types';
 
-const listPaddingHorizontal = 52; 
+
+const { width, height } = Dimensions.get('window');
+const isMobile = width < 768; 
+const numColumns = width > 1200 ? 5 : width > 900 ? 4 : width > 600 ? 3 : width > 400 ? 2 : 2;
+const listPaddingHorizontal = isMobile ? 15 : 52; 
 
 export default function StoreScreen() {
     const [products, setProducts] = useState<Product[]>([]);
@@ -128,6 +133,9 @@ export default function StoreScreen() {
                     </View>
                 )}
             </ScrollView>
+
+            
+            {isMobile && <BottomBar />} 
         </SafeAreaView>
     );
 }
