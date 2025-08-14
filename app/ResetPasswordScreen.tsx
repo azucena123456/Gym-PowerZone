@@ -2,25 +2,26 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Dimensions,
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
-// URL base de tu API, la misma que en otros componentes
+// URL base de tu API
 const API_URL_BASE = 'https://gym-powerzone-back-production.up.railway.app/api';
 
 const ResetPasswordScreen: React.FC = () => {
-  // ✅ Obtiene los parámetros de la URL, incluyendo el 'token'
-  const { token } = useLocalSearchParams();
+  // ✅ Obtiene el token de los query parameters para web
+  const searchParams = useLocalSearchParams();
+  const token = searchParams.token;
 
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
@@ -28,10 +29,26 @@ const ResetPasswordScreen: React.FC = () => {
   const [isLargeScreen, setIsLargeScreen] = useState(Dimensions.get('window').width >= 768);
 
   useEffect(() => {
-    // Si el token no está presente, redirige al usuario a la pantalla de login
-    if (!token) {
-      Alert.alert('Error', 'Token de recuperación no encontrado. Por favor, solicita un nuevo enlace.');
-      router.push('/Login');
+    // Agregar un pequeño delay para asegurar que el componente esté montado
+    const checkToken = async () => {
+      if (!token) {
+        Alert.alert('Error', 'Token de recuperación no encontrado. Por favor, solicita un nuevo enlace.', [
+          {
+            text: 'OK',
+            onPress: () => {
+              // Usar setTimeout para evitar la navegación antes del montaje
+              setTimeout(() => {
+                router.push('/Login');
+              }, 100);
+            }
+          }
+        ]);
+      }
+    };
+
+    // Solo ejecutar si el componente está montado
+    if (token !== undefined) {
+      checkToken();
     }
   }, [token]);
 
@@ -53,6 +70,11 @@ const ResetPasswordScreen: React.FC = () => {
       return;
     }
 
+    if (newPassword.length < 6) {
+      Alert.alert('Contraseña muy corta', 'La contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       Alert.alert('Contraseñas no coinciden', 'Las contraseñas ingresadas no son iguales.');
       return;
@@ -60,14 +82,17 @@ const ResetPasswordScreen: React.FC = () => {
 
     setLoading(true);
     try {
-      // ✅ Envía la solicitud al endpoint de restablecimiento de contraseña en el backend
-      const response = await fetch(`${API_URL_BASE}/auth/restablecer-contrasena`, {
+      // ✅ CORREGIDO: Endpoint correcto que coincide con tu backend
+      const response = await fetch(`${API_URL_BASE}/auth/restablecer-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({ token, nuevaContrasena: newPassword }),
+        body: JSON.stringify({ 
+          token: token, 
+          nuevaContrasena: newPassword 
+        }),
       });
 
       const data = await response.json();
@@ -76,10 +101,13 @@ const ResetPasswordScreen: React.FC = () => {
         throw new Error(data.error || 'Error en el servidor. Inténtalo de nuevo.');
       }
 
-      Alert.alert('Éxito', 'Tu contraseña ha sido actualizada correctamente.');
+      Alert.alert('Éxito', 'Tu contraseña ha sido actualizada correctamente.', [
+        {
+          text: 'OK',
+          onPress: () => router.push('/Login')
+        }
+      ]);
       
-      // ✅ Redirige al usuario a la pantalla de login tras el éxito
-      router.push('/Login');
     } catch (error: any) {
       console.error('Error durante el restablecimiento de contraseña:', error);
       Alert.alert('Error', error.message || 'Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
@@ -106,7 +134,7 @@ const ResetPasswordScreen: React.FC = () => {
           {isLargeScreen && (
             <View style={styles.imageSection}>
               <Image
-                source={require('../../assets/images/login.png')}
+                source={require('../assets/images/login.png')}
                 style={styles.gymImage}
                 resizeMode="cover"
               />
@@ -130,7 +158,7 @@ const ResetPasswordScreen: React.FC = () => {
                 onChangeText={setNewPassword}
                 secureTextEntry
                 autoCapitalize="none"
-                placeholder="Ingresa tu nueva contraseña"
+                placeholder="Ingresa tu nueva contraseña (mín. 6 caracteres)"
                 placeholderTextColor="#aaa"
                 editable={!loading}
               />
@@ -153,6 +181,14 @@ const ResetPasswordScreen: React.FC = () => {
                 ) : (
                   <Text style={styles.buttonText}>Restablecer Contraseña</Text>
                 )}
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.backButton}
+                onPress={() => router.push('/Login')}
+                disabled={loading}
+              >
+                <Text style={styles.backButtonText}>Volver al Login</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -195,7 +231,7 @@ const styles = StyleSheet.create({
   passwordResetCardSmallScreen: {
     flexDirection: 'column', 
     width: '90%', 
-    maxHeight: '70%',
+    maxHeight: '80%',
     borderRadius: 8,
     padding: 20,
     justifyContent: 'center', 
@@ -203,7 +239,7 @@ const styles = StyleSheet.create({
     borderWidth: 1, 
     borderColor: '#eee', 
     marginVertical: 0, 
-    minHeight: 300,
+    minHeight: 350,
   },
   imageSection: {
     flex: 1,
@@ -282,15 +318,14 @@ const styles = StyleSheet.create({
     fontSize: 16, 
     fontWeight: 'bold',
   },
-  backToLoginText: {
-    textAlign: 'center',
-    fontSize: 14, 
-    color: '#666',
-    marginTop: 20, 
+  backButton: {
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginTop: 10,
   },
-  loginLink: {
-    color: '#ff4500',
-    fontWeight: 'bold',
+  backButtonText: {
+    color: '#666',
+    fontSize: 14,
     textDecorationLine: 'underline',
   },
 });
